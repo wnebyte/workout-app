@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_exercise_list">
+
+    <fragment
+        android:id="@+id/nav_exercise_list"
+        android:name="com.github.wnebyte.workoutapp.ui.exerciselist.ExerciseListFragment"
+        android:label="@string/nav_exercise_list"
+        tools:layout="@layout/fragment_exercise_list">
+        <action
+            android:id="@+id/action_nav_exercise_list_to_nav_exercise_details"
+            app:destination="@id/nav_exercise_details" />
+        <action
+            android:id="@+id/action_nav_exercise_list_to_nav_exercise_create"
+            app:destination="@id/nav_exercise_create" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_exercise_details"
+        android:name="com.github.wnebyte.workoutapp.ui.exercisedetails.ExerciseDetailsFragment"
+        android:label="@string/nav_exercise_details"
+        tools:layout="@layout/fragment_exercise_details">
+        <argument
+            android:name="exerciseId"
+            app:argType="java.util.UUID"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_exercise_create"
+        android:name="com.github.wnebyte.workoutapp.ui.exercisecreate.ExerciseCreateFragment"
+        android:label="@string/nav_exercise_create"
+        tools:layout="@layout/fragment_exercise_details">
+        <argument
+            android:name="workoutId"
+            app:argType="java.util.UUID"
+            app:nullable="true"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_exercise_import"
+        android:name="com.github.wnebyte.workoutapp.ui.exerciseimport.ExerciseImportFragment"
+        android:label="@string/nav_exercise_import"
+        tools:layout="@layout/fragment_exercise_import">
+        <argument
+            android:name="workoutId"
+            app:argType="java.util.UUID"
+            app:nullable="false"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_workout_list"
+        android:name="com.github.wnebyte.workoutapp.ui.workoutlist.WorkoutListFragment"
+        android:label="@string/nav_workout_list"
+        tools:layout="@layout/fragment_workout_list">
+        <action
+            android:id="@+id/action_nav_workout_list_to_nav_workout_details"
+            app:destination="@id/nav_workout_details" />
+        <action
+            android:id="@+id/action_nav_workout_list_to_nav_workout_create"
+            app:destination="@id/nav_workout_create" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_workout_details"
+        android:name="com.github.wnebyte.workoutapp.ui.workoutdetails.WorkoutDetailsFragment"
+        android:label="@string/nav_workout_details"
+        tools:layout="@layout/fragment_workout_details">
+        <argument
+            android:name="workoutId"
+            app:argType="java.util.UUID"
+            app:nullable="false" />
+        <action
+            android:id="@+id/action_nav_workout_details_to_nav_exercise_import"
+            app:destination="@id/nav_exercise_import" />
+        <action
+            android:id="@+id/action_nav_workout_details_to_nav_exercise_create"
+            app:destination="@id/nav_exercise_create" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_workout_create"
+        android:name="com.github.wnebyte.workoutapp.ui.workoutcreate.WorkoutCreateFragment"
+        android:label="@string/nav_workout_create"
+        tools:layout="@layout/fragment_workout_create">
+        <action
+            android:id="@+id/action_nav_workout_create_to_nav_exercise_import"
+            app:destination="@id/nav_exercise_import" />
+        <action
+            android:id="@+id/action_nav_workout_create_to_nav_exercise_create"
+            app:destination="@id/nav_exercise_create" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_session_list"
+        android:name="com.github.wnebyte.workoutapp.ui.sessionlist.SessionListFragment"
+        android:label="@string/nav_session_list"
+        tools:layout="@layout/fragment_session_list">
+    </fragment>
+
+</navigation>

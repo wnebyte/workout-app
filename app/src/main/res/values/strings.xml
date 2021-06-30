@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">WorkoutApp</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="fab">Floating Action Button</string>
+    <string name="exercise_card_content_description_media">Content description</string>
+    <string name="exercise_card_title">Title</string>
+    <string name="exercise_card_secondary_title">Secondary title</string>
+    <string name="exercise_card_recycler_view_item">Set item</string>
+    <string name="exercise_name">Name</string>
+    <string name="exercise_timer">Timer</string>
+    <string name="menu_exercise_list">Exercises</string>
+    <string name="menu_workout_list">Workouts</string>
+    <string name="nav_exercise_list">Exercises</string>
+    <string name="nav_exercise_details">Exercise Details</string>
+    <string name="nav_exercise_create">New Exercise</string>
+    <string name="nav_exercise_import">Import Exercise</string>
+    <string name="nav_workout_list">Workouts</string>
+    <string name="nav_workout_details">Workout Details</string>
+    <string name="nav_workout_create">New Workout</string>
+    <string name="nav_workout_import">Import Workout</string>
+    <string name="nav_session_list">Sessions</string>
+</resources>
