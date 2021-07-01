@@ -31,7 +31,7 @@ class AdapterUtil {
             }
         }
 
-        val DIFF_UTIL_EXERCISEWITHSETS_CALLBACK: DiffUtil.ItemCallback<ExerciseWithSets> = object:
+        val DIFF_UTIL_EXERCISE_WITH_SETS_CALLBACK: DiffUtil.ItemCallback<ExerciseWithSets> = object:
             DiffUtil.ItemCallback<ExerciseWithSets>() {
 
             override fun areItemsTheSame(
@@ -49,7 +49,7 @@ class AdapterUtil {
             }
         }
 
-        val DIFF_UTIL_WORKOUTWITHEXERCISES_CALLBACK: DiffUtil.ItemCallback<WorkoutWithExercises> =
+        val DIFF_UTIL_WORKOUT_WITH_EXERCISES_CALLBACK: DiffUtil.ItemCallback<WorkoutWithExercises> =
             object: DiffUtil.ItemCallback<WorkoutWithExercises>() {
 
                 override fun areItemsTheSame(
@@ -65,26 +65,6 @@ class AdapterUtil {
             ): Boolean {
                 return oldItem == newItem
             }
-        }
-
-        class WorkoutHolder(view: View): RecyclerView.ViewHolder(view) {
-
-            fun bind(wrapper: WorkoutWithExercises) {
-
-            }
-        }
-
-        class WorkoutAdapter: ListAdapter<WorkoutWithExercises, WorkoutHolder>
-            (DIFF_UTIL_WORKOUTWITHEXERCISES_CALLBACK) {
-
-            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutHolder {
-                TODO("Not yet implemented")
-            }
-
-            override fun onBindViewHolder(holder: WorkoutHolder, position: Int) {
-                TODO("Not yet implemented")
-            }
-
         }
     }
 }

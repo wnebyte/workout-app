@@ -21,6 +21,15 @@ data class Set(
         val exercise: UUID
 ) {
     companion object {
+
+        /**
+         * Returns a new instance with 'default' values.
+         * @param exercise the fk
+         * @return a new set
+         */
+        fun newInstance(exercise: UUID): Set =
+            Set(reps = 0, weights = 0.0, exercise = exercise)
+
         /**
          * Returns a copy of the specified Set but with a new id, and with the specified
          * fk.

@@ -3,9 +3,7 @@ package com.github.wnebyte.workoutapp.ui.exercisedetails
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -26,7 +24,7 @@ import com.github.wnebyte.workoutapp.util.AdapterUtil
 import com.google.android.material.textfield.TextInputEditText
 import java.lang.Exception
 
-private const val TAG = "ExerciseFragment"
+private const val TAG = "ExerciseDetailsFragment"
 
 class ExerciseDetailsFragment: Fragment() {
 
@@ -59,6 +57,28 @@ class ExerciseDetailsFragment: Fragment() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_exercise_details, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.add_set -> {
+                vm.saveSet(
+                    Set.newInstance(exercise.exercise.id))
+                true
+            } else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -67,12 +87,6 @@ class ExerciseDetailsFragment: Fragment() {
         _binding = FragmentExerciseDetailsBinding.inflate(inflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
-        binding.addButton.setOnClickListener {
-            exercise.sets.add(
-                Set(weights = 0.0, reps = 0, exercise = exercise.exercise.id)
-            )
-            adapter.notifyDataSetChanged()
-        }
         binding.saveButton.setOnClickListener {
             callbacks?.onFinished()
         }

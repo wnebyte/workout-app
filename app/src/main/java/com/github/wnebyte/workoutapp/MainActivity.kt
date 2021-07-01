@@ -1,10 +1,6 @@
 package com.github.wnebyte.workoutapp
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
-import android.os.Looper
-import android.util.Log
 import android.view.Menu
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -16,12 +12,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.*
-import androidx.lifecycle.Observer
-import com.github.wnebyte.workoutapp.model.Exercise
-import com.github.wnebyte.workoutapp.model.Set
-import com.github.wnebyte.workoutapp.model.Workout
-import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import com.github.wnebyte.workoutapp.ui.exercisecreate.ExerciseCreateFragment
 import com.github.wnebyte.workoutapp.ui.exercisedetails.ExerciseDetailsFragment
 import com.github.wnebyte.workoutapp.ui.exerciseimport.ExerciseImportFragment
@@ -157,6 +147,7 @@ class MainActivity: AppCompatActivity(),
         navController.navigate(action)
     }
 
+    /*
     private fun delete() {
         val mainHandler = Handler(Looper.getMainLooper())
         val handlerThread = HandlerThread("HandlerThread").apply {
@@ -263,4 +254,5 @@ class MainActivity: AppCompatActivity(),
 
         return repo.getWorkoutsWithExercises()
     }
+     */
 }

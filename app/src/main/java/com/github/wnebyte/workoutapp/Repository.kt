@@ -165,62 +165,8 @@ class Repository private constructor(context: Context) {
     fun getWorkoutsWithExercises(): LiveData<List<WorkoutWithExercises>> =
         database.workoutWithExercisesDao().getAll()
 
-    fun getTemplateWorkoutsWithExercises(): LiveData<List<WorkoutWithExercises>> =
-        database.workoutWithExercisesDao().getTemplates()
-
     fun getNonCompletedWorkoutsWithExercises(): LiveData<List<WorkoutWithExercises>> =
         database.workoutWithExercisesDao().getNonCompleted()
-
-    fun saveSession(session: Session) =
-        executor.execute {
-            database.sessionDao().save(session)
-        }
-
-    fun saveSession(vararg session: Session) =
-        executor.execute {
-            database.sessionDao().save(*session)
-        }
-
-    fun saveSession(session: List<Session>) =
-        executor.execute {
-            database.sessionDao().save(*session.toTypedArray())
-        }
-
-    fun deleteSession(session: Session) =
-        executor.execute {
-            database.sessionDao().delete(session)
-        }
-
-    fun deleteSession(vararg session: Session) =
-        executor.execute {
-            database.sessionDao().delete(*session)
-        }
-
-    fun deleteSession(session: List<Session>) =
-        executor.execute {
-            database.sessionDao().delete(*session.toTypedArray())
-        }
-
-    fun getSession(id: UUID): LiveData<Session?> =
-        database.sessionDao().get(id)
-
-    fun getSessions(): LiveData<List<Session>> =
-        database.sessionDao().getAll()
-
-    fun getOrderedSessions(): LiveData<List<Session>> =
-        database.sessionDao().getOrdered()
-
-    fun getSessionWithWorkout(id: UUID): LiveData<SessionWithWorkout?> =
-        database.sessionWithWorkoutDao().get(id)
-
-    fun getSessionsWithWorkout(): LiveData<List<SessionWithWorkout>> =
-        database.sessionWithWorkoutDao().getAll()
-
-    fun getCompletedSessionsWithWorkout(): LiveData<List<SessionWithWorkout>> =
-        database.sessionWithWorkoutDao().getCompleted()
-
-    fun getNonCompletedSessionsWithWorkout(): LiveData<List<SessionWithWorkout>> =
-        database.sessionWithWorkoutDao().getNonCompleted()
 
     fun deleteAllSets() =
         executor.execute {
@@ -235,11 +181,6 @@ class Repository private constructor(context: Context) {
     fun deleteAllWorkouts() =
         executor.execute {
             database.workoutDao().deleteAll()
-        }
-
-    fun deleteAllSessions() =
-        executor.execute {
-            database.sessionDao().deleteAll()
         }
 
     companion object {

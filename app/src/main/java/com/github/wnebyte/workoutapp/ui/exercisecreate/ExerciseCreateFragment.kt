@@ -3,10 +3,9 @@ package com.github.wnebyte.workoutapp.ui.exercisecreate
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
+import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,6 +13,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.ExerciseSetItemBinding
 import com.github.wnebyte.workoutapp.databinding.FragmentExerciseCreateBinding
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
@@ -55,6 +55,31 @@ class ExerciseCreateFragment: Fragment() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_exercise_create, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.add_set -> {
+                vm.saveExercise(updateModel(exercise).apply { // does not emit
+                    this.sets.add(
+                        Set.newInstance(this.exercise.id))
+                })
+                adapter.notifyDataSetChanged()
+                true
+            } else -> {
+                return super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -63,12 +88,6 @@ class ExerciseCreateFragment: Fragment() {
         _binding = FragmentExerciseCreateBinding.inflate(inflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
-        binding.addButton.setOnClickListener {
-            exercise.sets.add(
-                Set(weights = 0.0, reps = 0, exercise = exercise.exercise.id)
-            )
-            adapter.notifyDataSetChanged()
-        }
         binding.saveButton.setOnClickListener {
             saveExercise = true
             callbacks?.onFinished()
@@ -93,20 +112,12 @@ class ExerciseCreateFragment: Fragment() {
                 }
             }
         )
-        // Note: do not reference lateinit exercise property here
     }
 
     override fun onStop() {
         super.onStop()
         if (saveExercise) {
-            vm.saveExercise(exercise.apply {
-                binding.name.text?.let {
-                    this.exercise.name = it.toString()
-                }
-                binding.timer.text?.let {
-                    this.exercise.timer = it.toString().toInt()
-                }
-            })
+            vm.saveExercise(updateModel(exercise))
         } else {
             vm.deleteExercise(exercise)
         }
@@ -129,14 +140,23 @@ class ExerciseCreateFragment: Fragment() {
         adapter.submitList(exercise.sets)
     }
 
+    private fun updateModel(exercise: ExerciseWithSets): ExerciseWithSets =
+        exercise.apply {
+            binding.name.text?.let {
+                this.exercise.name = it.toString()
+            }
+            binding.timer.text?.let {
+                this.exercise.timer = it.toString().toInt()
+            }
+        }
+
     private inner class SetHolder(private val binding: ExerciseSetItemBinding):
         RecyclerView.ViewHolder(binding.root) {
         private lateinit var set: Set
 
         init {
             binding.button.setOnClickListener {
-                exercise.sets.remove(set) // use vm/db instead?
-                adapter.notifyDataSetChanged()
+                vm.deleteSet(set)
             }
             binding.weights.doOnTextChanged { text, _, _, count ->
                 if ((text != null) && (0 < count)) {

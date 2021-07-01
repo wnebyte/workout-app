@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.github.wnebyte.workoutapp.Repository
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
+import com.github.wnebyte.workoutapp.model.Set
 import java.util.*
 
 private const val TAG = "ExerciseCreateViewModel"
@@ -41,5 +42,15 @@ class ExerciseCreateViewModel(private val state: SavedStateHandle): ViewModel() 
         Log.i(TAG, "Deleting exercise: ${exercise.exercise.id}")
         repository.deleteExercise(exercise.exercise)
         repository.deleteSet(exercise.sets)
+    }
+
+    fun deleteSet(set: Set) {
+        Log.i(TAG, "Deleting set: $set.id")
+        repository.deleteSet(set)
+    }
+
+    fun saveSet(set: Set) {
+        Log.i(TAG, "Adding set: ${set.id}")
+        repository.saveSet(set)
     }
 }

@@ -7,7 +7,7 @@ import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
 import java.util.*
 
-private const val TAG = "ExerciseViewModel"
+private const val TAG = "ExerciseDetailsViewModel"
 private const val EXERCISE_ID_LIVE_DATA_KEY = "ExerciseIdLiveData"
 
 class ExerciseDetailsViewModel(private val state: SavedStateHandle): ViewModel() {
@@ -36,5 +36,10 @@ class ExerciseDetailsViewModel(private val state: SavedStateHandle): ViewModel()
     fun deleteSet(set: Set) {
         Log.i(TAG, "Deleting set: ${set.id}")
         repository.deleteSet(set)
+    }
+
+    fun saveSet(set: Set) {
+        Log.i(TAG, "Saving set: ${set.id}")
+        repository.saveSet(set)
     }
 }

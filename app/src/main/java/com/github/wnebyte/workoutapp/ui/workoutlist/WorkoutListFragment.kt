@@ -68,8 +68,8 @@ class WorkoutListFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         vm.workoutListLiveData.observe(
             viewLifecycleOwner,
-            { workout ->
-                workout?.let { it->
+            { workouts ->
+                workouts?.let { it ->
                     Log.i(TAG, "Got workouts: ${it.size}")
                     adapter.submitList(it)
                 }
@@ -111,7 +111,7 @@ class WorkoutListFragment: Fragment() {
         }
 
     private inner class WorkoutAdapter: ListAdapter<WorkoutWithExercises, WorkoutHolder>
-        (AdapterUtil.DIFF_UTIL_WORKOUTWITHEXERCISES_CALLBACK) {
+        (AdapterUtil.DIFF_UTIL_WORKOUT_WITH_EXERCISES_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutHolder {
             val view = WorkoutBinding.inflate(layoutInflater, parent, false)
@@ -145,7 +145,7 @@ class WorkoutListFragment: Fragment() {
         }
 
     private inner class ExerciseAdapter: ListAdapter<ExerciseWithSets, ExerciseHolder>
-        (AdapterUtil.DIFF_UTIL_EXERCISEWITHSETS_CALLBACK) {
+        (AdapterUtil.DIFF_UTIL_EXERCISE_WITH_SETS_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseHolder {
             val view = WorkoutExerciseItemBinding.inflate(layoutInflater, parent, false)

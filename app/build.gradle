@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
+  //  id 'kotlin-android-extensions'
     id 'kotlin-kapt'
     id "androidx.navigation.safeargs.kotlin"
 }
@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.github.wnebyte.workoutapp"
-        minSdkVersion 21
+        minSdkVersion 24 // 21
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"

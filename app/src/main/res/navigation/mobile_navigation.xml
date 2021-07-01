@@ -94,11 +94,4 @@
             app:destination="@id/nav_exercise_create" />
     </fragment>
 
-    <fragment
-        android:id="@+id/nav_session_list"
-        android:name="com.github.wnebyte.workoutapp.ui.sessionlist.SessionListFragment"
-        android:label="@string/nav_session_list"
-        tools:layout="@layout/fragment_session_list">
-    </fragment>
-
 </navigation>

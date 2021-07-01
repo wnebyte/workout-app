@@ -15,6 +15,8 @@
     <string name="exercise_timer">Timer</string>
     <string name="menu_exercise_list">Exercises</string>
     <string name="menu_workout_list">Workouts</string>
+    <string name="menu_add">Add</string>
+    <string name="menu_import">Import</string>
     <string name="nav_exercise_list">Exercises</string>
     <string name="nav_exercise_details">Exercise Details</string>
     <string name="nav_exercise_create">New Exercise</string>
@@ -23,5 +25,4 @@
     <string name="nav_workout_details">Workout Details</string>
     <string name="nav_workout_create">New Workout</string>
     <string name="nav_workout_import">Import Workout</string>
-    <string name="nav_session_list">Sessions</string>
 </resources>

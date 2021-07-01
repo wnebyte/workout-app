@@ -27,13 +27,10 @@ interface WorkoutDao {
     @Query("SELECT * FROM workout WHERE id=(:id)")
     fun get(id: UUID): LiveData<Workout?>
 
-    @Query("SELECT * FROM workout WHERE session is null")
-    fun getTemplates(): LiveData<List<Workout>>
-
-    @Query("SELECT * FROM workout WHERE session is not null AND completed = 1")
+    @Query("SELECT * FROM workout WHERE completed = 1")
     fun getCompleted(): LiveData<List<Workout>>
 
-    @Query("SELECT * FROM workout WHERE session is not null AND completed = 0")
+    @Query("SELECT * FROM workout WHERE completed = 0")
     fun getNonCompleted(): LiveData<List<Workout>>
 
     @Query("SELECT * FROM workout")

@@ -15,15 +15,11 @@ interface WorkoutWithExercisesDao {
     fun get(id: UUID): LiveData<WorkoutWithExercises?>
 
     @Transaction
-    @Query("SELECT * FROM workout WHERE session is null")
-    fun getTemplates(): LiveData<List<WorkoutWithExercises>>
-
-    @Transaction
-    @Query("SELECT * FROM workout WHERE session is not null AND completed = 1")
+    @Query("SELECT * FROM workout WHERE completed = 1")
     fun getCompleted(): LiveData<List<WorkoutWithExercises>>
 
     @Transaction
-    @Query("SELECT * FROM workout WHERE session is not null AND completed = 0")
+    @Query("SELECT * FROM workout WHERE completed = 0")
     fun getNonCompleted(): LiveData<List<WorkoutWithExercises>>
 
     @Transaction

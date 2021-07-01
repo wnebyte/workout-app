@@ -144,7 +144,7 @@ class WorkoutDetailsFragment: Fragment() {
         }
 
     private inner class ExerciseAdapter: ListAdapter<ExerciseWithSets, ExerciseHolder>
-        (AdapterUtil.DIFF_UTIL_EXERCISEWITHSETS_CALLBACK) {
+        (AdapterUtil.DIFF_UTIL_EXERCISE_WITH_SETS_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseHolder {
             val view = WorkoutExerciseItemBinding.inflate(layoutInflater, parent, false)

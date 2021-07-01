@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
@@ -126,7 +125,7 @@ class ExerciseImportFragment: Fragment() {
     }
 
     private inner class ExerciseAdapter : ListAdapter<ExerciseWithSets, ExerciseHolder>
-        (AdapterUtil.DIFF_UTIL_EXERCISEWITHSETS_CALLBACK) {
+        (AdapterUtil.DIFF_UTIL_EXERCISE_WITH_SETS_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseHolder {
             val view = ImportableExerciseBinding.inflate(layoutInflater, parent, false)

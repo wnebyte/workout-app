@@ -9,6 +9,7 @@ import java.util.*
 
 private const val TAG = "WorkoutCreateViewModel"
 private const val WORKOUT_ID_LIVE_DATA_KEY = "WorkoutIdLiveData"
+private const val DATE_KEY = "Date"
 
 class WorkoutCreateViewModel(private val state: SavedStateHandle): ViewModel() {
 
@@ -21,6 +22,8 @@ class WorkoutCreateViewModel(private val state: SavedStateHandle): ViewModel() {
                 repository.getWorkoutWithExercises(workoutId)
             })
         .distinctUntilChanged()
+
+    var date: String? = state.get<String?>(DATE_KEY)
 
     private fun loadWorkout(workoutId: UUID) {
         workoutIdLiveData.value = workoutId
