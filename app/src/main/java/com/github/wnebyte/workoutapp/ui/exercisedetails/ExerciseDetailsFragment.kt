@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.ExerciseSetItemBinding
 import com.github.wnebyte.workoutapp.databinding.FragmentExerciseDetailsBinding
+import com.github.wnebyte.workoutapp.databinding.SetBinding
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.util.AdapterUtil
@@ -59,6 +60,7 @@ class ExerciseDetailsFragment: Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        exercise = ExerciseWithSets.newInstance()
         setHasOptionsMenu(true)
     }
 
@@ -70,8 +72,11 @@ class ExerciseDetailsFragment: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.add_set -> {
-                vm.saveSet(
-                    Set.newInstance(exercise.exercise.id))
+                vm.saveExercise(exercise.apply {
+                    this.sets.add(
+                        Set.newInstance(this.exercise.id))
+                })
+                adapter.notifyDataSetChanged()
                 true
             } else -> {
                 super.onOptionsItemSelected(item)
@@ -87,10 +92,10 @@ class ExerciseDetailsFragment: Fragment() {
         _binding = FragmentExerciseDetailsBinding.inflate(inflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
-        binding.saveButton.setOnClickListener {
+        binding.buttonBar.save.setOnClickListener {
             callbacks?.onFinished()
         }
-        binding.cancelButton.setOnClickListener {
+        binding.buttonBar.cancel.setOnClickListener {
             callbacks?.onFinished()
         }
         vm.loadExercise(args.exerciseId)
@@ -109,18 +114,21 @@ class ExerciseDetailsFragment: Fragment() {
                 }
             }
         )
+        binding.name.doOnTextChanged { text, _, _, count ->
+            if ((text != null) && (0 < count)) {
+                exercise.exercise.name = text.toString()
+            }
+        }
+        binding.timer.doOnTextChanged { text, _, _, count ->
+            if ((text != null) && (0 < count)) {
+                exercise.exercise.timer = text.toString().toInt()
+            }
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        vm.saveExercise(exercise.apply {
-            binding.name.editableText?.let {
-                this.exercise.name = it.toString()
-            }
-            binding.timer.editableText?.let {
-                this.exercise.timer = it.toString().toInt()
-            }
-        })
+        vm.saveExercise(exercise)
     }
 
     override fun onDetach() {
@@ -139,12 +147,12 @@ class ExerciseDetailsFragment: Fragment() {
         adapter.submitList(exerciseWithSets.sets)
     }
 
-    private inner class SetHolder(private val binding: ExerciseSetItemBinding):
+    private inner class SetHolder(private val binding: SetBinding):
         RecyclerView.ViewHolder(binding.root) {
             private lateinit var set: Set
 
         init {
-            binding.button.setOnClickListener {
+            binding.delete.setOnClickListener {
                 vm.deleteSet(set)
             }
             binding.weights.doOnTextChanged { text, _, _, count ->
@@ -169,7 +177,7 @@ class ExerciseDetailsFragment: Fragment() {
         (AdapterUtil.DIFF_UTIL_SET_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SetHolder {
-            val view = ExerciseSetItemBinding.inflate(layoutInflater, parent, false)
+            val view = SetBinding.inflate(layoutInflater, parent, false)
             return SetHolder(view)
         }
 

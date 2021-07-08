@@ -94,4 +94,10 @@
             app:destination="@id/nav_exercise_create" />
     </fragment>
 
+    <fragment
+        android:id="@+id/nav_workout"
+        android:name="com.github.wnebyte.workoutapp.ui.workout.WorkoutFragment"
+        tools:layout="@layout/fragment_workout">
+    </fragment>
+
 </navigation>

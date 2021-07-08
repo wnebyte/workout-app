@@ -13,10 +13,14 @@
     <string name="exercise_card_recycler_view_item">Set item</string>
     <string name="exercise_name">Name</string>
     <string name="exercise_timer">Timer</string>
+    <string name="set_weights">Weights</string>
+    <string name="set_reps">Reps</string>
     <string name="menu_exercise_list">Exercises</string>
     <string name="menu_workout_list">Workouts</string>
     <string name="menu_add">Add</string>
     <string name="menu_import">Import</string>
+    <string name="menu_delete">Delete</string>
+    <string name="menu_reorder">Order</string>
     <string name="nav_exercise_list">Exercises</string>
     <string name="nav_exercise_details">Exercise Details</string>
     <string name="nav_exercise_create">New Exercise</string>
@@ -25,4 +29,13 @@
     <string name="nav_workout_details">Workout Details</string>
     <string name="nav_workout_create">New Workout</string>
     <string name="nav_workout_import">Import Workout</string>
+    <string name="nav_workout">Workout</string>
+    <string name="button_bar_cancel">Cancel</string>
+    <string name="button_bar_accept">Save</string>
+    <string name="card_button_bar_edit">Edit</string>
+    <string name="card_button_bar_delete">Delete</string>
+    <string name="workout_reminder">Reminder</string>
+    <string name="workout_date">Date</string>
+    <string name="workout_default_reminder">None</string>
+    <string name="workout_reminder_suffix"> before</string>
 </resources>

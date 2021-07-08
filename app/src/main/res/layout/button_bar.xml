@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/button_bar"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:padding="0dp"
+    android:background="#e6f0ef"
+    android:stretchColumns="*">
+
+    <TableRow tools:ignore="UselessParent">
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/button_bar_cancel"
+            android:textColor="@color/black"
+            style="?android:attr/buttonBarButtonStyle"/>
+        <Button
+            android:id="@+id/save"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/button_bar_accept"
+            android:textColor="@color/black"
+            style="?android:attr/buttonBarButtonStyle"/>
+
+    </TableRow>
+
+</TableLayout>

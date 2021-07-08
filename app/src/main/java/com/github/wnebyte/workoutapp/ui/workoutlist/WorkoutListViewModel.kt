@@ -16,7 +16,7 @@ class WorkoutListViewModel(private val state: SavedStateHandle): ViewModel() {
     private val repository = Repository.get()
 
     val workoutListLiveData: LiveData<List<WorkoutWithExercises>> =
-        repository.getNonCompletedWorkoutsWithExercises()
+        repository.getOrderedNonCompletedWorkoutsWithExercises()
             .distinctUntilChanged()
 
     fun deleteWorkout(workout: WorkoutWithExercises) {

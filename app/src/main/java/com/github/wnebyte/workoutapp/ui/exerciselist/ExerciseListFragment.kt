@@ -55,8 +55,8 @@ class ExerciseListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentExerciseListBinding.inflate(layoutInflater, container, false)
-        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        _binding = FragmentExerciseListBinding
+            .inflate(layoutInflater, container, false)
         binding.recyclerView.adapter = adapter
         binding.fab.setOnClickListener {
             callbacks?.onCreateExercise()
@@ -93,20 +93,20 @@ class ExerciseListFragment : Fragment() {
         private val adapter = SetAdapter()
 
         init {
-            binding.recyclerView.layoutManager = LinearLayoutManager(context)
-            binding.recyclerView.adapter = adapter
-            binding.edit.setOnClickListener {
+            binding.content.recyclerView.layoutManager = LinearLayoutManager(context)
+            binding.content.recyclerView.adapter = adapter
+            binding.actionBar.edit.setOnClickListener {
                 callbacks?.onEditExercise(exercise.exercise.id)
             }
-            binding.delete.setOnClickListener {
+            binding.actionBar.delete.setOnClickListener {
                 vm.deleteExercise(exercise)
             }
         }
 
         fun bind(exercise: ExerciseWithSets) {
             this.exercise = exercise
-            binding.title.text = exercise.exercise.name
-            binding.secondaryTitle.text = exercise.exercise.timer.toString()
+            binding.content.title.text = exercise.exercise.name
+            binding.content.secondaryTitle.text = exercise.exercise.timer.toString()
             adapter.submitList(exercise.sets)
         }
     }

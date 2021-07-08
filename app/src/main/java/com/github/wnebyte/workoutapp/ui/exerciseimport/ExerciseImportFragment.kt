@@ -6,9 +6,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.Checkable
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +20,7 @@ import com.github.wnebyte.workoutapp.databinding.*
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.util.AdapterUtil
+import com.google.android.material.card.MaterialCardView
 import java.lang.Exception
 import java.lang.IllegalStateException
 
@@ -57,11 +62,13 @@ class ExerciseImportFragment: Fragment() {
     ): View {
         _binding = FragmentExerciseImportBinding
             .inflate(layoutInflater, container, false)
-        binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
         binding.fab.setOnClickListener {
+            // iterate over the selected positions
             vm.selectedPositions.forEach { i ->
+                // create a copy of the selected model item using the specified workoutId
                 val exercise = ExerciseWithSets.copyOf(adapter.currentList[i], args.workoutId)
+                // save the copy
                 vm.saveExercise(exercise)
             }
             callbacks?.onFinished()
@@ -98,29 +105,39 @@ class ExerciseImportFragment: Fragment() {
     }
 
     private inner class ExerciseHolder(private val binding: ImportableExerciseBinding):
-        RecyclerView.ViewHolder(binding.root) {
+        RecyclerView.ViewHolder(binding.root), View.OnLongClickListener {
         private lateinit var exercise: ExerciseWithSets
         private val adapter = SetAdapter()
 
         init {
-            binding.recyclerView.layoutManager = LinearLayoutManager(context)
-            binding.recyclerView.adapter = adapter
-            binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
-                val position = adapterPosition
-                if (isChecked) {
-                    vm.selectedPositions.add(position)
-                } else {
-                    vm.selectedPositions.remove(position)
-                }
-            }
+            binding.content.recyclerView.layoutManager = LinearLayoutManager(context)
+            binding.content.recyclerView.adapter = adapter
+            binding.root.setOnLongClickListener(this)
         }
 
         fun bind(exercise: ExerciseWithSets) {
             this.exercise = exercise
-            binding.title.text = exercise.exercise.name
-            binding.secondaryTitle.text = exercise.exercise.timer.toString()
-            binding.checkbox.isChecked = vm.selectedPositions.contains(adapterPosition)
+            binding.content.title.text = exercise.exercise.name
+            binding.content.secondaryTitle.text = exercise.exercise.timer.toString()
+            binding.root.isChecked = vm.selectedPositions.contains(adapterPosition)
             adapter.submitList(exercise.sets)
+        }
+
+        override fun onLongClick(view: View): Boolean {
+            if (view is Checkable) {
+                val checked: Boolean = view.isChecked
+                view.isChecked = !checked
+
+                if (view.isChecked) {
+                    Log.i(TAG, "Adding: $adapterPosition")
+                    vm.selectedPositions.add(adapterPosition)
+                } else {
+                    Log.i(TAG, "Removing: $adapterPosition")
+                    vm.selectedPositions.remove(adapterPosition)
+                }
+                return true
+            }
+            return false
         }
     }
 

@@ -3,18 +3,16 @@ package com.github.wnebyte.workoutapp.ui.workoutlist
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutListBinding
-import com.github.wnebyte.workoutapp.databinding.WorkoutBinding
-import com.github.wnebyte.workoutapp.databinding.WorkoutExerciseItemBinding
+import com.github.wnebyte.workoutapp.R
+import com.github.wnebyte.workoutapp.databinding.*
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
+import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import com.github.wnebyte.workoutapp.util.AdapterUtil
 import com.google.android.material.chip.Chip
@@ -22,7 +20,7 @@ import java.util.*
 
 private const val TAG = "WorkoutListFragment"
 
-class WorkoutListFragment: Fragment() {
+class WorkoutListFragment : Fragment() {
 
     interface Callbacks {
         fun onEditWorkout(workoutId: UUID)
@@ -50,15 +48,37 @@ class WorkoutListFragment: Fragment() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_workout_list, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.reorder -> {
+                true
+            }
+            else -> {
+                return super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentWorkoutListBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentWorkoutListBinding
+            .inflate(layoutInflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
-        binding.fab.setOnClickListener{
+        binding.fab.setOnClickListener {
             callbacks?.onCreateWorkout()
         }
         return binding.root
@@ -87,30 +107,31 @@ class WorkoutListFragment: Fragment() {
         _binding = null
     }
 
-    private inner class WorkoutHolder(private val binding: WorkoutBinding):
-        RecyclerView.ViewHolder(binding.root) {
-            private lateinit var workout: WorkoutWithExercises
-            private val adapter = ExerciseAdapter()
+    private inner class WorkoutHolder(private val binding: WorkoutBinding) :
+        RecyclerView.ViewHolder(binding.root), View.OnLongClickListener {
+        private lateinit var workout: WorkoutWithExercises
 
-            init {
-                binding.recyclerView.layoutManager = LinearLayoutManager(context)
-                binding.recyclerView.adapter = adapter
-                binding.delete.setOnClickListener {
-                    vm.deleteWorkout(workout)
-                }
-                binding.edit.setOnClickListener {
-                    callbacks?.onEditWorkout(workout.workout.id)
-                }
-            }
-
-            fun bind(workout: WorkoutWithExercises) {
-                this.workout = workout
-                binding.title.text = workout.workout.name
-                adapter.submitList(workout.exercises)
+        init {
+            binding.root.setOnLongClickListener(this)
+            binding.delete.setOnClickListener {
+                vm.deleteWorkout(workout)
             }
         }
 
-    private inner class WorkoutAdapter: ListAdapter<WorkoutWithExercises, WorkoutHolder>
+        fun bind(workout: WorkoutWithExercises) {
+            this.workout = workout
+            binding.name.text = workout.workout.name
+            binding.date.text = workout.workout.date?.toString()
+        }
+
+        override fun onLongClick(view: View): Boolean {
+            callbacks?.onEditWorkout(workout.workout.id)
+            return true
+        }
+
+    }
+
+    private inner class WorkoutAdapter : ListAdapter<WorkoutWithExercises, WorkoutHolder>
         (AdapterUtil.DIFF_UTIL_WORKOUT_WITH_EXERCISES_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutHolder {
@@ -124,37 +145,4 @@ class WorkoutListFragment: Fragment() {
         }
     }
 
-    private inner class ExerciseHolder(val binding: WorkoutExerciseItemBinding):
-        RecyclerView.ViewHolder(binding.root) {
-            private lateinit var exercise: ExerciseWithSets
-
-            init {
-                binding.root.removeView(binding.deleteButton)
-            }
-
-            fun bind(exercise: ExerciseWithSets) {
-                this.exercise = exercise
-                binding.title.text = exercise.exercise.name
-                binding.timer.text = exercise.exercise.timer.toString()
-                exercise.sets.forEach { set ->
-                    val chip = Chip(context)
-                    "${set.weights} x ${set.reps}".also { chip.text = it }
-                    binding.chipGroup.addView(chip)
-                }
-            }
-        }
-
-    private inner class ExerciseAdapter: ListAdapter<ExerciseWithSets, ExerciseHolder>
-        (AdapterUtil.DIFF_UTIL_EXERCISE_WITH_SETS_CALLBACK) {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseHolder {
-            val view = WorkoutExerciseItemBinding.inflate(layoutInflater, parent, false)
-            return ExerciseHolder(view)
-        }
-
-        override fun onBindViewHolder(holder: ExerciseHolder, position: Int) {
-            val exercise = getItem(position)
-            return holder.bind(exercise)
-        }
-    }
 }

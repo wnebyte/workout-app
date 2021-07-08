@@ -7,10 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".ui.exerciselist.ExerciseListFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.github.wnebyte.workoutapp.util.AutoFitRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:columnWidth="200dp"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
@@ -19,6 +22,7 @@
         android:layout_margin="16dp"
         android:contentDescription="@string/fab"
         android:src="@drawable/ic_add_24"
+        android:backgroundTint="@color/design_default_color_primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

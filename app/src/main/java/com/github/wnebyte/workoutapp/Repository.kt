@@ -168,6 +168,9 @@ class Repository private constructor(context: Context) {
     fun getNonCompletedWorkoutsWithExercises(): LiveData<List<WorkoutWithExercises>> =
         database.workoutWithExercisesDao().getNonCompleted()
 
+    fun getOrderedNonCompletedWorkoutsWithExercises(): LiveData<List<WorkoutWithExercises>> =
+        database.workoutWithExercisesDao().getOrderedNonCompleted()
+
     fun deleteAllSets() =
         executor.execute {
             database.setDao().deleteAll()

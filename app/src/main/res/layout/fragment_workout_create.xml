@@ -1,171 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".ui.workoutcreate.WorkoutCreateFragment">
+    tools:context=".ui.workoutdetails.WorkoutDetailsFragment">
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@+id/table_menu">
+        android:layout_above="@+id/button_bar">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp">
+            android:padding="5dp">
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
-                android:hint="name"
+                android:hint="@string/exercise_name"
                 android:textColorHint="@color/black"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                tools:ignore="HardcodedText">
+                app:startIconDrawable="@drawable/ic_baseline_favorite_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
-                    />
+                    android:inputType="text"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraint_date"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/date_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="0dp"
-                android:padding="0dp">
+                android:layout_marginBottom="15dp"
+                android:hint="@string/workout_date"
+                android:textColorHint="@color/black"
+                app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                tools:ignore="HardcodedText">
 
-                <ImageView
-                    android:id="@+id/date_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="0dp"
-                    android:paddingEnd="0dp"
-                    android:src="@drawable/ic_baseline_access_time_24"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/constraint_date"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="ContentDescription" />
-
-                <Button
-                    android:id="@+id/date_start_button"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Start"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/black"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/date_icon"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintWidth_percent="0.5"
-                    tools:ignore="HardcodedText" />
-
-                <Button
-                    android:id="@+id/date_end_button"
-                    style="@style/Widget.AppCompat.Button.Borderless"
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/black"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@id/constraint_date"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="HardcodedText" />
+                    android:imeOptions="actionDone"
+                    android:maxLines="1"
+                    android:focusable="false"
+                    android:inputType="none"/>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraint_reminder"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="0dp"
-                android:padding="0dp">
+                android:layout_marginBottom="15dp"
+                android:hint="@string/workout_reminder"
+                android:textColorHint="@color/black"
+                app:startIconDrawable="@drawable/ic_baseline_notification_add_24"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu">
 
-            <ImageView
-                android:id="@+id/reminder_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="0dp"
-                android:paddingEnd="0dp"
-                android:src="@drawable/ic_baseline_access_alarm_24"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@id/constraint_reminder"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="ContentDescription" />
-
-            <Button
-                android:id="@+id/reminder_start_button"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Alarm"
-                android:textAlignment="textStart"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/reminder_icon"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.5"
-                tools:ignore="HardcodedText" />
-
-                <androidx.appcompat.widget.AppCompatSpinner
+                <AutoCompleteTextView
+                    android:id="@+id/reminder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="viewEnd"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@id/constraint_reminder"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:inputType="none"
+                    android:text="@string/workout_default_reminder"
+                    tools:ignore="LabelFor" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
+            <com.github.wnebyte.workoutapp.util.AutoFitRecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:columnWidth="200dp"
+                android:scrollbars="vertical" />
 
         </LinearLayout>
 
     </ScrollView>
 
-    <TableLayout
-        android:id="@+id/table_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:padding="0dp"
-        android:background="#e6f0ef"
-        android:stretchColumns="*">
-
-        <TableRow tools:ignore="UselessParent">
-
-            <Button
-                android:id="@+id/cancel_button"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Cancel"
-                android:textColor="@color/black"
-                tools:ignore="HardcodedText"
-                style="?android:attr/buttonBarButtonStyle"/>
-
-            <Button
-                android:id="@+id/save_button"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Save"
-                android:textColor="@color/black"
-                tools:ignore="HardcodedText"
-                style="?android:attr/buttonBarButtonStyle"/>
-        </TableRow>
-
-    </TableLayout>
+    <include
+        android:id="@+id/button_bar"
+        layout="@layout/button_bar"/>
 
 </RelativeLayout>

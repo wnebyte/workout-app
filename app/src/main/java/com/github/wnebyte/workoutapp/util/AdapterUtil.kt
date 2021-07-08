@@ -66,5 +66,19 @@ class AdapterUtil {
                 return oldItem == newItem
             }
         }
+
+        val DIFF_UTIL_LONG_CALLBACK: DiffUtil.ItemCallback<Long> =
+            object: DiffUtil.ItemCallback<Long>() {
+
+                override fun areItemsTheSame(oldItem: Long, newItem: Long): Boolean {
+                    TODO("Not yet implemented")
+                }
+
+                override fun areContentsTheSame(oldItem: Long, newItem: Long): Boolean {
+                    TODO("Not yet implemented")
+                }
+
+            }
+
     }
 }

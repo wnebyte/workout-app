@@ -1,5 +1,8 @@
 package com.github.wnebyte.workoutapp.util
 
+import android.app.DatePickerDialog
+import android.content.Context
+import android.view.View
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -30,6 +33,16 @@ class DateUtil {
                 else -> {
                     num.toString()
                 }
+            }
+
+        fun showDatePickerOnClick(context: Context, dateSetListener: DatePickerDialog.OnDateSetListener)
+        : View.OnClickListener = View.OnClickListener {
+            val calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+            val picker = DatePickerDialog(context, dateSetListener, year, month, day)
+            picker.show()
             }
     }
 }

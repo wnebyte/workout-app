@@ -10,6 +10,7 @@ import java.util.*
 private const val TAG = "WorkoutCreateViewModel"
 private const val WORKOUT_ID_LIVE_DATA_KEY = "WorkoutIdLiveData"
 private const val DATE_KEY = "Date"
+private const val REMINDER_KEY = "Reminder"
 
 class WorkoutCreateViewModel(private val state: SavedStateHandle): ViewModel() {
 
@@ -25,8 +26,13 @@ class WorkoutCreateViewModel(private val state: SavedStateHandle): ViewModel() {
 
     var date: String? = state.get<String?>(DATE_KEY)
 
+    var reminder: Long? = state.get<Long>(REMINDER_KEY)
+
     private fun loadWorkout(workoutId: UUID) {
         workoutIdLiveData.value = workoutId
+    }
+    fun saveDate() {
+        state.set(DATE_KEY, date)
     }
 
     fun loadWorkout() {

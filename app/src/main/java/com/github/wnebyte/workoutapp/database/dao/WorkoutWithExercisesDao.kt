@@ -23,6 +23,10 @@ interface WorkoutWithExercisesDao {
     fun getNonCompleted(): LiveData<List<WorkoutWithExercises>>
 
     @Transaction
+    @Query("SELECT * FROM workout WHERE completed = 0 ORDER BY date ASC")
+    fun getOrderedNonCompleted(): LiveData<List<WorkoutWithExercises>>
+
+    @Transaction
     @Query("SELECT * FROM workout")
     fun getAll(): LiveData<List<WorkoutWithExercises>>
 }
