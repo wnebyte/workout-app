@@ -15,7 +15,8 @@ data class Exercise(
     @PrimaryKey
     val id: UUID = UUID.randomUUID(),
     var name: String,
-    var timer: Int,
+    var timer: Long,
+    var millisInFuture: Long = timer,
     var completed: Boolean = false,
     @ColumnInfo(index = true)
     val workout: UUID? = null

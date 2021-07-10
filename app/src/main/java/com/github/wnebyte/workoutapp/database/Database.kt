@@ -9,7 +9,10 @@ import com.github.wnebyte.workoutapp.model.Set
 
 @Database(
     entities = [ Set::class, Exercise::class, Workout::class ],
-    version = 1
+    version = 2,
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2)
+    ]
 )
 @TypeConverters(TypeConverter::class)
 abstract class Database : RoomDatabase() {

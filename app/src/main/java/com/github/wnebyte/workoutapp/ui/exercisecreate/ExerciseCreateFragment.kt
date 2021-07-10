@@ -122,7 +122,7 @@ class ExerciseCreateFragment: Fragment() {
         }
         binding.timer.doOnTextChanged { text, _, _, count ->
             if ((text != null) && (0 < count)) {
-                exercise.exercise.timer = text.toString().toInt()
+                exercise.exercise.timer = text.toString().toLong()
             }
         }
     }
