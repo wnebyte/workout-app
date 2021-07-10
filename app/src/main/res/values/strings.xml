@@ -32,10 +32,18 @@
     <string name="nav_workout">Workout</string>
     <string name="button_bar_cancel">Cancel</string>
     <string name="button_bar_accept">Save</string>
+    <string name="button_bar_finish">Finish</string>
+    <string name="button_start">Start</string>
+    <string name="button_stop">Stop</string>
+    <string name="button_bar_back">Back</string>
     <string name="card_button_bar_edit">Edit</string>
     <string name="card_button_bar_delete">Delete</string>
     <string name="workout_reminder">Reminder</string>
     <string name="workout_date">Date</string>
     <string name="workout_default_reminder">None</string>
     <string name="workout_reminder_suffix"> before</string>
+    <string name="notification_channel_name">CountDownTimer</string>
+    <string name="notification_ticker">Ticker</string>
+    <string name="notification_content_title">Content Title</string>
+    <string name="notification_content_text">Content Text</string>
 </resources>

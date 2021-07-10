@@ -1,11 +1,12 @@
 package com.github.wnebyte.workoutapp.util
 
-import android.app.DatePickerDialog
-import android.content.Context
-import android.view.View
+import java.lang.IllegalArgumentException
+import java.lang.Math.pow
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
+import kotlin.math.pow
 
 class DateUtil {
 
@@ -35,14 +36,49 @@ class DateUtil {
                 }
             }
 
-        fun showDatePickerOnClick(context: Context, dateSetListener: DatePickerDialog.OnDateSetListener)
-        : View.OnClickListener = View.OnClickListener {
-            val calendar = Calendar.getInstance()
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
-            val picker = DatePickerDialog(context, dateSetListener, year, month, day)
-            picker.show()
+        /**
+         * Returns a string from the specified long in the format 00:00.0.
+         * @param value the long measured in seconds
+         */
+        private fun format(value: Long): String {
+            return when (value) {
+                0L -> {
+                    "00:00.0"
+                }
+                else -> {
+                    val s = value % 60
+                    val m = (value / 60) % 60
+                    val h = (value / (60 * 60)) % 24
+                    String.format("%02d:%02d.%01d", h, m, s)
+                }
             }
+        }
+
+        /**
+         * Returns a string from the specified long in the format 00:00.0.
+         * @param value the long
+         * @param unit the TimeUnit of the specified long
+         */
+        fun format(value: Long, unit: TimeUnit = TimeUnit.SECONDS): String {
+            return when (unit) {
+                TimeUnit.SECONDS -> {
+                    format(value)
+                }
+                TimeUnit.MILLISECONDS -> {
+                    format(value / 1000)
+                }
+                TimeUnit.MICROSECONDS -> {
+                    format(value / 1000000)
+                }
+                TimeUnit.NANOSECONDS -> {
+                    format(value / 1000000000)
+                }
+                else -> {
+                    throw IllegalArgumentException(
+                        "TimeUnit is not supported."
+                    )
+                }
+            }
+        }
     }
 }

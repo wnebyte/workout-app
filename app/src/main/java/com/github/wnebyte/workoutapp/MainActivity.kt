@@ -1,5 +1,8 @@
 package com.github.wnebyte.workoutapp
 
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import com.google.android.material.navigation.NavigationView
@@ -12,6 +15,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavDeepLinkBuilder
 import com.github.wnebyte.workoutapp.ui.exercisecreate.ExerciseCreateFragment
 import com.github.wnebyte.workoutapp.ui.exercisedetails.ExerciseDetailsFragment
 import com.github.wnebyte.workoutapp.ui.exerciseimport.ExerciseImportFragment
@@ -145,6 +149,17 @@ class MainActivity: AppCompatActivity(),
         val action = WorkoutListFragmentDirections
             .actionNavWorkoutListToNavWorkoutCreate()
         navController.navigate(action)
+    }
+
+    companion object {
+        fun newIntent(context: Context): Intent =
+            Intent(context, MainActivity::class.java)
+
+        fun newPendingIntent(context: Context): PendingIntent =
+            NavDeepLinkBuilder(context)
+                .setGraph(R.navigation.mobile_navigation)
+                .setDestination(R.id.nav_workout)
+                .createPendingIntent()
     }
 
     /*

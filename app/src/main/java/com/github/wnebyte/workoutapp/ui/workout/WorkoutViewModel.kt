@@ -1,27 +1,23 @@
 package com.github.wnebyte.workoutapp.ui.workout
 
-import android.os.CountDownTimer
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 
+private const val TAG = "WorkoutViewModel"
+private const val MILLIS_KEY = "millis"
+
 class WorkoutViewModel(private val state: SavedStateHandle): ViewModel() {
 
-    private var countDownTimer: CountDownTimer? = null
+    var millisInFuture: Long? = state.get<Long>(MILLIS_KEY)
 
-    private val _isRunning = MutableLiveData(false)
+    fun saveMillisInFuture(millisInFuture: Long) {
+        this.millisInFuture = millisInFuture
+        saveMillisInFuture()
+    }
 
-    private val _seconds = MutableLiveData(0)
-
-    private val _hours = MutableLiveData(0)
-
-    val isRunning: LiveData<Boolean> get() = _isRunning
-
-    val seconds: LiveData<Int> get() = _seconds
-
-    val hours: LiveData<Int> get() = _hours
-
-
-
+    fun saveMillisInFuture() {
+        Log.i(TAG, "Saving millis: $millisInFuture")
+        state[MILLIS_KEY] = millisInFuture
+    }
 }
