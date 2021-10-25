@@ -1,10 +1,6 @@
-package com.github.wnebyte.workoutapp.util
+package com.github.wnebyte.workoutapp.ui
 
-import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
@@ -79,6 +75,5 @@ class AdapterUtil {
                 }
 
             }
-
     }
 }

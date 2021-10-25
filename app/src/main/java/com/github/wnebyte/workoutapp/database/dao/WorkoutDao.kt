@@ -24,6 +24,12 @@ interface WorkoutDao {
     @Query("DELETE FROM workout")
     fun deleteAll()
 
+    @Update
+    fun update(workout: Workout)
+
+    @Update
+    fun update(vararg workout: Workout)
+
     @Query("SELECT * FROM workout WHERE id=(:id)")
     fun get(id: UUID): LiveData<Workout?>
 

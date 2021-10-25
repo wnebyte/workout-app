@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.TextView
-import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,12 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.R
-import com.github.wnebyte.workoutapp.databinding.ExerciseSetItemBinding
 import com.github.wnebyte.workoutapp.databinding.FragmentExerciseCreateBinding
 import com.github.wnebyte.workoutapp.databinding.SetBinding
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
-import com.github.wnebyte.workoutapp.util.AdapterUtil
+import com.github.wnebyte.workoutapp.ui.AdapterUtil
 
 private const val TAG = "ExerciseCreateFragment"
 
@@ -120,11 +118,6 @@ class ExerciseCreateFragment: Fragment() {
                 exercise.exercise.name = text.toString()
             }
         }
-        binding.timer.doOnTextChanged { text, _, _, count ->
-            if ((text != null) && (0 < count)) {
-                exercise.exercise.timer = text.toString().toLong()
-            }
-        }
     }
 
     override fun onStop() {
@@ -148,8 +141,6 @@ class ExerciseCreateFragment: Fragment() {
 
     private fun updateUI(exercise: ExerciseWithSets) {
         binding.name.setText(exercise.exercise.name, TextView.BufferType.EDITABLE)
-        binding.timer
-            .setText(exercise.exercise.timer.toString(), TextView.BufferType.EDITABLE)
         adapter.submitList(exercise.sets)
     }
 

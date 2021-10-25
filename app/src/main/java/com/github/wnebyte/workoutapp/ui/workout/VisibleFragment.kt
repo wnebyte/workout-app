@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 
 private const val TAG = "VisibleFragment"
 
-abstract class VisibleFragment(): Fragment() {
+abstract class VisibleFragment: Fragment() {
 
     private val onShowNotification = object: BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -19,19 +19,35 @@ abstract class VisibleFragment(): Fragment() {
         }
     }
 
+    protected fun registerReceiver() {
+        if (context != null) {
+            Log.i(TAG, "Receiver registered")
+            val filter = IntentFilter(ForegroundService.ACTION_SHOW_NOTIFICATION)
+            requireContext().registerReceiver(
+                onShowNotification,
+                filter,
+                ForegroundService.PERM_PRIVATE,
+                null
+            )
+        }
+    }
+
+    protected fun unregisterReceiver() {
+        if (context != null) {
+            Log.i(TAG, "Receiver unregistered")
+            requireContext().unregisterReceiver(onShowNotification)
+        }
+    }
+
+    /*
     override fun onStart() {
         super.onStart()
-        val filter = IntentFilter(MyForegroundService.ACTION_SHOW_NOTIFICATION)
-        requireActivity().registerReceiver(
-            onShowNotification,
-            filter,
-            MyForegroundService.PERM_PRIVATE,
-            null
-        )
+        registerReceiver()
     }
 
     override fun onStop() {
         super.onStop()
-        requireActivity().unregisterReceiver(onShowNotification)
+        unregisterReceiver()
     }
+     */
 }

@@ -1,10 +1,8 @@
 package com.github.wnebyte.workoutapp.ui.workoutcreate
 
-import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
-import android.database.DataSetObserver
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -20,13 +18,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.ExerciseBinding
 import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutCreateBinding
-import com.github.wnebyte.workoutapp.databinding.ReminderListItemBinding
 import com.github.wnebyte.workoutapp.databinding.SetItemBinding
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Reminder
 import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
-import com.github.wnebyte.workoutapp.util.AdapterUtil
+import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import com.github.wnebyte.workoutapp.util.DateUtil
 import java.lang.Exception
 import java.util.*
@@ -229,7 +226,6 @@ class WorkoutCreateFragment: Fragment() {
         fun bind(exercise: ExerciseWithSets) {
             this.exercise = exercise
             binding.content.title.text = exercise.exercise.name
-            binding.content.secondaryTitle.text = exercise.exercise.timer.toString()
             adapter.submitList(exercise.sets)
         }
     }

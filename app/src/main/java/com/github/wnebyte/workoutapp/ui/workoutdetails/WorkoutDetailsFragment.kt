@@ -22,7 +22,7 @@ import com.github.wnebyte.workoutapp.databinding.SetItemBinding
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
-import com.github.wnebyte.workoutapp.util.AdapterUtil
+import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import com.github.wnebyte.workoutapp.util.DateUtil
 import java.lang.Exception
 import java.lang.IllegalStateException
@@ -211,7 +211,6 @@ class WorkoutDetailsFragment: Fragment() {
         fun bind(exercise: ExerciseWithSets) {
             this.exercise = exercise
             binding.content.title.text = exercise.exercise.name
-            binding.content.secondaryTitle.text = exercise.exercise.timer.toString()
             adapter.submitList(exercise.sets)
         }
     }

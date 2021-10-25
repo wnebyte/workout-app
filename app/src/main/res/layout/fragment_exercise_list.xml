@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.exerciselist.ExerciseListFragment">
 
-    <com.github.wnebyte.workoutapp.util.AutoFitRecyclerView
+    <com.github.wnebyte.workoutapp.ui.AutoFitRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -1,9 +1,8 @@
-package com.github.wnebyte.workoutapp
+package com.github.wnebyte.workoutapp.database
 
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.Room
-import com.github.wnebyte.workoutapp.database.Database
 import com.github.wnebyte.workoutapp.model.*
 import com.github.wnebyte.workoutapp.model.Set
 import java.util.*
@@ -34,6 +33,21 @@ class Repository private constructor(context: Context) {
     fun saveSet(sets: List<Set>) =
         executor.execute {
             database.setDao().save(*sets.toTypedArray())
+        }
+
+    fun updateSet(set: Set) =
+        executor.execute {
+            database.setDao().update(set)
+        }
+
+    fun updateSet(vararg set: Set) =
+        executor.execute {
+            database.setDao().update(*set)
+        }
+
+    fun updateSet(sets: List<Set>) =
+        executor.execute {
+            database.setDao().update(*sets.toTypedArray())
         }
 
     fun deleteSet(set: Set) =
@@ -70,6 +84,21 @@ class Repository private constructor(context: Context) {
     fun saveExercise(exercises: List<Exercise>) =
         executor.execute {
             database.exerciseDao().save(*exercises.toTypedArray())
+        }
+
+    fun updateExercise(exercise: Exercise) =
+        executor.execute {
+          database.exerciseDao().update(exercise)
+        }
+
+    fun updateExercise(vararg exercise: Exercise) =
+        executor.execute {
+            database.exerciseDao().update(*exercise)
+        }
+
+    fun updateExercise(exercises: List<Exercise>) =
+        executor.execute {
+            database.exerciseDao().update(*exercises.toTypedArray())
         }
 
     fun deleteExercise(exercise: Exercise) =
@@ -161,6 +190,9 @@ class Repository private constructor(context: Context) {
 
     fun getWorkoutWithExercises(id: UUID): LiveData<WorkoutWithExercises?> =
         database.workoutWithExercisesDao().get(id)
+
+    fun getSuspendedWorkoutWithExercises(id: UUID): WorkoutWithExercises? =
+        database.workoutWithExercisesDao().getSuspended(id)
 
     fun getWorkoutsWithExercises(): LiveData<List<WorkoutWithExercises>> =
         database.workoutWithExercisesDao().getAll()

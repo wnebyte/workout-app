@@ -37,7 +37,51 @@ class DateUtil {
             }
 
         /**
-         * Returns a string from the specified long in the format 00:00.0.
+         * Returns a string from the specified elapsed long in the format mm:ss.
+         * @param value the long measured in seconds
+         */
+        private fun formatT(value: Long): String {
+            return when (value) {
+                0L -> {
+                    "00:00"
+                }
+                else -> {
+                    val s = value % 60
+                    val m = (value / 60) % 60
+                    String.format("%02d:%02d", m, s)
+                }
+            }
+        }
+
+        /**
+         * Returns a string from the specified elapsed long in the format mm:ss.
+         * @param value the long
+         * @param unit the TimeUnit of the specified long
+         */
+        fun formatT(value: Long, unit: TimeUnit = TimeUnit.SECONDS): String {
+            return when (unit) {
+                TimeUnit.SECONDS -> {
+                    formatT(value)
+                }
+                TimeUnit.MILLISECONDS -> {
+                    formatT(value / 1000)
+                }
+                TimeUnit.MICROSECONDS -> {
+                    formatT(value / 1000000)
+                }
+                TimeUnit.NANOSECONDS -> {
+                    formatT(value / 1000000000)
+                }
+                else -> {
+                    throw IllegalArgumentException(
+                        "TimeUnit is not supported."
+                    )
+                }
+            }
+        }
+
+        /**
+         * Returns a string from the specified long in the format hh:mm.s.
          * @param value the long measured in seconds
          */
         private fun format(value: Long): String {
@@ -55,7 +99,7 @@ class DateUtil {
         }
 
         /**
-         * Returns a string from the specified long in the format 00:00.0.
+         * Returns a string from the specified elapsed long in the format hh:mm.s.
          * @param value the long
          * @param unit the TimeUnit of the specified long
          */

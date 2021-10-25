@@ -23,7 +23,7 @@ data class Set(
     companion object {
 
         /**
-         * Returns a new instance with 'default' values.
+         * Returns a new instance with default values and the specified fk.
          * @param exercise the fk
          * @return a new set
          */

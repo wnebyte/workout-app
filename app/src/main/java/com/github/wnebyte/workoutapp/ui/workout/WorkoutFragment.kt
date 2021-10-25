@@ -1,51 +1,21 @@
 package com.github.wnebyte.workoutapp.ui.workout
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewAnimationUtils
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.fragment.app.Fragment
 import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutBinding
-import com.github.wnebyte.workoutapp.util.DateUtil.Companion.format
-import java.util.concurrent.TimeUnit
+import kotlin.math.hypot
 
-private const val TAG = "WorkoutFragment"
-
-class WorkoutFragment: VisibleFragment() {
-
-    private val vm: WorkoutViewModel by viewModels()
-
-    private val initMillisInFuture: Long = 60000L
-
-    private val binding get() = _binding!!
+class WorkoutFragment : Fragment() {
 
     private var _binding: FragmentWorkoutBinding? = null
 
-    private lateinit var receiver: BroadcastReceiver
-
-    override fun onStart() {
-        super.onStart()
-        val filter = IntentFilter(MyForegroundService.SERVICE_RESULT)
-        LocalBroadcastManager.getInstance(requireContext())
-            .registerReceiver(
-                receiver,
-                filter
-            )
-    }
-
-    override fun onStop() {
-        Log.i(TAG, "onStop()")
-        LocalBroadcastManager.getInstance(requireContext())
-            .unregisterReceiver(receiver)
-        vm.saveMillisInFuture()
-        super.onStop()
-    }
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,46 +23,46 @@ class WorkoutFragment: VisibleFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentWorkoutBinding
-            .inflate(layoutInflater, container, false)
-        if (vm.millisInFuture == null) { // brand new??
-            Log.i(TAG, "millisInFuture == null")
-            vm.millisInFuture = initMillisInFuture
-            vm.saveMillisInFuture(vm.millisInFuture!!)
-        }
-        binding.textViewProgress.text = format(vm.millisInFuture!!, TimeUnit.MILLISECONDS)
-        binding.buttonStart.setOnClickListener {
-            requireContext()
-                .startService(
-                    MyForegroundService.newIntent(
-                        requireContext(),
-                        vm.millisInFuture,
-                        1000L
-                    ))
-        }
-        binding.buttonStop.setOnClickListener {
-            requireContext()
-                .stopService(
-                    MyForegroundService.newIntent(requireContext())
-                )
-        }
+            .inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        receiver = object: BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                val millis = intent
-                    .getLongExtra(MyForegroundService.SERVICE_MESSAGE, -1L)
-                vm.saveMillisInFuture(millis)
-                binding.textViewProgress.text = format(millis, TimeUnit.MILLISECONDS)
+        binding.btn.setOnClickListener {
+            if (clockViewIsVisible()) {
+                hideClockView()
+            } else {
+                showClockView()
             }
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun clockViewIsVisible(): Boolean =
+        binding.clockView.visibility == View.VISIBLE
+
+    private fun showClockView() {
+        val cx = binding.clockView.width / 2
+        val cy = binding.clockView.height / 2
+        val finalRadius = hypot(cx.toDouble(), cy.toDouble()).toFloat()
+        val anim = ViewAnimationUtils
+            .createCircularReveal(binding.clockView, cx, cy, 0f, finalRadius)
+        binding.clockView.visibility = View.VISIBLE
+        anim.start()
     }
 
+    private fun hideClockView() {
+        val cx = binding.clockView.width / 2
+        val cy = binding.clockView.height / 2
+        val initialRadius = hypot(cx.toDouble(), cy.toDouble()).toFloat()
+        val anim = ViewAnimationUtils
+            .createCircularReveal(binding.clockView, cx, cy, initialRadius, 0f)
+        anim.addListener(object: AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                binding.clockView.visibility = View.GONE
+            }
+        })
+        anim.start()
+    }
 }

@@ -5,8 +5,6 @@
     android:layout_width="200dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:checkable="true"
-    android:clickable="true"
     android:focusable="true"
     card_view:cardBackgroundColor="@color/cardview_light_background"
     card_view:cardCornerRadius="7dp"
@@ -14,8 +12,19 @@
     card_view:cardUseCompatPadding="true"
     >
 
-    <include
-        android:id="@+id/content"
-        layout="@layout/exercise_content"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/content"
+            layout="@layout/exercise_content"/>
+
+        <include
+            android:id="@+id/action_bar"
+            layout="@layout/action_bar"/>
+
+    </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

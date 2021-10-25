@@ -15,33 +15,32 @@ data class Exercise(
     @PrimaryKey
     val id: UUID = UUID.randomUUID(),
     var name: String,
-    var timer: Long,
-    var millisInFuture: Long = timer,
     var completed: Boolean = false,
     @ColumnInfo(index = true)
     val workout: UUID? = null
 ) {
     companion object {
+
         /**
-         * Returns a new Exercise instance with generic values and the specified fk.
+         * Returns a new [Exercise] instance with default values and the specified fk.
          * @param workout the fk to associate with the new instance
-         * @return a new Exercise instance
+         * @return a new instance
          */
         fun newInstance(workout: UUID? = null): Exercise =
             Exercise(
-                name = Exercise::class.java.simpleName, timer = 0, workout = workout
+                name = Exercise::class.java.simpleName, workout = workout
             )
 
         /**
-         * Returns a copy of the specified Exercise but with a new id and with the specified
+         * Returns a copy of the specified [Exercise] but with a new id and with the specified
          * fk.
          * @param exercise the Exercise to be copied
          * @param workout the fk to associate with the copy
-         * @return a special copy of the specified Exercise
+         * @return a copy of the specified Exercise
          */
         fun copyOf(exercise: Exercise, workout: UUID): Exercise =
             Exercise(
-                name = exercise.name, timer = exercise.timer, workout = workout
+                name = exercise.name, workout = workout
             )
     }
 }

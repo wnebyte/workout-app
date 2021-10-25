@@ -3,7 +3,6 @@ package com.github.wnebyte.workoutapp.database.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.github.wnebyte.workoutapp.model.Exercise
-import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import java.util.*
 
 @Dao
@@ -20,6 +19,12 @@ interface ExerciseDao {
 
     @Delete
     fun delete(vararg exercise: Exercise)
+
+    @Update
+    fun update(exercise: Exercise)
+
+    @Update
+    fun update(vararg exercise: Exercise)
 
     @Query("DELETE FROM exercise")
     fun deleteAll()

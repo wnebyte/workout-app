@@ -1,6 +1,6 @@
 package com.github.wnebyte.workoutapp.ui.workoutcreate
 
-import com.github.wnebyte.workoutapp.Repository
+import com.github.wnebyte.workoutapp.database.Repository
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import android.util.Log
 import androidx.lifecycle.*

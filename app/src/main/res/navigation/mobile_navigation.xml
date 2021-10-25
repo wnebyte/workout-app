@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_exercise_list">
+    app:startDestination="@id/nav_exercise_list">
 
     <fragment
         android:id="@+id/nav_exercise_list"
@@ -37,7 +37,7 @@
         <argument
             android:name="workoutId"
             app:argType="java.util.UUID"
-            app:nullable="true"/>
+            app:nullable="true" />
     </fragment>
 
     <fragment
@@ -48,7 +48,7 @@
         <argument
             android:name="workoutId"
             app:argType="java.util.UUID"
-            app:nullable="false"/>
+            app:nullable="false" />
     </fragment>
 
     <fragment
@@ -62,6 +62,9 @@
         <action
             android:id="@+id/action_nav_workout_list_to_nav_workout_create"
             app:destination="@id/nav_workout_create" />
+        <action
+            android:id="@+id/action_nav_workout_list_to_nav_workout_viewpager"
+            app:destination="@id/nav_workout_viewpager" />
     </fragment>
 
     <fragment
@@ -98,6 +101,45 @@
         android:id="@+id/nav_workout"
         android:name="com.github.wnebyte.workoutapp.ui.workout.WorkoutFragment"
         tools:layout="@layout/fragment_workout">
+        <argument
+            android:name="workoutId"
+            app:argType="java.util.UUID"
+            app:nullable="false"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_workout_viewpager"
+        android:name="com.github.wnebyte.workoutapp.ui.workout.ViewPagerFragment"
+        tools:layout="@layout/fragment_workout_viewpager">
+        <argument
+            android:name="workoutId"
+            app:argType="java.util.UUID"
+            app:nullable="false" />
+        <argument
+            android:name="pendingIntent"
+            app:argType="boolean"
+            android:defaultValue="false"
+            />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_workout_session"
+        android:name="com.github.wnebyte.workoutapp.ui.workout.session.SessionFragment"
+        tools:layout="@layout/fragment_workout_session">
+        <argument
+            android:name="workoutId"
+            app:argType="java.util.UUID"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_workout_stopwatch"
+        android:name="com.github.wnebyte.workoutapp.ui.workout.stopwatch.StopwatchFragment"
+        tools:layout="@layout/fragment_workout_stopwatch">
+        <argument
+            android:name="workoutId"
+            app:argType="java.util.UUID"
+            app:nullable="false" />
     </fragment>
 
 </navigation>

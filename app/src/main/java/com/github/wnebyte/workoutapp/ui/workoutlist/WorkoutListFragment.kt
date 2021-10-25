@@ -11,11 +11,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.*
-import com.github.wnebyte.workoutapp.model.ExerciseWithSets
-import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
-import com.github.wnebyte.workoutapp.util.AdapterUtil
-import com.google.android.material.chip.Chip
+import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import java.util.*
 
 private const val TAG = "WorkoutListFragment"
@@ -25,6 +22,7 @@ class WorkoutListFragment : Fragment() {
     interface Callbacks {
         fun onEditWorkout(workoutId: UUID)
         fun onCreateWorkout()
+        fun onWorkout(workoutId: UUID)
     }
 
     private val vm: WorkoutListViewModel by viewModels()
@@ -108,10 +106,13 @@ class WorkoutListFragment : Fragment() {
     }
 
     private inner class WorkoutHolder(private val binding: WorkoutBinding) :
-        RecyclerView.ViewHolder(binding.root), View.OnLongClickListener {
+        RecyclerView.ViewHolder(binding.root),
+        View.OnClickListener,
+        View.OnLongClickListener {
         private lateinit var workout: WorkoutWithExercises
 
         init {
+            binding.root.setOnClickListener(this)
             binding.root.setOnLongClickListener(this)
             binding.delete.setOnClickListener {
                 vm.deleteWorkout(workout)
@@ -122,6 +123,10 @@ class WorkoutListFragment : Fragment() {
             this.workout = workout
             binding.name.text = workout.workout.name
             binding.date.text = workout.workout.date?.toString()
+        }
+
+        override fun onClick(view: View) {
+            callbacks?.onWorkout(workout.workout.id)
         }
 
         override fun onLongClick(view: View): Boolean {

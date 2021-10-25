@@ -6,21 +6,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import android.widget.Checkable
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.databinding.*
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
-import com.github.wnebyte.workoutapp.util.AdapterUtil
-import com.google.android.material.card.MaterialCardView
+import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import java.lang.Exception
 import java.lang.IllegalStateException
 
@@ -104,7 +100,7 @@ class ExerciseImportFragment: Fragment() {
         _binding = null
     }
 
-    private inner class ExerciseHolder(private val binding: ImportableExerciseBinding):
+    private inner class ExerciseHolder(private val binding: ExerciseBinding):
         RecyclerView.ViewHolder(binding.root), View.OnLongClickListener {
         private lateinit var exercise: ExerciseWithSets
         private val adapter = SetAdapter()
@@ -118,7 +114,6 @@ class ExerciseImportFragment: Fragment() {
         fun bind(exercise: ExerciseWithSets) {
             this.exercise = exercise
             binding.content.title.text = exercise.exercise.name
-            binding.content.secondaryTitle.text = exercise.exercise.timer.toString()
             binding.root.isChecked = vm.selectedPositions.contains(adapterPosition)
             adapter.submitList(exercise.sets)
         }
@@ -145,7 +140,7 @@ class ExerciseImportFragment: Fragment() {
         (AdapterUtil.DIFF_UTIL_EXERCISE_WITH_SETS_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseHolder {
-            val view = ImportableExerciseBinding.inflate(layoutInflater, parent, false)
+            val view = ExerciseBinding.inflate(layoutInflater, parent, false)
             return ExerciseHolder(view)
         }
 

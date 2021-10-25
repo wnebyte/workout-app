@@ -32,7 +32,7 @@
                 <action android:name="com.github.wnebyte.workoutapp.SHOW_NOTIFICATION"/>
             </intent-filter>
         </receiver>
-        <service android:name=".ui.workout.MyForegroundService"
+        <service android:name=".ui.workout.ForegroundService"
             android:exported="false"/>
     </application>
 

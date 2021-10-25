@@ -20,6 +20,12 @@ interface SetDao {
     @Delete
     fun delete(vararg set: Set)
 
+    @Update
+    fun update(set: Set)
+
+    @Update
+    fun update(vararg set: Set)
+
     @Query("DELETE FROM `set`")
     fun deleteAll()
 

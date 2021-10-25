@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.Menu
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -21,12 +22,16 @@ import com.github.wnebyte.workoutapp.ui.exercisedetails.ExerciseDetailsFragment
 import com.github.wnebyte.workoutapp.ui.exerciseimport.ExerciseImportFragment
 import com.github.wnebyte.workoutapp.ui.exerciselist.ExerciseListFragment
 import com.github.wnebyte.workoutapp.ui.exerciselist.ExerciseListFragmentDirections
+import com.github.wnebyte.workoutapp.ui.workout.ViewPagerFragment
+import com.github.wnebyte.workoutapp.ui.workout.session.SessionFragment
+import com.github.wnebyte.workoutapp.ui.workout.session.SessionFragmentArgs
 import com.github.wnebyte.workoutapp.ui.workoutcreate.WorkoutCreateFragment
 import com.github.wnebyte.workoutapp.ui.workoutcreate.WorkoutCreateFragmentDirections
 import com.github.wnebyte.workoutapp.ui.workoutdetails.WorkoutDetailsFragment
 import com.github.wnebyte.workoutapp.ui.workoutdetails.WorkoutDetailsFragmentDirections
 import com.github.wnebyte.workoutapp.ui.workoutlist.WorkoutListFragment
 import com.github.wnebyte.workoutapp.ui.workoutlist.WorkoutListFragmentDirections
+import java.io.Serializable
 import java.util.*
 
 private const val TAG = "MainActivity"
@@ -53,7 +58,7 @@ class MainActivity: AppCompatActivity(),
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.nav_exercise_list, R.id.nav_workout_list, R.id.nav_workout), drawerLayout)
+                R.id.nav_exercise_list, R.id.nav_workout_list), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
@@ -151,14 +156,25 @@ class MainActivity: AppCompatActivity(),
         navController.navigate(action)
     }
 
+    override fun onWorkout(workoutId: UUID) {
+        val navController = findNavController(R.id.nav_host_fragment)
+        val action = WorkoutListFragmentDirections
+            .actionNavWorkoutListToNavWorkoutViewpager(workoutId)
+        navController.navigate(action)
+    }
+
     companion object {
         fun newIntent(context: Context): Intent =
             Intent(context, MainActivity::class.java)
 
-        fun newPendingIntent(context: Context): PendingIntent =
+        fun newPendingWorkoutIntent(context: Context, workoutId: UUID): PendingIntent =
             NavDeepLinkBuilder(context)
                 .setGraph(R.navigation.mobile_navigation)
-                .setDestination(R.id.nav_workout)
+                .setDestination(R.id.nav_workout_viewpager)
+                .setArguments(Bundle().apply {
+                    putSerializable(ViewPagerFragment.WORKOUT_ID_KEY, workoutId as Serializable)
+                    putBoolean(ViewPagerFragment.PENDING_INTENT_KEY, true)
+                })
                 .createPendingIntent()
     }
 

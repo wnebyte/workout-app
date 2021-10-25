@@ -2,7 +2,7 @@ package com.github.wnebyte.workoutapp.ui.exerciselist
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.github.wnebyte.workoutapp.Repository
+import com.github.wnebyte.workoutapp.database.Repository
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 
 private const val TAG = "ExerciseListViewModel"

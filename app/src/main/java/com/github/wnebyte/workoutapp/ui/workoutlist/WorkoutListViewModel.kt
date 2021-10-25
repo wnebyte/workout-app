@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.distinctUntilChanged
-import com.github.wnebyte.workoutapp.Repository
+import com.github.wnebyte.workoutapp.database.Repository
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import java.util.*
 

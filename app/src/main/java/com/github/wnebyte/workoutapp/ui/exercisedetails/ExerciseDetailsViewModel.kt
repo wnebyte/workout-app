@@ -2,7 +2,7 @@ package com.github.wnebyte.workoutapp.ui.exercisedetails
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.github.wnebyte.workoutapp.Repository
+import com.github.wnebyte.workoutapp.database.Repository
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
 import java.util.*

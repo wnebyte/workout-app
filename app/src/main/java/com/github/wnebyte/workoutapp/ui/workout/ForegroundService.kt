@@ -12,17 +12,20 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.wnebyte.workoutapp.MainActivity
 import com.github.wnebyte.workoutapp.NOTIFICATION_CHANNEL_ID
 import com.github.wnebyte.workoutapp.R
+import com.github.wnebyte.workoutapp.util.Clock
+import java.util.*
 
-private const val TAG = "MyForegroundService"
+private const val TAG = "ForegroundService"
 private const val NOTIFICATION_ID = 1
-private const val MILLIS_IN_FUTURE = "MillisInFuture"
-private const val COUNT_DOWN_INTERVAL = "CountdownInterval"
 
-class MyForegroundService: Service() {
+private const val WORKOUT_ID_EXTRA = "WorkoutId"
+private const val START_VALUE_EXTRA = "StartValue"
+
+class ForegroundService : Service() {
 
     private lateinit var broadcast: LocalBroadcastManager
 
-    private lateinit var countDownTimer: CountDownTimer
+    private lateinit var clock: Clock
 
     override fun onCreate() {
         super.onCreate()
@@ -30,38 +33,32 @@ class MyForegroundService: Service() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        Log.i(TAG, "service started: $startId")
-        val millIsInFuture = intent.getLongExtra(MILLIS_IN_FUTURE, 30000L)
-        val countDownInterval = intent.getLongExtra(COUNT_DOWN_INTERVAL, 1000L)
-
-        countDownTimer = object: CountDownTimer(millIsInFuture, countDownInterval) {
+        Log.i(TAG, "onStartCommand(startId: $startId)")
+        val workoutId: UUID = intent.getSerializableExtra(WORKOUT_ID_EXTRA) as UUID
+        val startValue: Long = intent.getLongExtra(START_VALUE_EXTRA, 0L)
+        clock = object : Clock(1000, startValue) {
 
             override fun onTick(millis: Long) {
-                Log.i(TAG, "tick: ${millis/1000}")
+                Log.i(TAG, "onTick(): ${millis / 1000}")
                 sendResult(millis)
                 showBackgroundNotification(
                     NOTIFICATION_ID,
-                    getNotification("${millis/1000}")
+                    getNotification(millis.toString(), workoutId)
                 )
             }
-
-            override fun onFinish() {
-                Log.i(TAG, "finished")
-                sendResult(0L)
-                showBackgroundNotification(
-                    NOTIFICATION_ID,
-                    getNotification("0")
-                )
-                stopSelf()
-            }
-
-        }.start()
-        showBackgroundNotification(
-            NOTIFICATION_ID,
-            getNotification("${millIsInFuture/1000}")
-        )
+        }
+        clock.start()
         return START_STICKY
     }
+
+    override fun onDestroy() {
+        Log.i(TAG, "onDestroy()")
+        clock.stop()
+        stopSelf()
+        super.onDestroy()
+    }
+
+    override fun onBind(intent: Intent?): IBinder? = null
 
     private fun showBackgroundNotification(
         requestCode: Int,
@@ -74,35 +71,24 @@ class MyForegroundService: Service() {
         this.sendOrderedBroadcast(intent, PERM_PRIVATE)
     }
 
-    private fun getNotification(contentText: String): Notification {
-        val pendingIntent = MainActivity.newPendingIntent(this)
+    private fun getNotification(
+        contentText: String,
+        workoutId: UUID
+    ): Notification {
+        val pendingIntent = MainActivity.newPendingWorkoutIntent(this, workoutId)
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_baseline_access_alarm_24)
             .setContentTitle(getString(R.string.notification_content_title))
             .setContentText(contentText)
             .setContentIntent(pendingIntent)
             .setOnlyAlertOnce(true)
-          //  .setOngoing(true)
             .setAutoCancel(true)
+            .setSilent(true)
+            .setTimeoutAfter(2500)
             .build()
     }
 
-    private fun updateServiceNotification(text: String) {
-        val notification = getNotification(text)
-        val notificationManager: NotificationManager =
-            getSystemService(NotificationManager::class.java)
-        notificationManager.notify(NOTIFICATION_ID, notification)
-    }
-
-    override fun onDestroy() {
-        Log.i(TAG, "Service destroyed")
-        countDownTimer.cancel()
-        super.onDestroy()
-    }
-
-    override fun onBind(intent: Intent?): IBinder? = null
-
-    fun sendResult(value: Long?) {
+    private fun sendResult(value: Long?) {
         val intent = Intent(SERVICE_RESULT)
         value?.let {
             intent.putExtra(SERVICE_MESSAGE, value)
@@ -119,14 +105,18 @@ class MyForegroundService: Service() {
         const val REQUEST_CODE = "REQUEST_CODE"
         const val NOTIFICATION = "NOTIFICATION"
 
+        /**
+         * Creates a new intent where the [workoutId] will be used when the application is
+         * relaunched from the navigation drawer.
+         */
         fun newIntent(
             context: Context,
-            millisInFuture: Long? = null,
-            countDownInterval: Long? = null
+            workoutId: UUID?,
+            startValue: Long?
         ): Intent =
-            Intent(context, MyForegroundService::class.java).apply {
-                putExtra(MILLIS_IN_FUTURE, millisInFuture)
-                putExtra(COUNT_DOWN_INTERVAL, countDownInterval)
+            Intent(context, ForegroundService::class.java).apply {
+                putExtra(WORKOUT_ID_EXTRA, workoutId)
+                putExtra(START_VALUE_EXTRA, startValue)
             }
     }
 }

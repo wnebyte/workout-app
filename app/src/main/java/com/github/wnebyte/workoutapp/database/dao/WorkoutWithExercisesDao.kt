@@ -15,6 +15,10 @@ interface WorkoutWithExercisesDao {
     fun get(id: UUID): LiveData<WorkoutWithExercises?>
 
     @Transaction
+    @Query("SELECT * FROM workout WHERE id=(:id)")
+    fun getSuspended(id: UUID): WorkoutWithExercises?
+
+    @Transaction
     @Query("SELECT * FROM workout WHERE completed = 1")
     fun getCompleted(): LiveData<List<WorkoutWithExercises>>
 

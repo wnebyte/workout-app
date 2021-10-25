@@ -13,6 +13,7 @@ data class ExerciseWithSets(
     )
     val sets: MutableList<Set>
 ) {
+
     companion object {
         /**
          *

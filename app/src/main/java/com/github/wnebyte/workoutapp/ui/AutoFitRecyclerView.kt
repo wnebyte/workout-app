@@ -1,4 +1,4 @@
-package com.github.wnebyte.workoutapp.util
+package com.github.wnebyte.workoutapp.ui
 
 import android.content.Context
 import android.content.res.TypedArray
@@ -8,10 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-class AutoFitRecyclerView(context: Context, attrs: AttributeSet? = null):
-    RecyclerView(context, attrs) {
+class AutoFitRecyclerView(context: Context, attrs: AttributeSet? = null)
+    : RecyclerView(context, attrs) {
 
     private var manager: GridLayoutManager
+
     private var columnWidth: Int = -1
 
     init {

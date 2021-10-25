@@ -13,11 +13,4 @@
             android:title="@string/menu_workout_list"/>
     </group>
 
-    <group android:checkableBehavior="single"
-        android:id="@+id/group_sub">
-        <item
-            android:id="@+id/nav_workout"
-            android:title="@string/nav_workout"/>
-    </group>
-
 </menu>
