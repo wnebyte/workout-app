@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="5dp"
-    tools:context=".ui.workoutdetails.WorkoutDetailsFragment"
+    tools:context=".ui.workoutdetailsfinal.WorkoutDetailsFinalFragment"
     >
 
     <com.google.android.material.textfield.TextInputLayout
@@ -23,7 +23,9 @@
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"/>
+            android:inputType="none"
+            android:enabled="false"
+            />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -36,7 +38,8 @@
         android:textColorHint="@color/black"
         app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-        tools:ignore="HardcodedText">
+        tools:ignore="HardcodedText"
+        >
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/date"
@@ -45,7 +48,9 @@
             android:imeOptions="actionDone"
             android:maxLines="1"
             android:focusable="false"
-            android:inputType="none"/>
+            android:inputType="none"
+            android:enabled="false"
+            />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -57,7 +62,8 @@
         android:hint="@string/workout_reminder"
         android:textColorHint="@color/black"
         app:startIconDrawable="@drawable/ic_baseline_notification_add_24"
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu">
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+        >
 
         <AutoCompleteTextView
             android:id="@+id/dropdown"
@@ -66,6 +72,7 @@
             android:inputType="none"
             android:focusable="false"
             tools:ignore="LabelFor"
+            android:enabled="false"
             />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -76,6 +83,7 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:columnWidth="200dp"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        />
 
 </LinearLayout>

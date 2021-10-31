@@ -9,4 +9,11 @@
     <color name="white">#FFFFFFFF</color>
     <color name="colorPrimary">@color/purple_500</color>
     <color name="colorAccent">@color/teal_200</color>
+
+    <color name="primary">#212121</color>
+    <color name="primaryLight">#484848</color>
+    <color name="primaryDark">#000000</color>
+    <color name="secondary">#ffab40</color>
+    <color name="secondaryLight">#ffdd71</color>
+    <color name="secondaryDark">#c77c02</color>
 </resources>

@@ -25,14 +25,15 @@ class WorkoutCreateViewModel(private val state: SavedStateHandle): ViewModel() {
         .distinctUntilChanged()
 
     var date: String? = state.get<String?>(DATE_KEY)
+        set(value) {
+            state.set(DATE_KEY, value)
+            field = value
+        }
 
     var reminder: Long? = state.get<Long>(REMINDER_KEY)
 
     private fun loadWorkout(workoutId: UUID) {
         workoutIdLiveData.value = workoutId
-    }
-    fun saveDate() {
-        state.set(DATE_KEY, date)
     }
 
     fun loadWorkout() {
@@ -66,5 +67,6 @@ class WorkoutCreateViewModel(private val state: SavedStateHandle): ViewModel() {
     fun deleteExercise(exercise: ExerciseWithSets) {
         Log.i(TAG, "Deleting exercise: ${exercise.exercise.id}")
         repository.deleteExercise(exercise.exercise)
+        repository.deleteSet(exercise.sets)
     }
 }

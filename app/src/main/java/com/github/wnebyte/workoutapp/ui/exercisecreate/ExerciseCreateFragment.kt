@@ -149,7 +149,7 @@ class ExerciseCreateFragment: Fragment() {
         private lateinit var set: Set
 
         init {
-            binding.delete.setOnClickListener {
+            binding.repsLayout.setEndIconOnClickListener {
                 vm.deleteSet(set)
             }
             binding.weights.doOnTextChanged { text, _, _, count ->

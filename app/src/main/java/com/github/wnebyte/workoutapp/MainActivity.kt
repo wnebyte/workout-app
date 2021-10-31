@@ -28,6 +28,7 @@ import com.github.wnebyte.workoutapp.ui.workout.session.SessionFragmentArgs
 import com.github.wnebyte.workoutapp.ui.workoutcreate.WorkoutCreateFragment
 import com.github.wnebyte.workoutapp.ui.workoutcreate.WorkoutCreateFragmentDirections
 import com.github.wnebyte.workoutapp.ui.workoutdetails.WorkoutDetailsFragment
+import com.github.wnebyte.workoutapp.ui.workoutdetails.WorkoutDetailsFragmentArgs
 import com.github.wnebyte.workoutapp.ui.workoutdetails.WorkoutDetailsFragmentDirections
 import com.github.wnebyte.workoutapp.ui.workoutlist.WorkoutListFragment
 import com.github.wnebyte.workoutapp.ui.workoutlist.WorkoutListFragmentDirections
@@ -82,10 +83,27 @@ class MainActivity: AppCompatActivity(),
     /*
     * ExerciseListFragment
     */
-    override fun onEditExercise(exerciseId: UUID) {
+    override fun onEditExercise(exerciseId: UUID, currentFragment: Class<out Fragment>) {
         val navController = findNavController(R.id.nav_host_fragment)
-        val action = ExerciseListFragmentDirections
-            .actionNavExerciseListToNavExerciseDetails(exerciseId)
+        val action = when (currentFragment) {
+            ExerciseListFragment::class.java -> {
+                ExerciseListFragmentDirections
+                    .actionNavExerciseListToNavExerciseDetails(exerciseId)
+            }
+            WorkoutDetailsFragment::class.java -> {
+                WorkoutDetailsFragmentDirections
+                    .actionNavWorkoutDetailsToNavExerciseDetails(exerciseId)
+            }
+            WorkoutCreateFragment::class.java -> {
+                WorkoutCreateFragmentDirections
+                    .actionNavWorkoutCreateToNavExerciseDetails(exerciseId)
+            }
+            else -> {
+                throw IllegalStateException(
+                    "The specified currentFragment is not supported."
+                )
+            }
+        }
         navController.navigate(action)
     }
 
@@ -146,6 +164,13 @@ class MainActivity: AppCompatActivity(),
         val navController = findNavController(R.id.nav_host_fragment)
         val action = WorkoutListFragmentDirections
             .actionNavWorkoutListToNavWorkoutDetails(workoutId)
+        navController.navigate(action)
+    }
+
+    override fun onEditCompletedWorkout(workoutId: UUID) {
+        val navController = findNavController(R.id.nav_host_fragment)
+        val action = WorkoutListFragmentDirections
+            .actionNavWorkoutListToNavWorkoutDetailsFinal(workoutId)
         navController.navigate(action)
     }
 

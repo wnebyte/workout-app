@@ -1,53 +1,47 @@
-package com.github.wnebyte.workoutapp.ui.exerciselist
+package com.github.wnebyte.workoutapp.ui.workoutdetailsfinal
 
-import android.content.Context
+import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.github.wnebyte.workoutapp.databinding.ActionableExerciseCardBinding
-import com.github.wnebyte.workoutapp.databinding.FragmentExerciseListBinding
+import com.github.wnebyte.workoutapp.databinding.ExerciseCardBinding
+import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutDetailsFinalBinding
 import com.github.wnebyte.workoutapp.databinding.SetItemBinding
+import com.github.wnebyte.workoutapp.ext.Extensions.Companion.format
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
+import com.github.wnebyte.workoutapp.model.Reminder
 import com.github.wnebyte.workoutapp.model.Set
+import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
-import java.lang.Exception
-import java.util.*
 
-private const val TAG = "ExerciseListFragment"
+private const val TAG = "WorkoutDetailsFinalFragment"
 
-class ExerciseListFragment : Fragment() {
+class WorkoutDetailsFinalFragment : Fragment() {
 
-    interface Callbacks {
-        fun onEditExercise(exerciseId: UUID, currentFragment: Class<out Fragment>)
-        fun onCreateExercise()
-    }
+    private val vm: WorkoutDetailsFinalViewModel by viewModels()
 
-    private val vm: ExerciseListViewModel by viewModels()
+    private val args: WorkoutDetailsFinalFragmentArgs by navArgs()
+
+    private var _binding: FragmentWorkoutDetailsFinalBinding? = null
 
     private val binding get() = _binding!!
 
     private val adapter = ExerciseAdapter()
 
-    private var callbacks: Callbacks? = null
+    private lateinit var workout: WorkoutWithExercises
 
-    private var _binding: FragmentExerciseListBinding? = null
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        try {
-            callbacks = context as Callbacks
-        } catch (ex: Exception) {
-            throw IllegalStateException(
-                "Hosting activity needs to implement callbacks interface"
-            )
-        }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        workout = WorkoutWithExercises.newInstance() // will be re-initialized
     }
 
     override fun onCreateView(
@@ -55,31 +49,25 @@ class ExerciseListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentExerciseListBinding
-            .inflate(layoutInflater, container, false)
+        _binding = FragmentWorkoutDetailsFinalBinding.
+                inflate(layoutInflater, container, false)
         binding.recyclerView.adapter = adapter
-        binding.fab.setOnClickListener {
-            callbacks?.onCreateExercise()
-        }
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vm.exerciseListLiveData.observe(
+        vm.workoutListLiveData.observe(
             viewLifecycleOwner,
-            { exercises ->
-                exercises?.let {
-                    Log.i(TAG, "Got exercises: ${exercises.size}")
-                    adapter.submitList(exercises)
+            { workout ->
+                workout?.let {
+                    Log.i(TAG, "Got workout: ${workout.workout.id}")
+                    this.workout = workout
+                    updateUI()
                 }
             }
         )
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        callbacks = null
+        vm.loadWorkout(args.workoutId)
     }
 
     override fun onDestroyView() {
@@ -87,21 +75,29 @@ class ExerciseListFragment : Fragment() {
         _binding = null
     }
 
-    private inner class ExerciseHolder(private val binding: ActionableExerciseCardBinding):
-        RecyclerView.ViewHolder(binding.root) {
+    private fun updateUI() {
+        binding.name
+            .setText(workout.workout.name, TextView.BufferType.NORMAL)
+        workout.workout.date?.let { date ->
+            binding.date
+                .setText(date.format(), TextView.BufferType.NORMAL)
+        }
+        workout.workout.reminder?.let {
+            binding.dropdown
+                .setText(Reminder(it).text,false)
+        }
+        // bind exercises to ui
+        adapter.submitList(workout.exercises)
+    }
+
+    private inner class ExerciseHolder(private val binding: ExerciseCardBinding)
+        : RecyclerView.ViewHolder(binding.root) {
         private lateinit var exercise: ExerciseWithSets
         private val adapter = SetAdapter()
 
         init {
             binding.body.recyclerView.layoutManager = LinearLayoutManager(context)
             binding.body.recyclerView.adapter = adapter
-            binding.actionBar.edit.setOnClickListener {
-                callbacks
-                    ?.onEditExercise(exercise.exercise.id, this@ExerciseListFragment::class.java)
-            }
-            binding.actionBar.delete.setOnClickListener {
-                vm.deleteExercise(exercise)
-            }
         }
 
         fun bind(exercise: ExerciseWithSets) {
@@ -115,7 +111,7 @@ class ExerciseListFragment : Fragment() {
         (AdapterUtil.DIFF_UTIL_EXERCISE_WITH_SETS_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseHolder {
-            val view = ActionableExerciseCardBinding
+            val view = ExerciseCardBinding
                 .inflate(layoutInflater, parent, false)
             return ExerciseHolder(view)
         }
@@ -133,6 +129,9 @@ class ExerciseListFragment : Fragment() {
         fun bind(set: Set) {
             this.set = set
             "${set.weights} x ${set.reps}".also { binding.tv.text = it }
+            if (set.completed) {
+                binding.tv.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            }
         }
     }
 

@@ -5,7 +5,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    tools:context=".ui.workoutdetails.WorkoutDetailsFragment">
+    tools:context=".ui.workoutcreate.WorkoutCreateFragment">
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -67,12 +67,14 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu">
 
                 <AutoCompleteTextView
-                    android:id="@+id/reminder"
+                    android:id="@+id/dropdown"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
                     android:text="@string/workout_default_reminder"
-                    tools:ignore="LabelFor" />
+                    android:focusable="false"
+                    tools:ignore="LabelFor"
+                    />
 
             </com.google.android.material.textfield.TextInputLayout>
 

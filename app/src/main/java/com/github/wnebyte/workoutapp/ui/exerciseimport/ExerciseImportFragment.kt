@@ -100,20 +100,20 @@ class ExerciseImportFragment: Fragment() {
         _binding = null
     }
 
-    private inner class ExerciseHolder(private val binding: ExerciseBinding):
-        RecyclerView.ViewHolder(binding.root), View.OnLongClickListener {
+    private inner class ExerciseHolder(private val binding: ExerciseCardBinding)
+        : RecyclerView.ViewHolder(binding.root), View.OnLongClickListener {
         private lateinit var exercise: ExerciseWithSets
         private val adapter = SetAdapter()
 
         init {
-            binding.content.recyclerView.layoutManager = LinearLayoutManager(context)
-            binding.content.recyclerView.adapter = adapter
             binding.root.setOnLongClickListener(this)
+            binding.body.recyclerView.layoutManager = LinearLayoutManager(context)
+            binding.body.recyclerView.adapter = adapter
         }
 
         fun bind(exercise: ExerciseWithSets) {
             this.exercise = exercise
-            binding.content.title.text = exercise.exercise.name
+            binding.body.title.text = exercise.exercise.name
             binding.root.isChecked = vm.selectedPositions.contains(adapterPosition)
             adapter.submitList(exercise.sets)
         }
@@ -140,7 +140,8 @@ class ExerciseImportFragment: Fragment() {
         (AdapterUtil.DIFF_UTIL_EXERCISE_WITH_SETS_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseHolder {
-            val view = ExerciseBinding.inflate(layoutInflater, parent, false)
+            val view = ExerciseCardBinding
+                .inflate(layoutInflater, parent, false)
             return ExerciseHolder(view)
         }
 
@@ -156,7 +157,7 @@ class ExerciseImportFragment: Fragment() {
 
         fun bind(set: Set) {
             this.set = set
-            "${set.weights} x ${set.reps}".also { binding.textView.text = it }
+            "${set.weights} x ${set.reps}".also { binding.tv.text = it }
         }
     }
 

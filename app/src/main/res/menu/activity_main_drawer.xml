@@ -3,14 +3,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single"
-        android:id="@+id/group_main">
-        <item
-            android:id="@+id/nav_exercise_list"
-            android:title="@string/menu_exercise_list"/>
-        <item
-            android:id="@+id/nav_workout_list"
-            android:title="@string/menu_workout_list"/>
+    <group android:checkableBehavior="single">
+        <item android:title="Workouts"
+            tools:ignore="HardcodedText">
+            <menu>
+                <group android:checkableBehavior="single">
+                    <item
+                        android:id="@+id/nav_workout_list"
+                        android:title="Workouts"
+                        android:icon="@drawable/ic_baseline_directions_run_24"
+                        />
+                    <item
+                        android:id="@+id/nav_workout_create"
+                        android:title="New Workout"
+                        android:icon="@drawable/ic_add_24"
+                        />
+                </group>
+            </menu>
+        </item>
+        <item android:title="Exercises"
+            tools:ignore="HardcodedText">
+            <menu>
+                <group android:checkableBehavior="single"
+                    android:id="@+id/group_exercise"
+                    >
+                    <item
+                        android:id="@+id/nav_exercise_list"
+                        android:title="Exercises"
+                        android:icon="@drawable/ic_baseline_favorite_24"
+                        />
+                    <item
+                        android:id="@+id/nav_exercise_create"
+                        android:title="New Exercise"
+                        android:icon="@drawable/ic_add_24"
+                        />
+                </group>
+            </menu>
+        </item>
     </group>
-
 </menu>

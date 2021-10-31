@@ -6,16 +6,17 @@
     android:layout_height="wrap_content"
     >
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/continue_button"
-        style="@style/Widget.MaterialComponents.TimePicker.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/button_continue"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/StopwatchButton.Continue"
+        />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/reset_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,7 +24,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        style="@style/Widget.MaterialComponents.TimePicker.Button"
+        style="@style/StopwatchButton.Reset"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

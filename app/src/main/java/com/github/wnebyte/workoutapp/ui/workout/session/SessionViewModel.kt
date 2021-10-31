@@ -2,8 +2,8 @@ package com.github.wnebyte.workoutapp.ui.workout.session
 
 import androidx.lifecycle.*
 import com.github.wnebyte.workoutapp.database.Repository
+import com.github.wnebyte.workoutapp.model.*
 import com.github.wnebyte.workoutapp.model.Set
-import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import java.util.*
 
 private const val TAG = "WorkoutViewModel"
@@ -25,8 +25,11 @@ class SessionViewModel(private val state: SavedStateHandle) : ViewModel() {
         workoutIdLiveData.value = workoutId
     }
 
-    fun saveSet(set: Set) {
-        repository.saveSet(set)
+    fun saveWorkout(workout: WorkoutWithExercises) {
+        repository.saveWorkout(workout.workout)
+        workout.exercises.forEach { exercise ->
+            repository.saveExercise(exercise.exercise)
+            repository.saveSet(exercise.sets)
+        }
     }
-
 }

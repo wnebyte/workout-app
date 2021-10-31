@@ -1,7 +1,9 @@
 package com.github.wnebyte.workoutapp.ui.workout.session
 
+import android.animation.Animator
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
+import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,14 +18,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.R
-import com.github.wnebyte.workoutapp.databinding.ExerciseBinding
-import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutSessionBinding
-import com.github.wnebyte.workoutapp.databinding.SetItemCheckableBinding
-import com.github.wnebyte.workoutapp.ext.DateExt.Companion.format
+import com.github.wnebyte.workoutapp.databinding.*
+import com.github.wnebyte.workoutapp.ext.Extensions.Companion.format
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
+import kotlinx.coroutines.delay
+import java.util.function.Consumer
 
 private const val TAG = "SessionFragment"
 
@@ -72,6 +74,11 @@ class SessionFragment: Fragment() {
         vm.loadWorkout(args.workoutId)
     }
 
+    override fun onStop() {
+        super.onStop()
+        vm.saveWorkout(workout)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -88,34 +95,54 @@ class SessionFragment: Fragment() {
         adapter.submitList(workout.exercises)
     }
 
-    private inner class ExerciseHolder(private val binding: ExerciseBinding)
-        : RecyclerView.ViewHolder(binding.root), View.OnClickListener
-    {
+    private inner class ExerciseHolder(private val binding: ExerciseCardBinding)
+        : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
         private lateinit var exercise: ExerciseWithSets
         private val adapter = SetAdapter()
 
         init {
-            binding.content.recyclerView.layoutManager = LinearLayoutManager(context)
-            binding.content.recyclerView.adapter = adapter
-            binding.root.setOnClickListener(this)
+            binding.body.recyclerView.layoutManager = LinearLayoutManager(context)
+            binding.body.recyclerView.adapter = adapter
+            binding.body.root.setOnClickListener(this)
         }
 
         fun bind(exercise: ExerciseWithSets) {
             this.exercise = exercise
-            binding.content.title.text = exercise.exercise.name
+            binding.body.title.text = exercise.exercise.name
             adapter.submitList(exercise.sets)
         }
 
         override fun onClick(v: View) {
-            val set = exercise.sets.find { s -> !s.completed }
-            if (set != null) {
+            val set: Set? = exercise.sets.find { s -> !s.completed }
+            set?.let {
                 set.completed = true
                 adapter.notifyDataSetChanged()
                 if (exercise.sets.all { s -> s.completed }) {
                     exercise.exercise.completed = true
-                    flipCard(binding.contentBack.root, binding.content.root)
+                    if (workout.exercises.all { e -> e.exercise.completed }) {
+                        workout.workout.completed = true
+                    }
+                    flip(binding.body.root) // saves the model state at the end of its animation
                 }
             }
+        }
+
+        private fun flip(v: View) {
+            val scale = requireContext().resources.displayMetrics.density
+            val cameraDistance = 8000 * scale
+            v.cameraDistance = cameraDistance
+            val flipOutAnimatorSet = AnimatorInflater.loadAnimator(
+                context,
+                R.animator.flip_out
+            ) as AnimatorSet
+            flipOutAnimatorSet.setTarget(v)
+            val flipInAnimatorSet = AnimatorInflater.loadAnimator(
+                context,
+                R.animator.flip_in
+            ) as AnimatorSet
+            flipInAnimatorSet.setTarget(v)
+            flipOutAnimatorSet.start()
+            flipInAnimatorSet.start()
         }
 
         private fun flipCard(visibleView: View, invisibleView: View) {
@@ -150,7 +177,8 @@ class SessionFragment: Fragment() {
         (AdapterUtil.DIFF_UTIL_EXERCISE_WITH_SETS_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseHolder {
-            val view = ExerciseBinding.inflate(layoutInflater, parent, false)
+            val view = ExerciseCardBinding
+                .inflate(layoutInflater, parent, false)
             return ExerciseHolder(view)
         }
 
@@ -160,24 +188,16 @@ class SessionFragment: Fragment() {
         }
     }
 
-    private inner class SetHolder(private val binding: SetItemCheckableBinding)
+    private inner class SetHolder(private val binding: SetItemBinding)
         : RecyclerView.ViewHolder(binding.root) {
             private lateinit var set: Set
 
             fun bind(set: Set) {
                 this.set = set
-                "${set.weights} x ${set.reps}".also { binding.ctv.text = it }
-                val checked = set.completed
-                binding.ctv.isChecked = checked
-                binding.ctv.setCheckMarkDrawable(
-                    if (checked) {
-                        android.R.drawable.checkbox_on_background
-                    } else {
-                      //  android.R.drawable.checkbox_off_background
-                        android.R.drawable.screen_background_light
-                    }
-                )
-
+                "${set.weights} x ${set.reps}".also { binding.tv.text = it }
+                if (set.completed) {
+                    binding.tv.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                }
             }
         }
 
@@ -185,7 +205,7 @@ class SessionFragment: Fragment() {
         (AdapterUtil.DIFF_UTIL_SET_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SetHolder {
-            val view = SetItemCheckableBinding.inflate(layoutInflater, parent, false)
+            val view = SetItemBinding.inflate(layoutInflater, parent, false)
             return SetHolder(view)
         }
 

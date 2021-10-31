@@ -60,6 +60,9 @@
             android:id="@+id/action_nav_workout_list_to_nav_workout_details"
             app:destination="@id/nav_workout_details" />
         <action
+            android:id="@+id/action_nav_workout_list_to_nav_workout_details_final"
+            app:destination="@+id/nav_workout_details_final"/>
+        <action
             android:id="@+id/action_nav_workout_list_to_nav_workout_create"
             app:destination="@id/nav_workout_create" />
         <action
@@ -82,6 +85,21 @@
         <action
             android:id="@+id/action_nav_workout_details_to_nav_exercise_create"
             app:destination="@id/nav_exercise_create" />
+        <action
+            android:id="@+id/action_nav_workout_details_to_nav_exercise_details"
+            app:destination="@+id/nav_exercise_details"
+            />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_workout_details_final"
+        android:name="com.github.wnebyte.workoutapp.ui.workoutdetailsfinal.WorkoutDetailsFinalFragment"
+        android:label="@string/nav_workout_details"
+        tools:layout="@layout/fragment_workout_details_final">
+        <argument
+            android:name="workoutId"
+            app:argType="java.util.UUID"
+            app:nullable="false" />
     </fragment>
 
     <fragment
@@ -95,21 +113,16 @@
         <action
             android:id="@+id/action_nav_workout_create_to_nav_exercise_create"
             app:destination="@id/nav_exercise_create" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/nav_workout"
-        android:name="com.github.wnebyte.workoutapp.ui.workout.WorkoutFragment"
-        tools:layout="@layout/fragment_workout">
-        <argument
-            android:name="workoutId"
-            app:argType="java.util.UUID"
-            app:nullable="false"/>
+        <action
+            android:id="@+id/action_nav_workout_create_to_nav_exercise_details"
+            app:destination="@+id/nav_exercise_details"
+            />
     </fragment>
 
     <fragment
         android:id="@+id/nav_workout_viewpager"
         android:name="com.github.wnebyte.workoutapp.ui.workout.ViewPagerFragment"
+        android:label="@string/nav_workout_viewpager"
         tools:layout="@layout/fragment_workout_viewpager">
         <argument
             android:name="workoutId"
@@ -125,6 +138,7 @@
     <fragment
         android:id="@+id/nav_workout_session"
         android:name="com.github.wnebyte.workoutapp.ui.workout.session.SessionFragment"
+        android:label="@string/nav_workout_session"
         tools:layout="@layout/fragment_workout_session">
         <argument
             android:name="workoutId"
@@ -135,6 +149,7 @@
     <fragment
         android:id="@+id/nav_workout_stopwatch"
         android:name="com.github.wnebyte.workoutapp.ui.workout.stopwatch.StopwatchFragment"
+        android:label="@string/nav_workout_stopwatch"
         tools:layout="@layout/fragment_workout_stopwatch">
         <argument
             android:name="workoutId"

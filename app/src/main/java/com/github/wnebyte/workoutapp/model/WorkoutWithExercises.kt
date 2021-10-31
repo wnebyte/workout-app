@@ -13,6 +13,7 @@ data class WorkoutWithExercises(
     )
     val exercises: MutableList<ExerciseWithSets>
 ) {
+
     companion object {
         /**
          * Creates a new object with a default workout object and and empty list of exercises.

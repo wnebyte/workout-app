@@ -1,7 +1,5 @@
 package com.github.wnebyte.workoutapp.model
 
-import java.util.concurrent.TimeUnit
-
 data class Reminder(
     val value: Long
 )
@@ -37,13 +35,6 @@ data class Reminder(
                     String.format("%02d:%02d:%02d %s", h, m, s, "before")
                 }
             }
-        }
-
-        private fun test(value: Long): String {
-            return String.format("%02d:%02d:%02d",
-                TimeUnit.MILLISECONDS.toHours(value),
-                TimeUnit.MILLISECONDS.toMinutes(value) % TimeUnit.HOURS.toMinutes(1),
-                TimeUnit.MILLISECONDS.toSeconds(value) % TimeUnit.MINUTES.toSeconds(1))
         }
     }
 }

@@ -87,12 +87,6 @@ class ExerciseDetailsFragment: Fragment() {
         _binding = FragmentExerciseDetailsBinding.inflate(inflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
-        binding.buttonBar.save.setOnClickListener {
-            callbacks?.onFinished()
-        }
-        binding.buttonBar.cancel.setOnClickListener {
-            callbacks?.onFinished()
-        }
         vm.loadExercise(args.exerciseId)
         return binding.root
     }
@@ -105,7 +99,7 @@ class ExerciseDetailsFragment: Fragment() {
                 exercise?.let { it ->
                     Log.i(TAG, "Got exercise: ${it.exercise.id}")
                     this.exercise = it
-                    updateUI(it)
+                    updateUI()
                 }
             }
         )
@@ -131,9 +125,10 @@ class ExerciseDetailsFragment: Fragment() {
         _binding = null
     }
 
-    private fun updateUI(exerciseWithSets: ExerciseWithSets) {
-        binding.name.setText(exerciseWithSets.exercise.name, TextView.BufferType.EDITABLE)
-        adapter.submitList(exerciseWithSets.sets)
+    private fun updateUI() {
+        binding.name
+            .setText(exercise.exercise.name, TextView.BufferType.EDITABLE)
+        adapter.submitList(exercise.sets)
     }
 
     private inner class SetHolder(private val binding: SetBinding):
@@ -141,8 +136,9 @@ class ExerciseDetailsFragment: Fragment() {
             private lateinit var set: Set
 
         init {
-            binding.delete.setOnClickListener {
+            binding.repsLayout.setEndIconOnClickListener {
                 vm.deleteSet(set)
+                // Todo update exercise (and incorporate temp changes) instead of deleting set
             }
             binding.weights.doOnTextChanged { text, _, _, count ->
                 if ((text != null) && (0 < count)) {
@@ -157,8 +153,10 @@ class ExerciseDetailsFragment: Fragment() {
         }
             fun bind(set: Set) {
                 this.set = set
-                binding.weights.setText(set.weights.toString(), TextView.BufferType.EDITABLE)
-                binding.reps.setText(set.reps.toString(), TextView.BufferType.EDITABLE)
+                binding.weights
+                    .setText(set.weights.toString(), TextView.BufferType.EDITABLE)
+                binding.reps
+                    .setText(set.reps.toString(), TextView.BufferType.EDITABLE)
             }
         }
 

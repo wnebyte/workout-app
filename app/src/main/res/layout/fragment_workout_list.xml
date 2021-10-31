@@ -21,9 +21,6 @@
         android:layout_margin="16dp"
         android:contentDescription="@string/fab"
         android:src="@drawable/ic_add_24"
-        android:tint="@color/white"
-        android:foregroundTint="@color/white"
-        android:backgroundTint="@color/design_default_color_primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 

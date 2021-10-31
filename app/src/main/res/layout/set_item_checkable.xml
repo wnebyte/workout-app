@@ -6,4 +6,5 @@
     android:checked="false"
     android:text="@string/exercise_card_recycler_view_item"
     android:textAppearance="?attr/textAppearanceBody2"
-    android:textColor="?android:attr/textColorSecondary" />
+    android:textColor="?android:attr/textColorSecondary"
+    />

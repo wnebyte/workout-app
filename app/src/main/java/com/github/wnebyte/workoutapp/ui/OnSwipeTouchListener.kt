@@ -11,7 +11,7 @@ import kotlin.math.abs
 
 const val DEBUG_TAG = "Gestures"
 
-open class OnSwipeTouchListener(context: Context) : View.OnTouchListener {
+abstract class OnSwipeTouchListener(context: Context) : View.OnTouchListener {
 
     private val gestureDetector: GestureDetector
 
@@ -39,6 +39,10 @@ open class OnSwipeTouchListener(context: Context) : View.OnTouchListener {
 
     }
 
+    open fun onSingleTap(e: MotionEvent?) {
+
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View, event: MotionEvent): Boolean {
         return gestureDetector.onTouchEvent(event)
@@ -57,6 +61,7 @@ open class OnSwipeTouchListener(context: Context) : View.OnTouchListener {
         }
 
         override fun onSingleTapUp(e: MotionEvent?): Boolean {
+            this@OnSwipeTouchListener.onSingleTap(e)
             return super.onSingleTapUp(e)
         }
 

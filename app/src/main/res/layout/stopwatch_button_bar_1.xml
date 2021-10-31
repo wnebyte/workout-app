@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/stop_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,6 +14,6 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         android:text="@string/button_stop"
-        style="@style/Widget.MaterialComponents.TimePicker.Button"
+        style="@style/StopwatchButton.Stop"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

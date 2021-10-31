@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout"
@@ -11,6 +12,7 @@
 
     <TextView
         android:id="@+id/name"
+        style="?attr/textAppearanceBody1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="0dp"
@@ -18,11 +20,11 @@
         android:text="Title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="HardcodedText"
-        style="?attr/textAppearanceBody1"/>
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/date"
+        style="?attr/textAppearanceBody2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="0dp"
@@ -30,20 +32,64 @@
         android:text="Fri Jan 26 1969"
         app:layout_constraintStart_toStartOf="@+id/name"
         app:layout_constraintTop_toBottomOf="@+id/name"
-        tools:ignore="HardcodedText"
-        style="?attr/textAppearanceBody2"
-        />
+        tools:ignore="HardcodedText" />
 
-    <ImageButton
-        android:id="@+id/delete"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/date"
+        app:layout_constraintTop_toBottomOf="@id/date"
+        >
+
+        <ImageButton
+            android:id="@+id/delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@null"
+            android:cropToPadding="true"
+            android:scaleType="center"
+            app:srcCompat="@drawable/ic_delete_24"
+            tools:ignore="ContentDescription"
+            />
+
+        <ImageButton
+            android:id="@+id/edit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@null"
+            app:srcCompat="@drawable/ic_edit_24"
+            tools:ignore="ContentDescription" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/checkMark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@null"
+        app:srcCompat="@drawable/ic_baseline_check_30"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_delete_24"
         tools:ignore="ContentDescription"
-        android:background="@null"
+        android:visibility="gone"
         />
+
+    <ImageButton
+        android:id="@+id/workout_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_arrow_forward_30"
+        tools:ignore="ContentDescription"
+        android:visibility="visible"
+        />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

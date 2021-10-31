@@ -15,8 +15,8 @@
     <string name="exercise_timer">Timer</string>
     <string name="set_weights">Weights</string>
     <string name="set_reps">Reps</string>
-    <string name="menu_exercise_list">Exercises</string>
-    <string name="menu_workout_list">Workouts</string>
+    <string name="menu_exercise_list">Favorites</string>
+    <string name="menu_workout_list">Scheduled</string>
     <string name="menu_add">Add</string>
     <string name="menu_import">Import</string>
     <string name="menu_delete">Delete</string>
@@ -29,8 +29,9 @@
     <string name="nav_workout_details">Workout Details</string>
     <string name="nav_workout_create">New Workout</string>
     <string name="nav_workout_import">Import Workout</string>
+    <string name="nav_workout_viewpager">Session</string>
     <string name="nav_workout_session">Session</string>
-    <string name="nav_workout_stopwatch">Session</string>
+    <string name="nav_workout_stopwatch">Stopwatch</string>
     <string name="button_bar_cancel">Cancel</string>
     <string name="button_bar_accept">Save</string>
     <string name="button_bar_finish">Finish</string>
@@ -52,4 +53,7 @@
     <string name="notification_ticker">Ticker</string>
     <string name="notification_content_title">Content Title</string>
     <string name="notification_content_text">Content Text</string>
+    <string-array name="reminder_items">
+        <item>05:00 before</item>
+    </string-array>
 </resources>
