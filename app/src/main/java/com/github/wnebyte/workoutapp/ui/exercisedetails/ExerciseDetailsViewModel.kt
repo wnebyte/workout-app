@@ -28,18 +28,16 @@ class ExerciseDetailsViewModel(private val state: SavedStateHandle): ViewModel()
     }
 
     fun saveExercise(exercise: ExerciseWithSets) {
-        Log.i(TAG, "Saving exercise: ${exercise.exercise.id}")
         repository.saveExercise(exercise.exercise)
         repository.saveSet(exercise.sets)
     }
 
-    fun deleteSet(set: Set) {
-        Log.i(TAG, "Deleting set: ${set.id}")
-        repository.deleteSet(set)
+    fun deleteExercise(exercise: ExerciseWithSets) {
+        repository.deleteExercise(exercise.exercise)
+        repository.deleteSet(exercise.sets)
     }
 
-    fun saveSet(set: Set) {
-        Log.i(TAG, "Saving set: ${set.id}")
-        repository.saveSet(set)
+    fun deleteSets(sets: List<Set>) {
+        repository.deleteSet(sets)
     }
 }

@@ -10,8 +10,8 @@
     android:focusable="true"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/name"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/name_tv"
         style="?attr/textAppearanceBody1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,27 +22,38 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText" />
 
-    <TextView
-        android:id="@+id/date"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/date_tv"
         style="?attr/textAppearanceBody2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="0dp"
         android:layout_marginTop="8dp"
         android:text="Fri Jan 26 1969"
-        app:layout_constraintStart_toStartOf="@+id/name"
-        app:layout_constraintTop_toBottomOf="@+id/name"
-        tools:ignore="HardcodedText" />
+        app:layout_constraintStart_toStartOf="@+id/name_tv"
+        app:layout_constraintTop_toBottomOf="@+id/name_tv"
+        tools:ignore="HardcodedText"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="@+id/date"
-        app:layout_constraintTop_toBottomOf="@id/date"
+        app:layout_constraintStart_toStartOf="@+id/date_tv"
+        app:layout_constraintTop_toBottomOf="@id/date_tv"
         >
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/edit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@null"
+            app:srcCompat="@drawable/ic_edit_24"
+            tools:ignore="ContentDescription"
+            />
+
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/delete_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -54,42 +65,27 @@
             tools:ignore="ContentDescription"
             />
 
-        <ImageButton
-            android:id="@+id/edit_button"
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/workout_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:background="@null"
-            app:srcCompat="@drawable/ic_edit_24"
-            tools:ignore="ContentDescription" />
+            app:srcCompat="@drawable/ic_baseline_fitness_center_24"
+            />
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/checkMark"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/check_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@null"
-        app:srcCompat="@drawable/ic_baseline_check_30"
+        app:srcCompat="@drawable/ic_baseline_check_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription"
-        android:visibility="gone"
-        />
-
-    <ImageButton
-        android:id="@+id/workout_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_arrow_forward_30"
         tools:ignore="ContentDescription"
         android:visibility="visible"
         />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,20 +10,21 @@
     >
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:hint="@string/exercise_name"
-        android:textColorHint="@color/black"
         app:startIconDrawable="@drawable/ic_baseline_favorite_24"
+        style="@style/TextInputLayoutFilled"
         >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"/>
+            android:inputType="text"
+            style="@style/TextInputEditText"
+            />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -33,10 +34,12 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:hint="@string/workout_date"
-        android:textColorHint="@color/black"
         app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-        tools:ignore="HardcodedText">
+        tools:ignore="HardcodedText"
+        android:focusable="true"
+        android:clickable="true"
+        style="@style/TextInputLayoutFilled"
+        >
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/date"
@@ -45,7 +48,10 @@
             android:imeOptions="actionDone"
             android:maxLines="1"
             android:focusable="false"
-            android:inputType="none"/>
+            android:inputType="none"
+            android:textIsSelectable="false"
+            style="@style/TextInputEditText"
+            />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -55,9 +61,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:hint="@string/workout_reminder"
-        android:textColorHint="@color/black"
         app:startIconDrawable="@drawable/ic_baseline_notification_add_24"
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu">
+        style="@style/ExposedDropDown"
+        >
 
         <AutoCompleteTextView
             android:id="@+id/dropdown"
@@ -66,6 +72,7 @@
             android:inputType="none"
             android:focusable="false"
             tools:ignore="LabelFor"
+            style="@style/TextInputEditText"
             />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -76,6 +83,7 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:columnWidth="200dp"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        />
 
 </LinearLayout>

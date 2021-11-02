@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import android.widget.AdapterView
@@ -56,6 +57,8 @@ class WorkoutCreateFragment: Fragment() {
     private var callbacks: Callbacks? = null
 
     private var saveWorkout = true
+
+    private val removedItems: MutableList<ExerciseWithSets> = mutableListOf()
 
     private lateinit var dropdownAdapter: ArrayAdapter<Reminder>
 
@@ -138,8 +141,8 @@ class WorkoutCreateFragment: Fragment() {
             ArrayAdapter(requireContext(), R.layout.reminder_list_item, dropdownItems)
         binding.dropdown.setAdapter(dropdownAdapter)
         binding.dropdown.setOnClickListener {
-            it as AutoCompleteTextView
-            it.showDropdown(dropdownAdapter)
+            (it as AutoCompleteTextView)
+                .showDropdown(dropdownAdapter)
         }
         binding.buttonBar.save.setOnClickListener {
             callbacks?.onFinished()
@@ -149,7 +152,6 @@ class WorkoutCreateFragment: Fragment() {
             callbacks?.onFinished()
         }
         binding.date.setOnClickListener(datePicker)
-        vm.loadWorkout()
         return binding.root
     }
 
@@ -158,7 +160,7 @@ class WorkoutCreateFragment: Fragment() {
         vm.workoutLiveData.observe(
             viewLifecycleOwner,
             { workout ->
-                workout?.let { it->
+                workout?.let { it ->
                     Log.i(TAG, "Got workout: ${it.workout.id}")
                     this.workout = it
                     updateUI()
@@ -166,14 +168,14 @@ class WorkoutCreateFragment: Fragment() {
             }
         )
         // update local workout name whenever ui changes
-        binding.name.doOnTextChanged { text, _, _, count ->
-            if ((text != null) && (0 < count)) {
+        binding.name.doOnTextChanged { text, _, _, _ ->
+            if (!TextUtils.isEmpty(text)) {
                 workout.workout.name = text.toString()
             }
         }
         // update local workout whenever ui changes
-        binding.date.doOnTextChanged { text, _, _, count ->
-            if ((text != null) && (0 < count)) {
+        binding.date.doOnTextChanged { text, _, _, _ ->
+            if (!TextUtils.isEmpty(text)) {
                 workout.workout.date = DateUtil.fromString(text.toString())
             }
         }
@@ -183,14 +185,17 @@ class WorkoutCreateFragment: Fragment() {
             val item = parent.getItemAtPosition(position) as Reminder
             workout.workout.reminder = item.value
         }
+        vm.loadWorkout()
     }
 
     override fun onStop() {
         super.onStop()
         if (saveWorkout) {
             vm.saveWorkout(workout)
+            vm.deleteExercises(removedItems)
         } else {
             vm.deleteWorkout(workout)
+            vm.deleteExercises(removedItems)
         }
     }
 
@@ -213,7 +218,7 @@ class WorkoutCreateFragment: Fragment() {
         // bind workout date to ui
         workout.workout.date?.let { date ->
             binding.date
-                .setText(date.format(), TextView.BufferType.EDITABLE)
+                .setText(date.format(), TextView.BufferType.NORMAL)
         }
         // bind workout reminder to ui
         workout.workout.reminder?.let { value ->
@@ -231,7 +236,9 @@ class WorkoutCreateFragment: Fragment() {
 
         init {
             binding.actionBar.delete.setOnClickListener {
-                vm.deleteExercise(exercise)
+                workout.exercises.remove(exercise)
+                removedItems.add(exercise)
+                this@WorkoutCreateFragment.adapter.notifyItemRemoved(adapterPosition)
             }
             binding.actionBar.edit.setOnClickListener {
                 callbacks
@@ -263,8 +270,8 @@ class WorkoutCreateFragment: Fragment() {
         }
     }
 
-    private inner class SetHolder(private val binding: SetItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    private inner class SetHolder(private val binding: SetItemBinding)
+        : RecyclerView.ViewHolder(binding.root) {
         private lateinit var set: Set
 
         fun bind(set: Set) {

@@ -4,7 +4,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.Menu
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -24,11 +23,9 @@ import com.github.wnebyte.workoutapp.ui.exerciselist.ExerciseListFragment
 import com.github.wnebyte.workoutapp.ui.exerciselist.ExerciseListFragmentDirections
 import com.github.wnebyte.workoutapp.ui.workout.ViewPagerFragment
 import com.github.wnebyte.workoutapp.ui.workout.session.SessionFragment
-import com.github.wnebyte.workoutapp.ui.workout.session.SessionFragmentArgs
 import com.github.wnebyte.workoutapp.ui.workoutcreate.WorkoutCreateFragment
 import com.github.wnebyte.workoutapp.ui.workoutcreate.WorkoutCreateFragmentDirections
 import com.github.wnebyte.workoutapp.ui.workoutdetails.WorkoutDetailsFragment
-import com.github.wnebyte.workoutapp.ui.workoutdetails.WorkoutDetailsFragmentArgs
 import com.github.wnebyte.workoutapp.ui.workoutdetails.WorkoutDetailsFragmentDirections
 import com.github.wnebyte.workoutapp.ui.workoutlist.WorkoutListFragment
 import com.github.wnebyte.workoutapp.ui.workoutlist.WorkoutListFragmentDirections
@@ -160,17 +157,35 @@ class MainActivity: AppCompatActivity(),
     /*
     * WorkoutListFragment
     */
-    override fun onEditWorkout(workoutId: UUID) {
+    override fun onEditWorkout(workoutId: UUID, currentFragment: Class<out Fragment>) {
         val navController = findNavController(R.id.nav_host_fragment)
-        val action = WorkoutListFragmentDirections
-            .actionNavWorkoutListToNavWorkoutDetails(workoutId)
+        val action = when (currentFragment) {
+            WorkoutListFragment::class.java -> {
+                WorkoutListFragmentDirections
+                    .actionNavWorkoutListToNavWorkoutDetails(workoutId)
+            }
+            else -> {
+                throw IllegalStateException(
+                    "The specified currentFragment is not supported"
+                )
+            }
+        }
         navController.navigate(action)
     }
 
-    override fun onEditCompletedWorkout(workoutId: UUID) {
+    override fun onEditCompletedWorkout(workoutId: UUID, currentFragment: Class<out Fragment>) {
         val navController = findNavController(R.id.nav_host_fragment)
-        val action = WorkoutListFragmentDirections
-            .actionNavWorkoutListToNavWorkoutDetailsFinal(workoutId)
+        val action = when (currentFragment) {
+            WorkoutListFragment::class.java -> {
+                WorkoutListFragmentDirections
+                    .actionNavWorkoutListToNavWorkoutDetailsFinal(workoutId)
+            }
+            else -> {
+                throw IllegalStateException(
+                    "The specified currentFragment is not supported"
+                )
+            }
+        }
         navController.navigate(action)
     }
 

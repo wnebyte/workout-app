@@ -6,25 +6,7 @@ import com.github.wnebyte.workoutapp.model.Exercise
 import java.util.*
 
 @Dao
-interface ExerciseDao {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun save(exercise: Exercise)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun save(vararg exercise: Exercise)
-
-    @Delete
-    fun delete(exercise: Exercise)
-
-    @Delete
-    fun delete(vararg exercise: Exercise)
-
-    @Update
-    fun update(exercise: Exercise)
-
-    @Update
-    fun update(vararg exercise: Exercise)
+interface ExerciseDao : IDao<Exercise> {
 
     @Query("DELETE FROM exercise")
     fun deleteAll()

@@ -6,7 +6,9 @@ import androidx.room.Room
 import com.github.wnebyte.workoutapp.model.*
 import com.github.wnebyte.workoutapp.model.Set
 import java.util.*
+import java.util.concurrent.Callable
 import java.util.concurrent.Executors
+import java.util.concurrent.Future
 
 private const val DATABASE_NAME = "workout-database"
 
@@ -146,6 +148,11 @@ class Repository private constructor(context: Context) {
             database.workoutDao().save(*workouts.toTypedArray())
         }
 
+    fun saveWorkoutAndGetCount(workout: Workout): Future<Long> =
+        executor.submit(Callable {
+            database.workoutDao().saveAndGetCount(workout)
+        })
+
     fun deleteWorkout(workout: Workout) =
         executor.execute {
             database.workoutDao().delete(workout)
@@ -176,6 +183,23 @@ class Repository private constructor(context: Context) {
     fun getWorkouts(): LiveData<List<Workout>> =
         database.workoutDao().getAll()
 
+    fun getWorkoutsOrderByDate(asc: Boolean = true): LiveData<List<Workout>> =
+        database.workoutDao().getAllOrderByDate(asc)
+
+    fun getCompletedWorkouts(): LiveData<List<Workout>> =
+        database.workoutDao().getCompleted()
+
+    fun getCompletedWorkoutsOrderByDate(asc: Boolean = true): LiveData<List<Workout>> =
+        database.workoutDao().getCompletedOrderByDate(asc)
+
+    fun getNonCompletedWorkoutsOrderByDate(asc: Boolean = true): LiveData<List<Workout>> =
+        database.workoutDao().getNonCompletedOrderByDate(asc)
+
+    fun getWorkoutCount(): Future<Long> =
+        executor.submit(Callable {
+            database.workoutDao().getCount()
+        })
+
     fun getExerciseWithSets(id: UUID): LiveData<ExerciseWithSets?> =
         database.exerciseWithSetsDao().get(id)
 
@@ -194,11 +218,20 @@ class Repository private constructor(context: Context) {
     fun getWorkoutsWithExercises(): LiveData<List<WorkoutWithExercises>> =
         database.workoutWithExercisesDao().getAll()
 
-    fun getUnCompletedWorkoutsWithExercises(): LiveData<List<WorkoutWithExercises>> =
+    fun getWorkoutsWithExercisesOrderByDate(asc: Boolean = true): LiveData<List<WorkoutWithExercises>> =
+        database.workoutWithExercisesDao().getAllOrderByDate(asc)
+
+    fun getNonCompletedWorkoutsWithExercises(): LiveData<List<WorkoutWithExercises>> =
         database.workoutWithExercisesDao().getNonCompleted()
+
+    fun getNonCompletedWorkoutsWithExercisesOrderByDate(asc: Boolean = true): LiveData<List<WorkoutWithExercises>> =
+        database.workoutWithExercisesDao().getNonCompletedOrderByDate(asc)
 
     fun getCompletedWorkoutsWithExercises(): LiveData<List<WorkoutWithExercises>> =
         database.workoutWithExercisesDao().getCompleted()
+
+    fun getCompletedWorkoutsWithExercisesOrderByDate(asc: Boolean = true): LiveData<List<WorkoutWithExercises>> =
+        database.workoutWithExercisesDao().getCompletedOrderByDate(asc)
 
     fun deleteAllSets() =
         executor.execute {

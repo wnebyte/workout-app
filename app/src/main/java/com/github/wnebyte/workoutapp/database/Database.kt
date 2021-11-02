@@ -9,11 +9,6 @@ import com.github.wnebyte.workoutapp.model.Set
 @Database(
     entities = [ Set::class, Exercise::class, Workout::class ],
     version = 1,
-    autoMigrations = [
-     //   AutoMigration(from = 1, to = 2),
-     //   AutoMigration(from = 2, to = 3, spec = TableExerciseDelAttrTimerMigration::class),
-     //   AutoMigration(from = 3, to = 4, spec = TableExerciseDelAttrMillisMigration::class)
-    ],
     exportSchema = true
 )
 @TypeConverters(TypeConverter::class)

@@ -4,6 +4,6 @@
     android:id="@+id/back"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:src="@drawable/ic_baseline_check_30"
+    android:src="@drawable/ic_baseline_check_24"
     android:contentDescription="@string/image_check_mark"
     />

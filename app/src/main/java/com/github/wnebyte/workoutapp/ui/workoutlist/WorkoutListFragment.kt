@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutListBinding
 import com.github.wnebyte.workoutapp.databinding.WorkoutCardBinding
+import com.github.wnebyte.workoutapp.model.Workout
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import java.util.*
@@ -21,8 +22,8 @@ private const val TAG = "WorkoutListFragment"
 class WorkoutListFragment : Fragment() {
 
     interface Callbacks {
-        fun onEditWorkout(workoutId: UUID)
-        fun onEditCompletedWorkout(workoutId: UUID)
+        fun onEditWorkout(workoutId: UUID, currentFragment: Class<out Fragment>)
+        fun onEditCompletedWorkout(workoutId: UUID, currentFragment: Class<out Fragment>)
         fun onCreateWorkout()
         fun onWorkout(workoutId: UUID)
     }
@@ -120,7 +121,7 @@ class WorkoutListFragment : Fragment() {
         RecyclerView.ViewHolder(binding.root),
         View.OnClickListener,
         View.OnLongClickListener {
-        private lateinit var workout: WorkoutWithExercises
+        private lateinit var workout: Workout
 
         init {
             binding.body.root.setOnClickListener(this)
@@ -130,42 +131,40 @@ class WorkoutListFragment : Fragment() {
             binding.body.deleteButton.setOnClickListener { vm.deleteWorkout(workout) }
         }
 
-        fun bind(workout: WorkoutWithExercises) {
+        fun bind(workout: Workout) {
             this.workout = workout
-            binding.body.name.text = workout.workout.name
-            binding.body.date.text = workout.workout.date?.toString()
-            if (workout.workout.completed) {
-                binding.body.checkMark.visibility = View.VISIBLE
+            binding.body.nameTv.text = workout.name
+            binding.body.dateTv.text = workout.date?.toString()
+            if (workout.completed) {
+                binding.body.checkIv.visibility = View.VISIBLE
                 binding.body.workoutButton.visibility = View.GONE
             } else {
-                binding.body.checkMark.visibility = View.GONE
+                binding.body.checkIv.visibility = View.GONE
                 binding.body.workoutButton.visibility = View.VISIBLE
             }
         }
 
         override fun onClick(view: View) {
-            Log.i(TAG, "onClick()")
-            if (!workout.workout.completed) {
-                callbacks?.onWorkout(workout.workout.id)
+            if (!workout.completed) {
+                callbacks?.onWorkout(workout.id)
             }
         }
 
         override fun onLongClick(view: View): Boolean {
-            Log.i(TAG, "onLongClick()")
-            when (workout.workout.completed) {
+            when (workout.completed) {
                 true -> {
-                    callbacks?.onEditCompletedWorkout(workout.workout.id)
+                    callbacks?.onEditCompletedWorkout(workout.id, this@WorkoutListFragment::class.java)
                 }
                 false -> {
-                    callbacks?.onEditWorkout(workout.workout.id)
+                    callbacks?.onEditWorkout(workout.id, this@WorkoutListFragment::class.java)
                 }
             }
             return true
         }
     }
 
-    private inner class WorkoutAdapter : ListAdapter<WorkoutWithExercises, WorkoutHolder>
-        (AdapterUtil.DIFF_UTIL_WORKOUT_WITH_EXERCISES_CALLBACK) {
+    private inner class WorkoutAdapter : ListAdapter<Workout, WorkoutHolder>
+        (AdapterUtil.DIFF_UTIL_WORKOUT_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutHolder {
             val view = WorkoutCardBinding

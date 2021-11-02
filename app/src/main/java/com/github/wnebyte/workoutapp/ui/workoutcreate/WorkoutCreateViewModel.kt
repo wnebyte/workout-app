@@ -1,5 +1,8 @@
 package com.github.wnebyte.workoutapp.ui.workoutcreate
 
+import android.os.Handler
+import android.os.HandlerThread
+import android.os.Looper
 import com.github.wnebyte.workoutapp.database.Repository
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import android.util.Log
@@ -8,8 +11,11 @@ import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import java.util.*
 
 private const val TAG = "WorkoutCreateViewModel"
+
 private const val WORKOUT_ID_LIVE_DATA_KEY = "WorkoutIdLiveData"
+
 private const val DATE_KEY = "Date"
+
 private const val REMINDER_KEY = "Reminder"
 
 class WorkoutCreateViewModel(private val state: SavedStateHandle): ViewModel() {
@@ -30,7 +36,11 @@ class WorkoutCreateViewModel(private val state: SavedStateHandle): ViewModel() {
             field = value
         }
 
-    var reminder: Long? = state.get<Long>(REMINDER_KEY)
+    var reminder: Long? = state.get<Long?>(REMINDER_KEY)
+        set(value) {
+            state.set(REMINDER_KEY, value)
+            field = value
+        }
 
     private fun loadWorkout(workoutId: UUID) {
         workoutIdLiveData.value = workoutId
@@ -40,9 +50,20 @@ class WorkoutCreateViewModel(private val state: SavedStateHandle): ViewModel() {
         if (state.contains(WORKOUT_ID_LIVE_DATA_KEY)) {
             return
         } else {
-            val workout = WorkoutWithExercises.newInstance()
-            saveWorkout(workout)
-            loadWorkout(workout.workout.id)
+            val mainHandler = Handler(Looper.getMainLooper())
+            val handlerThread = HandlerThread("handlerThread").apply {
+                start()
+            }
+            val backgroundHandler = Handler(handlerThread.looper) {
+                val workout = WorkoutWithExercises.newInstance()
+                val count = repository.getWorkoutCount().get() + 1L
+                workout.workout.name = "#$count"
+                repository.saveWorkout(workout.workout)
+                mainHandler.post {
+                    loadWorkout(workout.workout.id)
+                }
+            }
+            backgroundHandler.sendEmptyMessage(1)
         }
     }
 
@@ -68,5 +89,12 @@ class WorkoutCreateViewModel(private val state: SavedStateHandle): ViewModel() {
         Log.i(TAG, "Deleting exercise: ${exercise.exercise.id}")
         repository.deleteExercise(exercise.exercise)
         repository.deleteSet(exercise.sets)
+    }
+
+    fun deleteExercises(exercises: List<ExerciseWithSets>) {
+        exercises.forEach { exercise ->
+            repository.deleteExercise(exercise.exercise)
+            repository.deleteSet(exercise.sets)
+        }
     }
 }

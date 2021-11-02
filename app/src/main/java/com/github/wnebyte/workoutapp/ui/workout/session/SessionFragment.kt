@@ -1,14 +1,11 @@
 package com.github.wnebyte.workoutapp.ui.workout.session
 
-import android.animation.Animator
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
 import androidx.core.animation.doOnEnd
 import androidx.fragment.app.Fragment
@@ -24,8 +21,6 @@ import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
-import kotlinx.coroutines.delay
-import java.util.function.Consumer
 
 private const val TAG = "SessionFragment"
 
@@ -86,10 +81,10 @@ class SessionFragment: Fragment() {
 
     private fun updateUI() {
         // bind workout name to ui
-        binding.name
+        binding.nameEt
             .setText(workout.workout.name, TextView.BufferType.NORMAL)
         // bind workout date to ui
-        binding.date
+        binding.dateEt
             .setText(workout.workout.date?.format(), TextView.BufferType.NORMAL)
         // bind exercises to the ui
         adapter.submitList(workout.exercises)

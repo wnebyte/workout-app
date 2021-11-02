@@ -1,10 +1,13 @@
 package com.github.wnebyte.workoutapp.ui.exercisecreate
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import android.widget.TextView
+import androidx.core.view.GestureDetectorCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -18,6 +21,7 @@ import com.github.wnebyte.workoutapp.databinding.SetBinding
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
+import com.github.wnebyte.workoutapp.ui.OnSwipeListener
 
 private const val TAG = "ExerciseCreateFragment"
 
@@ -42,6 +46,8 @@ class ExerciseCreateFragment: Fragment() {
     private var saveExercise = true
 
     private lateinit var exercise: ExerciseWithSets
+
+    private val removedItems: MutableList<Set> = mutableListOf()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -68,12 +74,9 @@ class ExerciseCreateFragment: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.add_set -> {
-                vm.saveExercise(exercise.apply {
-                    this.sets.add(
-                        Set.newInstance(this.exercise.id)
-                    )
-                })
-                adapter.notifyDataSetChanged()
+                val set: Set = Set.newInstance(exercise.exercise.id)
+                exercise.sets.add(set)
+                adapter.notifyItemInserted(adapter.itemCount)
                 true
             } else -> {
                 return super.onOptionsItemSelected(item)
@@ -97,7 +100,6 @@ class ExerciseCreateFragment: Fragment() {
             saveExercise = false
             callbacks?.onFinished()
         }
-        vm.loadExercise(args.workoutId)
         return binding.root
     }
 
@@ -113,19 +115,22 @@ class ExerciseCreateFragment: Fragment() {
                 }
             }
         )
-        binding.name.doOnTextChanged { text, _, _, count ->
-            if ((text != null) && (0 < count)) {
+        binding.name.doOnTextChanged { text, _, _, _ ->
+            if (!TextUtils.isEmpty(text)) {
                 exercise.exercise.name = text.toString()
             }
         }
+        vm.loadExercise(args.workoutId)
     }
 
     override fun onStop() {
         super.onStop()
         if (saveExercise) {
             vm.saveExercise(exercise)
+            vm.deleteSets(removedItems)
         } else {
             vm.deleteExercise(exercise)
+            vm.deleteSets(removedItems)
         }
     }
 
@@ -140,34 +145,75 @@ class ExerciseCreateFragment: Fragment() {
     }
 
     private fun updateUI(exercise: ExerciseWithSets) {
-        binding.name.setText(exercise.exercise.name, TextView.BufferType.EDITABLE)
+        binding.name
+            .setText(exercise.exercise.name, TextView.BufferType.EDITABLE)
         adapter.submitList(exercise.sets)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private inner class SetHolder(private val binding: SetBinding):
-        RecyclerView.ViewHolder(binding.root) {
+        RecyclerView.ViewHolder(binding.root),
+        OnSwipeListener,
+        View.OnTouchListener {
         private lateinit var set: Set
+        private val gestureDetector: GestureDetectorCompat =
+            GestureDetectorCompat(requireContext(), this)
 
         init {
+            binding.weights.setOnTouchListener(this)
+            binding.reps.setOnTouchListener(this)
             binding.repsLayout.setEndIconOnClickListener {
-                vm.deleteSet(set)
+                removeSet()
             }
-            binding.weights.doOnTextChanged { text, _, _, count ->
-                if ((text != null) && (0 < count)) {
+            binding.weights.doOnTextChanged { text, _, _, _ ->
+                if (!TextUtils.isEmpty(text)) {
                     set.weights = text.toString().toDouble()
                 }
             }
-            binding.reps.doOnTextChanged { text, _, _, count ->
-                if ((text != null) && (0 < count)) {
+            binding.reps.doOnTextChanged { text, _, _, _ ->
+                if (!TextUtils.isEmpty(text)) {
                     set.reps = text.toString().toInt()
                 }
             }
         }
-            fun bind(set: Set) {
-                this.set = set
-                binding.weights.setText(set.weights.toString(), TextView.BufferType.EDITABLE)
-                binding.reps.setText(set.reps.toString(), TextView.BufferType.EDITABLE)
-            }
+        fun bind(set: Set) {
+            this.set = set
+            binding.weights
+                .setText(set.weights.toString(), TextView.BufferType.EDITABLE)
+            binding.reps
+                .setText(set.reps.toString(), TextView.BufferType.EDITABLE)
+        }
+
+        private fun removeSet() {
+            removedItems.add(set)
+            exercise.sets.remove(set)
+            this@ExerciseCreateFragment.adapter.notifyItemRemoved(adapterPosition)
+        }
+
+        override fun onClick() {
+            itemView.requestFocus()
+        }
+
+        override fun onSwipeLeft() {
+            Log.i(TAG, "onSwipeLeft()")
+        }
+
+        override fun onSwipeRight() {
+            removeSet()
+            // Todo: add animation
+        }
+
+        override fun onSwipeTop() {
+            Log.i(TAG, "onSwipeTop()")
+        }
+
+        override fun onSwipeBottom() {
+            Log.i(TAG, "onSwipeBottom()")
+        }
+
+        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+            return gestureDetector.onTouchEvent(event)
+        }
     }
 
     private inner class SetAdapter: ListAdapter<Set, SetHolder>

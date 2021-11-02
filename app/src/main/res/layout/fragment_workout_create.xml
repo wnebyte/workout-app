@@ -44,7 +44,10 @@
                 android:textColorHint="@color/black"
                 app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                tools:ignore="HardcodedText">
+                tools:ignore="HardcodedText"
+                android:focusable="true"
+                android:clickable="true"
+                >
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/date"
@@ -53,7 +56,9 @@
                     android:imeOptions="actionDone"
                     android:maxLines="1"
                     android:focusable="false"
-                    android:inputType="none"/>
+                    android:inputType="none"
+                    android:textIsSelectable="false"
+                    />
 
             </com.google.android.material.textfield.TextInputLayout>
 

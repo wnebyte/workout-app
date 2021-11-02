@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
+<menu xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
@@ -14,16 +14,15 @@
             <item
                 android:id="@+id/show_all"
                 android:title="All"
-                />
+                tools:ignore="HardcodedText" />
             <item
                 android:id="@+id/show_completed"
                 android:title="Completed"
-                />
+                tools:ignore="HardcodedText" />
             <item
                 android:id="@+id/show_uncompleted"
                 android:title="Uncompleted"
-                />
-
+                tools:ignore="HardcodedText" />
         </menu>
     </item>
 

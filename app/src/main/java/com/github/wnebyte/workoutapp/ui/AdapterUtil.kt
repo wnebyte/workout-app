@@ -3,6 +3,7 @@ package com.github.wnebyte.workoutapp.ui
 import androidx.recyclerview.widget.DiffUtil
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
+import com.github.wnebyte.workoutapp.model.Workout
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 
 class AdapterUtil {
@@ -25,6 +26,25 @@ class AdapterUtil {
             ): Boolean {
                 return oldItem == newItem
             }
+        }
+
+        val DIFF_UTIL_WORKOUT_CALLBACK: DiffUtil.ItemCallback<Workout> = object:
+            DiffUtil.ItemCallback<Workout>() {
+
+            override fun areItemsTheSame(
+                oldItem: Workout,
+                newItem: Workout
+            ): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(
+                oldItem: Workout,
+                newItem: Workout
+            ): Boolean {
+                return oldItem.id == newItem.id
+            }
+
         }
 
         val DIFF_UTIL_EXERCISE_WITH_SETS_CALLBACK: DiffUtil.ItemCallback<ExerciseWithSets> = object:

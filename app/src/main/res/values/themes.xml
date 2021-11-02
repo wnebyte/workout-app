@@ -30,6 +30,27 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="TextInputLayoutFilled" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/secondary</item>
+        <item name="boxStrokeColor">@color/primaryDark</item>
+        <item name="startIconTint">@color/primary</item>
+        <item name="hintTextColor">@color/white</item>
+        <item name="android:textColorHint">@color/primary</item>
+    </style>
+
+    <style name="TextInputEditText">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="ExposedDropDown"
+        parent="Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu">
+        <item name="boxBackgroundColor">@color/secondary</item>
+        <item name="boxStrokeColor">@color/primaryDark</item>
+        <item name="startIconTint">@color/primary</item>
+        <item name="hintTextColor">@color/white</item>
+        <item name="android:textColorHint">@color/primary</item>
+    </style>
+
     <style name="StopwatchText">
         <item name="android:textColor">@color/black</item>
         <item name="android:textStyle">normal</item>

@@ -43,9 +43,25 @@ class WorkoutDetailsViewModel(private val state: SavedStateHandle): ViewModel() 
         }
     }
 
+    fun deleteWorkout(workout: WorkoutWithExercises) {
+        Log.i(TAG, "Deleting: ${workout.workout.id}")
+        repository.deleteWorkout(workout.workout)
+        workout.exercises.forEach { exercise ->
+            repository.deleteExercise(exercise.exercise)
+            repository.deleteSet(exercise.sets)
+        }
+    }
+
     fun deleteExercise(exercise: ExerciseWithSets) {
         Log.i(TAG, "Deleting exercise: ${exercise.exercise.id}")
         repository.deleteExercise(exercise.exercise)
         repository.deleteSet(exercise.sets)
+    }
+
+    fun deleteExercises(exercises: List<ExerciseWithSets>) {
+        exercises.forEach { exercise ->
+            repository.deleteExercise(exercise.exercise)
+            repository.deleteSet(exercise.sets)
+        }
     }
 }

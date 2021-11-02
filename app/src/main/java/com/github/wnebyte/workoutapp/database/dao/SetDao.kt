@@ -6,25 +6,7 @@ import com.github.wnebyte.workoutapp.model.Set
 import java.util.*
 
 @Dao
-interface SetDao {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun save(set: Set)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun save(vararg set: Set)
-
-    @Delete
-    fun delete(set: Set)
-
-    @Delete
-    fun delete(vararg set: Set)
-
-    @Update
-    fun update(set: Set)
-
-    @Update
-    fun update(vararg set: Set)
+interface SetDao : IDao<Set> {
 
     @Query("DELETE FROM `set`")
     fun deleteAll()

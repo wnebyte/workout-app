@@ -5,6 +5,7 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.graphics.Paint
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import android.widget.AdapterView
@@ -57,6 +58,8 @@ class WorkoutDetailsFragment: Fragment() {
     private var _binding: FragmentWorkoutDetailsBinding? = null
 
     private var callbacks: Callbacks? = null
+
+    private val removedItems: MutableList<ExerciseWithSets> = mutableListOf()
 
     private lateinit var workout: WorkoutWithExercises
 
@@ -143,7 +146,6 @@ class WorkoutDetailsFragment: Fragment() {
                 .showDropdown(dropdownAdapter)
         }
         binding.date.setOnClickListener(datePicker)
-        vm.loadWorkout(args.workoutId)
         return binding.root
     }
 
@@ -160,14 +162,14 @@ class WorkoutDetailsFragment: Fragment() {
             }
         )
         // update local workout name whenever ui changes
-        binding.name.doOnTextChanged { text, _, _, count ->
-            if ((text != null) && (0 < count)) {
+        binding.name.doOnTextChanged { text, _, _, _ ->
+            if (!TextUtils.isEmpty(text)) {
                 workout.workout.name = text.toString()
             }
         }
         // update local workout date whenever ui changes
-        binding.date.doOnTextChanged { text, _, _, count ->
-            if ((text != null) && (0 < count)) {
+        binding.date.doOnTextChanged { text, _, _, _ ->
+            if (!TextUtils.isEmpty(text)) {
                 workout.workout.date = DateUtil.fromString(text.toString())
             }
         }
@@ -177,12 +179,13 @@ class WorkoutDetailsFragment: Fragment() {
             val item = parent.getItemAtPosition(position) as Reminder
             workout.workout.reminder = item.value
         }
+        vm.loadWorkout(args.workoutId)
     }
 
     override fun onStop() {
         super.onStop()
-        // persist local workout whenever fragment moves to stop
         vm.saveWorkout(workout)
+        vm.deleteExercises(removedItems)
     }
 
     override fun onDetach() {
@@ -223,7 +226,9 @@ class WorkoutDetailsFragment: Fragment() {
 
         init {
             binding.actionBar.delete.setOnClickListener {
-                vm.deleteExercise(exercise)
+                workout.exercises.remove(exercise)
+                removedItems.add(exercise)
+                this@WorkoutDetailsFragment.adapter.notifyItemRemoved(adapterPosition)
             }
             binding.actionBar.edit.setOnClickListener {
                 callbacks

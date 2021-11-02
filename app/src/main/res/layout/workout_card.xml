@@ -11,7 +11,7 @@
     android:focusable="true"
     card_view:cardBackgroundColor="@color/cardview_light_background"
     card_view:cardCornerRadius="7dp"
-    card_view:cardElevation="10dp"
+    card_view:cardElevation="3dp"
     card_view:cardUseCompatPadding="true"
     >
 

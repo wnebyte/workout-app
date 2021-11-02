@@ -2,6 +2,7 @@ package com.github.wnebyte.workoutapp.ui.exercisedetails
 
 import android.content.Context
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import android.widget.TextView
@@ -40,6 +41,8 @@ class ExerciseDetailsFragment: Fragment() {
 
     private val adapter = SetAdapter()
 
+    private val removedItems: MutableList<Set> = mutableListOf()
+
     private lateinit var exercise: ExerciseWithSets
 
     override fun onAttach(context: Context) {
@@ -67,11 +70,9 @@ class ExerciseDetailsFragment: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.add_set -> {
-                vm.saveExercise(exercise.apply {
-                    this.sets.add(
-                        Set.newInstance(this.exercise.id))
-                })
-                adapter.notifyDataSetChanged()
+                val set: Set = Set.newInstance(exercise.exercise.id)
+                exercise.sets.add(set)
+                adapter.notifyItemInserted(adapter.itemCount)
                 true
             } else -> {
                 super.onOptionsItemSelected(item)
@@ -87,7 +88,6 @@ class ExerciseDetailsFragment: Fragment() {
         _binding = FragmentExerciseDetailsBinding.inflate(inflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
-        vm.loadExercise(args.exerciseId)
         return binding.root
     }
 
@@ -103,16 +103,18 @@ class ExerciseDetailsFragment: Fragment() {
                 }
             }
         )
-        binding.name.doOnTextChanged { text, _, _, count ->
-            if ((text != null) && (0 < count)) {
+        binding.name.doOnTextChanged { text, _, _, _ ->
+            if (!TextUtils.isEmpty(text)) {
                 exercise.exercise.name = text.toString()
             }
         }
+        vm.loadExercise(args.exerciseId)
     }
 
     override fun onStop() {
         super.onStop()
         vm.saveExercise(exercise)
+        vm.deleteSets(removedItems)
     }
 
     override fun onDetach() {
@@ -137,16 +139,17 @@ class ExerciseDetailsFragment: Fragment() {
 
         init {
             binding.repsLayout.setEndIconOnClickListener {
-                vm.deleteSet(set)
-                // Todo update exercise (and incorporate temp changes) instead of deleting set
+                removedItems.add(set)
+                exercise.sets.remove(set)
+                this@ExerciseDetailsFragment.adapter.notifyItemRemoved(adapterPosition)
             }
-            binding.weights.doOnTextChanged { text, _, _, count ->
-                if ((text != null) && (0 < count)) {
-                    set.weights =  text.toString().toDouble()
+            binding.weights.doOnTextChanged { text, _, _, _ ->
+                if (!TextUtils.isEmpty(text)) {
+                    set.weights = text.toString().toDouble()
                 }
             }
-            binding.reps.doOnTextChanged { text, _, _, count ->
-                if ((text != null) && (0 < count)) {
+            binding.reps.doOnTextChanged { text, _, _, _ ->
+                if (!TextUtils.isEmpty(text)) {
                     set.reps = text.toString().toInt()
                 }
             }

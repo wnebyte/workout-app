@@ -11,13 +11,15 @@
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@+id/button_bar">
+        android:layout_above="@+id/button_bar"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp">
+            android:padding="8dp"
+            >
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
@@ -26,7 +28,8 @@
                 android:layout_marginBottom="15dp"
                 android:hint="@string/exercise_name"
                 android:textColorHint="@color/black"
-                app:startIconDrawable="@drawable/ic_baseline_favorite_24">
+                app:startIconDrawable="@drawable/ic_baseline_favorite_24"
+                >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/name"
@@ -40,7 +43,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                />
 
         </LinearLayout>
 

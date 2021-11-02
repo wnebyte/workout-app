@@ -3,7 +3,7 @@ package com.github.wnebyte.workoutapp.ui.workoutlist
 import android.util.Log
 import androidx.lifecycle.*
 import com.github.wnebyte.workoutapp.database.Repository
-import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
+import com.github.wnebyte.workoutapp.model.Workout
 
 private const val TAG = "WorkoutListViewModel"
 
@@ -13,17 +13,17 @@ class WorkoutListViewModel(private val state: SavedStateHandle): ViewModel() {
 
     private val repository = Repository.get()
 
-    val workoutListLiveData: LiveData<List<WorkoutWithExercises>> =
+    val workoutListLiveData: LiveData<List<Workout>> =
         state.getLiveData<String>(FILTER_KEY).switchMap { filter ->
             when (filter) {
                 "completed" -> {
-                    repository.getCompletedWorkoutsWithExercises()
+                    repository.getCompletedWorkoutsOrderByDate(false)
                 }
                 "uncompleted" -> {
-                    repository.getUnCompletedWorkoutsWithExercises()
+                    repository.getNonCompletedWorkoutsOrderByDate(false)
                 }
                 else -> {
-                    repository.getWorkoutsWithExercises()
+                    repository.getWorkoutsOrderByDate(false)
                 }
             }
         }
@@ -38,12 +38,8 @@ class WorkoutListViewModel(private val state: SavedStateHandle): ViewModel() {
         state.set(FILTER_KEY, filter)
     }
 
-    fun deleteWorkout(workout: WorkoutWithExercises) {
-        Log.i(TAG, "Deleting workout: ${workout.workout.id}")
+    fun deleteWorkout(workout: Workout) {
+        Log.i(TAG, "Deleting workout: ${workout.id}")
         repository.deleteWorkout(workout)
-        workout.exercises.forEach { exercise ->
-            repository.deleteExercise(exercise.exercise)
-            repository.deleteSet(exercise.sets)
-        }
     }
 }
