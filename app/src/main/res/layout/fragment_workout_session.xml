@@ -17,14 +17,15 @@
         android:hint="@string/exercise_name"
         android:textColorHint="@color/black"
         app:startIconDrawable="@drawable/ic_baseline_favorite_24"
-        android:enabled="false"
         >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/name_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"/>
+            android:inputType="text"
+            android:enabled="false"
+            />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -37,7 +38,6 @@
         android:textColorHint="@color/black"
         app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-        android:enabled="false"
         >
 
         <androidx.appcompat.widget.AppCompatEditText
@@ -47,7 +47,9 @@
             android:imeOptions="actionDone"
             android:maxLines="1"
             android:focusable="false"
-            android:inputType="none"/>
+            android:inputType="none"
+            android:enabled="false"
+            />
 
     </com.google.android.material.textfield.TextInputLayout>
 

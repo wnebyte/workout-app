@@ -91,5 +91,12 @@ class Extensions {
                 }
             }
         }
+
+        /**
+         * @return an empty String.
+         */
+        fun String.Companion.empty(): String {
+            return ""
+        }
     }
 }

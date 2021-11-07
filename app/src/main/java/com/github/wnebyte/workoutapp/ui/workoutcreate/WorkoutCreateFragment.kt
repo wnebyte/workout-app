@@ -21,6 +21,7 @@ import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.ActionableExerciseCardBinding
 import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutCreateBinding
 import com.github.wnebyte.workoutapp.databinding.SetItemBinding
+import com.github.wnebyte.workoutapp.ext.Extensions.Companion.empty
 import com.github.wnebyte.workoutapp.ext.Extensions.Companion.format
 import com.github.wnebyte.workoutapp.ext.Extensions.Companion.showDropdown
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
@@ -231,6 +232,18 @@ class WorkoutCreateFragment: Fragment() {
         adapter.submitList(workout.exercises)
     }
 
+    private fun dataSetRemove(index: Int) {
+        val exercise = workout.exercises.removeAt(index)
+        removedItems.add(exercise)
+        adapter.notifyItemRemoved(index)
+    }
+
+    private fun dataSetInsert(index: Int, exercise: ExerciseWithSets) {
+        removedItems.remove(exercise)
+        workout.exercises.add(index, exercise)
+        adapter.notifyItemInserted(index)
+    }
+
     private inner class ExerciseHolder(private val binding: ActionableExerciseCardBinding)
         : RecyclerView.ViewHolder(binding.root) {
         private lateinit var exercise: ExerciseWithSets
@@ -238,11 +251,11 @@ class WorkoutCreateFragment: Fragment() {
 
         init {
             binding.actionBar.delete.setOnClickListener {
-                deleteExercise()
+                removeExercise()
             }
             binding.actionBar.edit.setOnClickListener {
-                callbacks
-                    ?.onEditExercise(exercise.exercise.id, this@WorkoutCreateFragment::class.java)
+                callbacks?.onEditExercise(
+                    exercise.exercise.id, this@WorkoutCreateFragment::class.java)
             }
             binding.body.recyclerView.layoutManager = LinearLayoutManager(context)
             binding.body.recyclerView.adapter = adapter
@@ -254,16 +267,12 @@ class WorkoutCreateFragment: Fragment() {
             adapter.submitList(exercise.sets)
         }
 
-        private fun deleteExercise() {
+        private fun removeExercise() {
             val index = adapterPosition
-            workout.exercises.remove(exercise)
-            removedItems.add(exercise)
-            this@WorkoutCreateFragment.adapter.notifyItemRemoved(adapterPosition)
-            val snackbar = Snackbar.make(binding.root, "", Snackbar.LENGTH_LONG)
-                .setAction("UNDO") {
-                    removedItems.remove(exercise)
-                    workout.exercises.add(index, exercise)
-                    this@WorkoutCreateFragment.adapter.notifyItemInserted(index)
+            dataSetRemove(index)
+            val snackbar = Snackbar.make(binding.root, String.empty(), Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo) {
+                    dataSetInsert(index, exercise)
                 }
             snackbar.show()
         }
