@@ -18,10 +18,36 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        release {
+            storeFile file('C:/Users/Ralle/dev/keystore/android.jks')
+            storePassword System.getenv('KEY_STORE_PW')
+            keyAlias 'key1'
+            keyPassword System.getenv('KEY_1_PW')
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            applicationIdSuffix '.debug'
+            debuggable true
+        }
+    }
+    flavorDimensions 'version'
+    productFlavors {
+        free {
+            dimension 'version'
+            applicationIdSuffix '.free'
+            versionNameSuffix '-free'
+        }
+        pro {
+            dimension 'version'
+            applicationIdSuffix '.pro'
+            versionNameSuffix '-pro'
         }
     }
     compileOptions {
@@ -42,7 +68,6 @@ android {
 }
 
 dependencies {
-
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.5.0'
     implementation 'androidx.room:room-runtime:2.4.0-alpha02'
@@ -60,7 +85,9 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
     implementation "androidx.cardview:cardview:1.0.0"
     implementation 'android.arch.work:work-runtime:1.0.1'
+    implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
     testImplementation 'junit:junit:4.13.2'
+  //  freeImplementation 'com.google.android.gms:play-services-ads:20.4.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }

@@ -14,6 +14,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         android:text="@string/button_start"
-        style="@style/StopwatchButton.Start"
+        android:backgroundTint="@color/purple_500"
+        style="@style/StopwatchButton"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

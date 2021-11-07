@@ -43,6 +43,11 @@ class WorkoutDetailsViewModel(private val state: SavedStateHandle): ViewModel() 
         }
     }
 
+    fun saveExercise(exercise: ExerciseWithSets) {
+        repository.saveExercise(exercise.exercise)
+        repository.saveSet(exercise.sets)
+    }
+
     fun deleteWorkout(workout: WorkoutWithExercises) {
         Log.i(TAG, "Deleting: ${workout.workout.id}")
         repository.deleteWorkout(workout.workout)

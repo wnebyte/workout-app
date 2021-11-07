@@ -32,6 +32,8 @@ import com.github.wnebyte.workoutapp.util.DateUtil
 import java.lang.Exception
 import java.util.*
 import com.github.wnebyte.workoutapp.util.DateUtil.Companion.normalize
+import com.google.android.material.snackbar.Snackbar
+import jp.wasabeef.recyclerview.animators.FlipInTopXAnimator
 
 private const val TAG = "WorkoutCreateFragment"
 
@@ -236,9 +238,7 @@ class WorkoutCreateFragment: Fragment() {
 
         init {
             binding.actionBar.delete.setOnClickListener {
-                workout.exercises.remove(exercise)
-                removedItems.add(exercise)
-                this@WorkoutCreateFragment.adapter.notifyItemRemoved(adapterPosition)
+                deleteExercise()
             }
             binding.actionBar.edit.setOnClickListener {
                 callbacks
@@ -252,6 +252,20 @@ class WorkoutCreateFragment: Fragment() {
             this.exercise = exercise
             binding.body.title.text = exercise.exercise.name
             adapter.submitList(exercise.sets)
+        }
+
+        private fun deleteExercise() {
+            val index = adapterPosition
+            workout.exercises.remove(exercise)
+            removedItems.add(exercise)
+            this@WorkoutCreateFragment.adapter.notifyItemRemoved(adapterPosition)
+            val snackbar = Snackbar.make(binding.root, "", Snackbar.LENGTH_LONG)
+                .setAction("UNDO") {
+                    removedItems.remove(exercise)
+                    workout.exercises.add(index, exercise)
+                    this@WorkoutCreateFragment.adapter.notifyItemInserted(index)
+                }
+            snackbar.show()
         }
     }
 

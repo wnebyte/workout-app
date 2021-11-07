@@ -1,7 +1,6 @@
 package com.github.wnebyte.workoutapp.ui.workout
 
 import android.app.Notification
-import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -16,9 +15,11 @@ import com.github.wnebyte.workoutapp.util.Clock
 import java.util.*
 
 private const val TAG = "ForegroundService"
+
 private const val NOTIFICATION_ID = 1
 
 private const val WORKOUT_ID_EXTRA = "WorkoutId"
+
 private const val START_VALUE_EXTRA = "StartValue"
 
 class ForegroundService : Service() {
@@ -36,15 +37,17 @@ class ForegroundService : Service() {
         Log.i(TAG, "onStartCommand(startId: $startId)")
         val workoutId: UUID = intent.getSerializableExtra(WORKOUT_ID_EXTRA) as UUID
         val startValue: Long = intent.getLongExtra(START_VALUE_EXTRA, 0L)
-        clock = object : Clock(1000, startValue) {
+        val tickRate = 100L
+        clock = object : Clock(tickRate, startValue) {
 
-            override fun onTick(millis: Long) {
-                Log.i(TAG, "onTick(): ${millis / 1000}")
-                sendResult(millis)
-                showBackgroundNotification(
-                    NOTIFICATION_ID,
-                    getNotification(millis.toString(), workoutId)
-                )
+            override fun onTick(value: Long) {
+                sendResult(value)
+                if (value % 1000 == 0L) {
+                    showBackgroundNotification(
+                        NOTIFICATION_ID,
+                        getNotification(formatMillis(value, "mm:ss"), workoutId)
+                    )
+                }
             }
         }
         clock.start()
@@ -77,14 +80,14 @@ class ForegroundService : Service() {
     ): Notification {
         val pendingIntent = MainActivity.newPendingWorkoutIntent(this, workoutId)
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_baseline_access_alarm_24)
-            .setContentTitle(getString(R.string.notification_content_title))
+            .setSmallIcon(R.drawable.ic_baseline_timer_24)
+            .setContentTitle(resources.getString(R.string.nav_workout_stopwatch))
             .setContentText(contentText)
             .setContentIntent(pendingIntent)
             .setOnlyAlertOnce(true)
             .setAutoCancel(true)
             .setSilent(true)
-            .setTimeoutAfter(2500)
+            .setTimeoutAfter(1500)
             .build()
     }
 

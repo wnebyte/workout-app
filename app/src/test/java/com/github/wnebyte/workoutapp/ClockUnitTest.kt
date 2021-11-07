@@ -13,4 +13,10 @@ class ClockUnitTest {
         Assert.assertEquals("00:00.1", Clock.formatMillis(1000))
         Assert.assertEquals("00:02.5", Clock.formatMillis(125000))
     }
+
+    @Test
+    fun test01() {
+        Assert.assertEquals("00:01.2", Clock.formatMMSSMS(1200))
+        Assert.assertEquals("00:03.4", Clock.formatMMSSMS(3420))
+    }
 }

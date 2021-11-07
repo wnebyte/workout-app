@@ -5,15 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.navArgs
-import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutStopwatchBinding
+import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toChar
 import com.github.wnebyte.workoutapp.ui.workout.ForegroundService
 import com.github.wnebyte.workoutapp.ui.workout.VisibleFragment
 import com.github.wnebyte.workoutapp.util.Clock
@@ -31,6 +31,8 @@ class StopwatchFragment : VisibleFragment() {
     private val binding get() = _binding!!
 
     private lateinit var receiver: BroadcastReceiver
+
+    private var textViews: Array<TextView>? = null
 
     override fun onStart() {
         super.onStart()
@@ -67,17 +69,21 @@ class StopwatchFragment : VisibleFragment() {
     ): View {
         _binding = FragmentWorkoutStopwatchBinding
             .inflate(layoutInflater, container, false)
+        textViews = arrayOf(
+            binding.i0, binding.i1, binding.i2,
+            binding.i3, binding.i4, binding.i5, binding.i6
+        )
         receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 val value = intent.getLongExtra(
                     ForegroundService.SERVICE_MESSAGE, 0L
                 )
-                binding.stopwatch.text = Clock.formatMillis(value)
                 vm.value = value
-                binding.viewFlipper.displayedChild = 1
+                vm.index = 1
+                updateUI()
             }
         }
-        // update the ui whenever the view-flipper's layout changes
+        // re-register onClickListeners whenever the view-flipper's layout changes
         binding.viewFlipper.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
             registerOnClickListeners()
         }
@@ -93,11 +99,21 @@ class StopwatchFragment : VisibleFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        textViews = null
     }
 
     private fun updateUI() {
         binding.viewFlipper.displayedChild = vm.index
-        binding.stopwatch.text = Clock.formatMillis(vm.value)
+        val values = Clock.formatMMSSMS(vm.value).toCharArray()
+
+        for (i in values.indices) {
+            val tv = textViews?.get(i)
+            val currentChar = tv?.text?.toChar()
+            val newChar = values[i]
+            if (currentChar != newChar) {
+                tv?.text = newChar.toString()
+            }
+        }
     }
 
     private fun registerOnClickListeners() {
@@ -141,9 +157,9 @@ class StopwatchFragment : VisibleFragment() {
                     binding.viewFlipper.displayedChild = 1
                 }
                 binding.buttonBar2.resetButton.setOnClickListener {
-                    binding.stopwatch.text = resources.getString(R.string.stopwatch_start_time)
                     vm.value = 0L
-                    binding.viewFlipper.displayedChild = 0
+                    vm.index = 0
+                    updateUI()
                 }
             }
             else -> {

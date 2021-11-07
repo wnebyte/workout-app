@@ -2,6 +2,7 @@ package com.github.wnebyte.workoutapp.ui.workout.session
 
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
+import android.content.Context
 import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
@@ -21,10 +22,17 @@ import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
+import java.lang.IllegalStateException
+import java.util.*
 
 private const val TAG = "SessionFragment"
 
 class SessionFragment: Fragment() {
+
+    interface Callbacks {
+        fun onEditWorkout(workoutId: UUID, currentFragment: Class<out Fragment>)
+        fun onEditCompletedWorkout(workoutId: UUID, currentFragment: Class<out Fragment>)
+    }
 
     private val vm: SessionViewModel by viewModels()
 
@@ -34,14 +42,51 @@ class SessionFragment: Fragment() {
 
     private var _binding: FragmentWorkoutSessionBinding? = null
 
+    private var callbacks: Callbacks? = null
+
     private val adapter = ExerciseAdapter()
 
     private lateinit var workout: WorkoutWithExercises
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        try {
+            callbacks = context as Callbacks
+        } catch (e: Exception) {
+            throw IllegalStateException(
+                "Hosting activity needs to implement Callbacks interface"
+            )
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         workout = WorkoutWithExercises.newInstance()
+        setHasOptionsMenu(false)
     }
+
+    /*
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_workout_session, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.workout_details -> {
+                if (workout.workout.completed) {
+                    callbacks?.onEditCompletedWorkout(args.workoutId, this::class.java)
+                } else {
+                    callbacks?.onEditWorkout(args.workoutId, this::class.java)
+                }
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
+    }
+     */
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,6 +119,11 @@ class SessionFragment: Fragment() {
         vm.saveWorkout(workout)
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -90,15 +140,18 @@ class SessionFragment: Fragment() {
         adapter.submitList(workout.exercises)
     }
 
-    private inner class ExerciseHolder(private val binding: ExerciseCardBinding)
-        : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+    private inner class ExerciseHolder(private val binding: ExerciseCardBinding) :
+        RecyclerView.ViewHolder(binding.root),
+        View.OnClickListener,
+        View.OnLongClickListener {
         private lateinit var exercise: ExerciseWithSets
         private val adapter = SetAdapter()
 
         init {
+            binding.root.setOnClickListener(this)
+            binding.root.setOnLongClickListener(this)
             binding.body.recyclerView.layoutManager = LinearLayoutManager(context)
             binding.body.recyclerView.adapter = adapter
-            binding.body.root.setOnClickListener(this)
         }
 
         fun bind(exercise: ExerciseWithSets) {
@@ -117,9 +170,21 @@ class SessionFragment: Fragment() {
                     if (workout.exercises.all { e -> e.exercise.completed }) {
                         workout.workout.completed = true
                     }
-                    flip(binding.body.root) // saves the model state at the end of its animation
                 }
+
             }
+        }
+
+        override fun onLongClick(v: View): Boolean {
+            val set = exercise.sets.findLast { s -> s.completed }
+            set?.let {
+                it.completed = false
+                exercise.exercise.completed = false
+                workout.workout.completed = false
+                adapter.notifyDataSetChanged()
+                return true
+            }
+            return false
         }
 
         private fun flip(v: View) {
@@ -192,6 +257,8 @@ class SessionFragment: Fragment() {
                 "${set.weights} x ${set.reps}".also { binding.tv.text = it }
                 if (set.completed) {
                     binding.tv.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                } else {
+                    binding.tv.paintFlags = 0
                 }
             }
         }
@@ -219,4 +286,5 @@ class SessionFragment: Fragment() {
             return fragment
         }
     }
+
 }

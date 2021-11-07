@@ -189,9 +189,6 @@ class Repository private constructor(context: Context) {
     fun getCompletedWorkouts(): LiveData<List<Workout>> =
         database.workoutDao().getCompleted()
 
-    fun getCompletedWorkoutsOrderByDate(asc: Boolean = true): LiveData<List<Workout>> =
-        database.workoutDao().getCompletedOrderByDate(asc)
-
     fun getNonCompletedWorkoutsOrderByDate(asc: Boolean = true): LiveData<List<Workout>> =
         database.workoutDao().getNonCompletedOrderByDate(asc)
 
@@ -232,6 +229,9 @@ class Repository private constructor(context: Context) {
 
     fun getCompletedWorkoutsWithExercisesOrderByDate(asc: Boolean = true): LiveData<List<WorkoutWithExercises>> =
         database.workoutWithExercisesDao().getCompletedOrderByDate(asc)
+
+    fun getMostRecentlyCompletedWorkoutWithExercises(): LiveData<WorkoutWithExercises?> =
+        database.workoutWithExercisesDao().getMostRecentlyCompleted(Date().time)
 
     fun deleteAllSets() =
         executor.execute {

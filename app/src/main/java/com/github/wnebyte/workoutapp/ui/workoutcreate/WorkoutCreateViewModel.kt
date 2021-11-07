@@ -91,6 +91,11 @@ class WorkoutCreateViewModel(private val state: SavedStateHandle): ViewModel() {
         repository.deleteSet(exercise.sets)
     }
 
+    fun saveExercise(exercise: ExerciseWithSets) {
+        repository.saveExercise(exercise.exercise)
+        repository.saveSet(exercise.sets)
+    }
+
     fun deleteExercises(exercises: List<ExerciseWithSets>) {
         exercises.forEach { exercise ->
             repository.deleteExercise(exercise.exercise)

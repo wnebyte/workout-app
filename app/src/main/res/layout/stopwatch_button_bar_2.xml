@@ -13,7 +13,8 @@
         android:text="@string/button_continue"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        style="@style/StopwatchButton.Continue"
+        android:backgroundTint="@color/purple_500"
+        style="@style/StopwatchButton"
         />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -24,7 +25,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        style="@style/StopwatchButton.Reset"
+        android:backgroundTint="@color/black"
+        style="@style/StopwatchButton"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

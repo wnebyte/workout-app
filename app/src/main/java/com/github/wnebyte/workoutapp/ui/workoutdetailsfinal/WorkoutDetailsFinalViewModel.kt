@@ -16,11 +16,18 @@ class WorkoutDetailsFinalViewModel(private val state: SavedStateHandle) : ViewMo
 
     var workoutListLiveData: LiveData<WorkoutWithExercises?> = (
             Transformations.switchMap(workoutIdLiveData) { workoutLiveData ->
-                repository.getWorkoutWithExercises(workoutLiveData)
+                when (workoutLiveData) {
+                    null -> {
+                        repository.getMostRecentlyCompletedWorkoutWithExercises()
+                    }
+                    else -> {
+                        repository.getWorkoutWithExercises(workoutLiveData)
+                    }
+                }
             })
         .distinctUntilChanged()
 
-    fun loadWorkout(workoutId: UUID) {
+    fun loadWorkout(workoutId: UUID?) {
         workoutIdLiveData.value = workoutId
     }
 }

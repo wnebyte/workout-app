@@ -3,7 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/nav_exercise_list">
+    app:startDestination="@id/nav_dashboard"
+    >
+
+    <fragment
+        android:id="@+id/nav_dashboard"
+        android:name="com.github.wnebyte.workoutapp.ui.dashboard.DashboardFragment"
+        android:label="@string/nav_dashboard"
+        tools:layout="@layout/fragment_dashboard" >
+    </fragment>
 
     <fragment
         android:id="@+id/nav_exercise_list"
@@ -37,7 +45,9 @@
         <argument
             android:name="workoutId"
             app:argType="java.util.UUID"
-            app:nullable="true" />
+            app:nullable="true"
+            android:defaultValue="@null"
+            />
     </fragment>
 
     <fragment
@@ -66,8 +76,8 @@
             android:id="@+id/action_nav_workout_list_to_nav_workout_create"
             app:destination="@id/nav_workout_create" />
         <action
-            android:id="@+id/action_nav_workout_list_to_nav_workout_viewpager"
-            app:destination="@id/nav_workout_viewpager" />
+            android:id="@+id/action_nav_workout_list_to_nav_workout_view_pager"
+            app:destination="@id/nav_workout_view_pager" />
     </fragment>
 
     <fragment
@@ -99,7 +109,9 @@
         <argument
             android:name="workoutId"
             app:argType="java.util.UUID"
-            app:nullable="false" />
+            app:nullable="true"
+            android:defaultValue="@null"
+            />
     </fragment>
 
     <fragment
@@ -120,10 +132,10 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_workout_viewpager"
+        android:id="@+id/nav_workout_view_pager"
         android:name="com.github.wnebyte.workoutapp.ui.workout.ViewPagerFragment"
-        android:label="@string/nav_workout_viewpager"
-        tools:layout="@layout/fragment_workout_viewpager">
+        android:label="@string/nav_workout_view_pager"
+        tools:layout="@layout/fragment_workout_view_pager">
         <argument
             android:name="workoutId"
             app:argType="java.util.UUID"
@@ -133,6 +145,12 @@
             app:argType="boolean"
             android:defaultValue="false"
             />
+        <action
+            android:id="@+id/action_nav_view_pager_to_nav_workout_details"
+            app:destination="@+id/nav_workout_details" />
+        <action
+            android:id="@+id/action_nav_view_pager_to_nav_workout_details_final"
+            app:destination="@+id/nav_workout_details_final" />
     </fragment>
 
     <fragment

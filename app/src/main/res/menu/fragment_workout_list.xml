@@ -2,6 +2,8 @@
 <menu xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="MenuTitle"
+    tools:ignore="HardcodedText"
     >
 
     <item
@@ -14,15 +16,24 @@
             <item
                 android:id="@+id/show_all"
                 android:title="All"
-                tools:ignore="HardcodedText" />
+                android:icon="@drawable/ic_baseline_all_inclusive_24"
+                app:iconTint="@color/black"
+                tools:ignore="HardcodedText"
+                />
             <item
                 android:id="@+id/show_completed"
                 android:title="Completed"
-                tools:ignore="HardcodedText" />
+                android:icon="@drawable/ic_baseline_check_box_24"
+                app:iconTint="@color/black"
+                tools:ignore="HardcodedText"
+                />
             <item
                 android:id="@+id/show_uncompleted"
                 android:title="Uncompleted"
-                tools:ignore="HardcodedText" />
+                android:icon="@drawable/ic_baseline_check_box_outline_blank_24"
+                app:iconTint="@color/black"
+                tools:ignore="HardcodedText"
+                />
         </menu>
     </item>
 

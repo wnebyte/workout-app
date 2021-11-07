@@ -22,6 +22,7 @@ import com.github.wnebyte.workoutapp.ui.exerciseimport.ExerciseImportFragment
 import com.github.wnebyte.workoutapp.ui.exerciselist.ExerciseListFragment
 import com.github.wnebyte.workoutapp.ui.exerciselist.ExerciseListFragmentDirections
 import com.github.wnebyte.workoutapp.ui.workout.ViewPagerFragment
+import com.github.wnebyte.workoutapp.ui.workout.ViewPagerFragmentDirections
 import com.github.wnebyte.workoutapp.ui.workout.session.SessionFragment
 import com.github.wnebyte.workoutapp.ui.workoutcreate.WorkoutCreateFragment
 import com.github.wnebyte.workoutapp.ui.workoutcreate.WorkoutCreateFragmentDirections
@@ -41,7 +42,8 @@ class MainActivity: AppCompatActivity(),
     ExerciseImportFragment.Callbacks,
     WorkoutListFragment.Callbacks,
     WorkoutDetailsFragment.Callbacks,
-    WorkoutCreateFragment.Callbacks
+    WorkoutCreateFragment.Callbacks,
+    SessionFragment.Callbacks
 {
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -56,7 +58,7 @@ class MainActivity: AppCompatActivity(),
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.nav_exercise_list, R.id.nav_workout_list), drawerLayout)
+                R.id.nav_dashboard, R.id.nav_exercise_list, R.id.nav_workout_list), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
@@ -164,6 +166,10 @@ class MainActivity: AppCompatActivity(),
                 WorkoutListFragmentDirections
                     .actionNavWorkoutListToNavWorkoutDetails(workoutId)
             }
+            SessionFragment::class.java -> {
+                ViewPagerFragmentDirections
+                    .actionNavViewPagerToNavWorkoutDetails(workoutId)
+            }
             else -> {
                 throw IllegalStateException(
                     "The specified currentFragment is not supported"
@@ -179,6 +185,10 @@ class MainActivity: AppCompatActivity(),
             WorkoutListFragment::class.java -> {
                 WorkoutListFragmentDirections
                     .actionNavWorkoutListToNavWorkoutDetailsFinal(workoutId)
+            }
+            SessionFragment::class.java -> {
+                ViewPagerFragmentDirections
+                    .actionNavViewPagerToNavWorkoutDetailsFinal(workoutId)
             }
             else -> {
                 throw IllegalStateException(
@@ -199,7 +209,7 @@ class MainActivity: AppCompatActivity(),
     override fun onWorkout(workoutId: UUID) {
         val navController = findNavController(R.id.nav_host_fragment)
         val action = WorkoutListFragmentDirections
-            .actionNavWorkoutListToNavWorkoutViewpager(workoutId)
+            .actionNavWorkoutListToNavWorkoutViewPager(workoutId)
         navController.navigate(action)
     }
 
@@ -210,7 +220,7 @@ class MainActivity: AppCompatActivity(),
         fun newPendingWorkoutIntent(context: Context, workoutId: UUID): PendingIntent =
             NavDeepLinkBuilder(context)
                 .setGraph(R.navigation.mobile_navigation)
-                .setDestination(R.id.nav_workout_viewpager)
+                .setDestination(R.id.nav_workout_view_pager)
                 .setArguments(Bundle().apply {
                     putSerializable(ViewPagerFragment.WORKOUT_ID_KEY, workoutId as Serializable)
                     putBoolean(ViewPagerFragment.PENDING_INTENT_KEY, true)

@@ -1,11 +1,14 @@
 package com.github.wnebyte.workoutapp.ui.exerciselist
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +20,8 @@ import com.github.wnebyte.workoutapp.databinding.SetItemBinding
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
+import com.github.wnebyte.workoutapp.ui.OnSwipeListener
+import com.google.android.material.snackbar.Snackbar
 import java.lang.Exception
 import java.util.*
 
@@ -34,6 +39,8 @@ class ExerciseListFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val adapter = ExerciseAdapter()
+
+    private val removedItems: MutableList<ExerciseWithSets> = mutableListOf()
 
     private var callbacks: Callbacks? = null
 
@@ -70,8 +77,8 @@ class ExerciseListFragment : Fragment() {
             viewLifecycleOwner,
             { exercises ->
                 exercises?.let {
-                    Log.i(TAG, "Got exercises: ${exercises.size}")
-                    adapter.submitList(exercises)
+                    Log.i(TAG, "Got exercises: ${it.size}")
+                    adapter.submitList(it)
                 }
             }
         )
@@ -87,12 +94,22 @@ class ExerciseListFragment : Fragment() {
         _binding = null
     }
 
+    override fun onStop() {
+        super.onStop()
+        vm.deleteExercises(removedItems)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
     private inner class ExerciseHolder(private val binding: ActionableExerciseCardBinding):
-        RecyclerView.ViewHolder(binding.root) {
+        RecyclerView.ViewHolder(binding.root),
+        OnSwipeListener,
+        View.OnTouchListener {
         private lateinit var exercise: ExerciseWithSets
         private val adapter = SetAdapter()
+        private val gestureDetector = GestureDetectorCompat(context, this)
 
         init {
+            binding.body.root.setOnTouchListener(this)
             binding.body.recyclerView.layoutManager = LinearLayoutManager(context)
             binding.body.recyclerView.adapter = adapter
             binding.actionBar.edit.setOnClickListener {
@@ -100,7 +117,7 @@ class ExerciseListFragment : Fragment() {
                     ?.onEditExercise(exercise.exercise.id, this@ExerciseListFragment::class.java)
             }
             binding.actionBar.delete.setOnClickListener {
-                vm.deleteExercise(exercise)
+                deleteExercise()
             }
         }
 
@@ -108,6 +125,23 @@ class ExerciseListFragment : Fragment() {
             this.exercise = exercise
             binding.body.title.text = exercise.exercise.name
             adapter.submitList(exercise.sets)
+        }
+
+        private fun deleteExercise() {
+            vm.deleteExercise(exercise)
+            val snackbar = Snackbar.make(binding.root, "", Snackbar.LENGTH_LONG)
+                .setAction("UNDO") {
+                    vm.saveExercise(exercise)
+                }
+            snackbar.show()
+        }
+
+        override fun onSwipeRight() {
+            deleteExercise()
+        }
+
+        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+            return gestureDetector.onTouchEvent(event)
         }
     }
 

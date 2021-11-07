@@ -60,7 +60,6 @@ class ExerciseImportFragment: Fragment() {
             .inflate(layoutInflater, container, false)
         binding.recyclerView.adapter = adapter
         binding.fab.setOnClickListener {
-            // iterate over the selected positions
             vm.selectedPositions.forEach { i ->
                 // create a copy of the selected model item using the specified workoutId
                 val exercise = ExerciseWithSets.copyOf(adapter.currentList[i], args.workoutId)

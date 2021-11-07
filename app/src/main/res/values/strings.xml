@@ -2,7 +2,7 @@
     <string name="app_name">WorkoutApp</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_title">Workout App</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
@@ -21,6 +21,7 @@
     <string name="menu_import">Import</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_reorder">Order</string>
+    <string name="nav_dashboard">Dashboard</string>
     <string name="nav_exercise_list">Exercises</string>
     <string name="nav_exercise_details">Exercise Details</string>
     <string name="nav_exercise_create">New Exercise</string>
@@ -29,8 +30,8 @@
     <string name="nav_workout_details">Workout Details</string>
     <string name="nav_workout_create">New Workout</string>
     <string name="nav_workout_import">Import Workout</string>
-    <string name="nav_workout_viewpager">Session</string>
-    <string name="nav_workout_session">Session</string>
+    <string name="nav_workout_view_pager">Workout Session</string>
+    <string name="nav_workout_session">Workout Session</string>
     <string name="nav_workout_stopwatch">Stopwatch</string>
     <string name="button_bar_cancel">Cancel</string>
     <string name="button_bar_accept">Save</string>
@@ -41,6 +42,7 @@
     <string name="button_reset">Reset</string>
     <string name="button_continue">Continue</string>
     <string name="button_bar_back">Back</string>
+    <string name="undo">UNDO</string>
     <string name="image_check_mark">Check mark</string>
     <string name="stopwatch_start_time">00:00.0</string>
     <string name="card_button_bar_edit">Edit</string>

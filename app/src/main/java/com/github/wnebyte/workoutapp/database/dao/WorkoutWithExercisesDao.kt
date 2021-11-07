@@ -19,6 +19,10 @@ interface WorkoutWithExercisesDao {
     fun getCompleted(): LiveData<List<WorkoutWithExercises>>
 
     @Transaction
+    @Query("SELECT * FROM workout WHERE completed = 1 AND date <= (:today) ORDER BY date LIMIT 1")
+    fun getMostRecentlyCompleted(today: Long): LiveData<WorkoutWithExercises?>
+
+    @Transaction
     @Query("SELECT * FROM workout WHERE completed = 1 ORDER BY CASE WHEN :asc = 1 THEN date END ASC, CASE WHEN :asc = 0 then date END DESC")
     fun getCompletedOrderByDate(asc: Boolean = true): LiveData<List<WorkoutWithExercises>>
 

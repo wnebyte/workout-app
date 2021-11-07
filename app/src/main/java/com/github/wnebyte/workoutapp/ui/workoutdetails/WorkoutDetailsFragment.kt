@@ -23,13 +23,16 @@ import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.ActionableExerciseCardBinding
 import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutDetailsBinding
 import com.github.wnebyte.workoutapp.databinding.SetItemBinding
+import com.github.wnebyte.workoutapp.ext.Extensions.Companion.format
 import com.github.wnebyte.workoutapp.ext.Extensions.Companion.showDropdown
+import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toPaddedString
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Reminder
 import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import com.github.wnebyte.workoutapp.util.DateUtil
+import com.google.android.material.snackbar.Snackbar
 import java.lang.Exception
 import java.lang.IllegalStateException
 import java.util.*
@@ -59,8 +62,6 @@ class WorkoutDetailsFragment: Fragment() {
 
     private var callbacks: Callbacks? = null
 
-    private val removedItems: MutableList<ExerciseWithSets> = mutableListOf()
-
     private lateinit var workout: WorkoutWithExercises
 
     private lateinit var dropdownAdapter: ArrayAdapter<Reminder>
@@ -71,7 +72,7 @@ class WorkoutDetailsFragment: Fragment() {
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         val picker = DatePickerDialog(requireContext(), { view, y, m, d ->
-            "$y/${DateUtil.normalize(m + 1)}/${DateUtil.normalize(d)}".also {
+            "$y/${(m + 1).toPaddedString()}/${d.toPaddedString()}".also {
                 vm.date = it
             }
             timePicker?.onClick(view)
@@ -85,8 +86,8 @@ class WorkoutDetailsFragment: Fragment() {
         val minutes = calender.get(Calendar.MINUTE)
         val picker = TimePickerDialog(context, { _, hourOfDay, minute ->
             vm.date?.let {
-                vm.date += " ${DateUtil.normalize(hourOfDay)}:${DateUtil.normalize(minute)}"
-                binding.date.setText(vm.date, TextView.BufferType.EDITABLE)
+                vm.date += " ${hourOfDay.toPaddedString()}:${minute.toPaddedString()}"
+                binding.date.setText(vm.date, TextView.BufferType.NORMAL)
             }
         }, hour, minutes, true)
         picker.show()
@@ -155,8 +156,8 @@ class WorkoutDetailsFragment: Fragment() {
             viewLifecycleOwner,
             { workout ->
                 workout?.let {
-                    Log.i(TAG, "Got workout: ${workout.workout.id}")
-                    this.workout = workout
+                    Log.i(TAG, "Got workout: ${it.workout.id}")
+                    this.workout = it
                     updateUI()
                 }
             }
@@ -185,7 +186,6 @@ class WorkoutDetailsFragment: Fragment() {
     override fun onStop() {
         super.onStop()
         vm.saveWorkout(workout)
-        vm.deleteExercises(removedItems)
     }
 
     override fun onDetach() {
@@ -206,9 +206,9 @@ class WorkoutDetailsFragment: Fragment() {
             .setText(workout.workout.name, TextView.BufferType.EDITABLE)
         // bind workout date to ui
         workout.workout.date?.let {
-            val date = DateUtil.fromDate(it)
+            val date = it.format()
             binding.date
-                .setText(date, TextView.BufferType.EDITABLE)
+                .setText(date, TextView.BufferType.NORMAL)
         }
         // bind workout reminder to ui
         workout.workout.reminder?.let {
@@ -226,13 +226,11 @@ class WorkoutDetailsFragment: Fragment() {
 
         init {
             binding.actionBar.delete.setOnClickListener {
-                workout.exercises.remove(exercise)
-                removedItems.add(exercise)
-                this@WorkoutDetailsFragment.adapter.notifyItemRemoved(adapterPosition)
+                deleteExercise()
             }
             binding.actionBar.edit.setOnClickListener {
-                callbacks
-                    ?.onEditExercise(exercise.exercise.id, this@WorkoutDetailsFragment::class.java)
+                callbacks?.onEditExercise(
+                    exercise.exercise.id, this@WorkoutDetailsFragment::class.java)
             }
             binding.body.recyclerView.layoutManager = LinearLayoutManager(context)
             binding.body.recyclerView.adapter = adapter
@@ -242,6 +240,16 @@ class WorkoutDetailsFragment: Fragment() {
             this.exercise = exercise
             binding.body.title.text = exercise.exercise.name
             adapter.submitList(exercise.sets)
+        }
+
+        private fun deleteExercise() {
+            vm.saveWorkout(workout)
+            vm.deleteExercise(exercise)
+            val snackbar = Snackbar.make(binding.root, "", Snackbar.LENGTH_LONG)
+                .setAction("UNDO") {
+                    vm.saveExercise(exercise)
+                }
+            snackbar.show()
         }
     }
 

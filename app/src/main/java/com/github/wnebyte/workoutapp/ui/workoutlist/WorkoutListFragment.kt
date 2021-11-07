@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutListBinding
 import com.github.wnebyte.workoutapp.databinding.WorkoutCardBinding
-import com.github.wnebyte.workoutapp.model.Workout
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
+import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
 private const val TAG = "WorkoutListFragment"
@@ -117,25 +117,30 @@ class WorkoutListFragment : Fragment() {
         _binding = null
     }
 
+    /*
+    uses WorkoutWithExercises > Workout to support removing/re-adding via the snackbar
+     */
     private inner class WorkoutHolder(private val binding: WorkoutCardBinding) :
         RecyclerView.ViewHolder(binding.root),
         View.OnClickListener,
         View.OnLongClickListener {
-        private lateinit var workout: Workout
+        private lateinit var workout: WorkoutWithExercises
 
         init {
             binding.body.root.setOnClickListener(this)
             binding.body.root.setOnLongClickListener(this)
             binding.body.editButton.setOnClickListener { this.onLongClick(it) }
             binding.body.workoutButton.setOnClickListener { this.onClick(it) }
-            binding.body.deleteButton.setOnClickListener { vm.deleteWorkout(workout) }
+            binding.body.deleteButton.setOnClickListener {
+                deleteWorkout()
+            }
         }
 
-        fun bind(workout: Workout) {
+        fun bind(workout: WorkoutWithExercises) {
             this.workout = workout
-            binding.body.nameTv.text = workout.name
-            binding.body.dateTv.text = workout.date?.toString()
-            if (workout.completed) {
+            binding.body.nameTv.text = workout.workout.name
+            binding.body.dateTv.text = workout.workout.date?.toString()
+            if (workout.workout.completed) {
                 binding.body.checkIv.visibility = View.VISIBLE
                 binding.body.workoutButton.visibility = View.GONE
             } else {
@@ -144,27 +149,38 @@ class WorkoutListFragment : Fragment() {
             }
         }
 
+        private fun deleteWorkout() {
+            vm.deleteWorkout(workout)
+            val snackbar = Snackbar.make(binding.root, "", Snackbar.LENGTH_LONG)
+                .setAction("UNDO") {
+                    vm.saveWorkout(workout)
+                }
+            snackbar.show()
+        }
+
         override fun onClick(view: View) {
-            if (!workout.completed) {
-                callbacks?.onWorkout(workout.id)
+            if (!workout.workout.completed) {
+                callbacks?.onWorkout(workout.workout.id)
             }
         }
 
         override fun onLongClick(view: View): Boolean {
-            when (workout.completed) {
+            when (workout.workout.completed) {
                 true -> {
-                    callbacks?.onEditCompletedWorkout(workout.id, this@WorkoutListFragment::class.java)
+                    callbacks?.onEditCompletedWorkout(
+                        workout.workout.id, this@WorkoutListFragment::class.java)
                 }
                 false -> {
-                    callbacks?.onEditWorkout(workout.id, this@WorkoutListFragment::class.java)
+                    callbacks?.onEditWorkout(
+                        workout.workout.id, this@WorkoutListFragment::class.java)
                 }
             }
             return true
         }
     }
 
-    private inner class WorkoutAdapter : ListAdapter<Workout, WorkoutHolder>
-        (AdapterUtil.DIFF_UTIL_WORKOUT_CALLBACK) {
+    private inner class WorkoutAdapter : ListAdapter<WorkoutWithExercises, WorkoutHolder>
+        (AdapterUtil.DIFF_UTIL_WORKOUT_WITH_EXERCISES_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutHolder {
             val view = WorkoutCardBinding
@@ -177,5 +193,4 @@ class WorkoutListFragment : Fragment() {
             return holder.bind(workout)
         }
     }
-
 }

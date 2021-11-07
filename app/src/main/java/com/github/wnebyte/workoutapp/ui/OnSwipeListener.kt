@@ -20,8 +20,7 @@ interface OnSwipeListener : GestureDetector.OnGestureListener {
     }
 
     override fun onSingleTapUp(e: MotionEvent?): Boolean {
-        onClick()
-        return true
+        return false
     }
 
     override fun onScroll(
@@ -72,15 +71,21 @@ interface OnSwipeListener : GestureDetector.OnGestureListener {
         return result
     }
 
-    fun onSwipeLeft()
+    fun onSwipeLeft() {
 
-    fun onSwipeRight()
+    }
 
-    fun onSwipeTop()
+    fun onSwipeRight() {
 
-    fun onSwipeBottom()
+    }
 
-    fun onClick()
+    fun onSwipeTop() {
+
+    }
+
+    fun onSwipeBottom() {
+
+    }
 
     companion object {
 

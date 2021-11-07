@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_gravity="center"
@@ -13,41 +13,116 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            style="@style/CircularDeterminateProgressBar"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_marginTop="30dp"
-            android:visibility="invisible"
+        <LinearLayout
+            android:id="@+id/padding"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:progress="0" />
-
-        <TextView
-            android:id="@+id/stopwatch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/progress_bar"
-            app:layout_constraintEnd_toEndOf="@+id/progress_bar"
-            app:layout_constraintStart_toStartOf="@+id/progress_bar"
-            app:layout_constraintTop_toTopOf="@+id/progress_bar"
-            android:text="@string/stopwatch_start_time"
-            style="@style/StopwatchText"
+            app:layout_constraintHeight_percent="0.125"
             />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/padding"
+            >
+
+            <TextView
+                android:id="@+id/i0"
+                android:layout_width="31dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="0dp"
+                android:gravity="center"
+                android:text="0"
+                tools:ignore="HardcodedText"
+                style="@style/StopwatchText"
+                />
+
+            <TextView
+                android:id="@+id/i1"
+                android:layout_width="31dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="0dp"
+                android:gravity="center"
+                android:text="0"
+                tools:ignore="HardcodedText"
+                style="@style/StopwatchText"
+                />
+
+            <TextView
+                android:id="@+id/i2"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="0dp"
+                android:gravity="center"
+                android:text=":"
+                tools:ignore="HardcodedText"
+                style="@style/StopwatchText"
+                />
+
+            <TextView
+                android:id="@+id/i3"
+                android:layout_width="31dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="0dp"
+                android:gravity="center"
+                android:text="0"
+                tools:ignore="HardcodedText"
+                style="@style/StopwatchText"
+                />
+
+            <TextView
+                android:id="@+id/i4"
+                android:layout_width="31dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="0dp"
+                android:gravity="center"
+                android:text="0"
+                tools:ignore="HardcodedText"
+                style="@style/StopwatchText"
+                />
+
+            <TextView
+                android:id="@+id/i5"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="0dp"
+                android:gravity="center"
+                android:text="."
+                tools:ignore="HardcodedText"
+                style="@style/StopwatchText"
+                />
+
+            <TextView
+                android:id="@+id/i6"
+                android:layout_width="31dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="0"
+                tools:ignore="HardcodedText"
+                style="@style/StopwatchText"
+                />
+
+        </LinearLayout>
 
         <ViewFlipper
             android:id="@+id/view_flipper"
-            android:layout_width="200dp"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="50dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            >
 
             <include
                 android:id="@+id/button_bar_0"
@@ -59,7 +134,8 @@
 
             <include
                 android:id="@+id/button_bar_2"
-                layout="@layout/stopwatch_button_bar_2" />
+                layout="@layout/stopwatch_button_bar_2"
+                />
 
         </ViewFlipper>
 

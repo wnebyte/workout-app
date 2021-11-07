@@ -14,8 +14,8 @@ import java.util.*
 data class Set(
         @PrimaryKey
         val id: UUID = UUID.randomUUID(),
-        var reps: Int,
         var weights: Double,
+        var reps: Int,
         var completed: Boolean = false,
         @ColumnInfo(index = true)
         val exercise: UUID
@@ -27,8 +27,8 @@ data class Set(
          * @param exercise the fk
          * @return a new set
          */
-        fun newInstance(exercise: UUID): Set =
-            Set(reps = 0, weights = 0.0, exercise = exercise)
+        fun newInstance(weights: Double = 0.0, reps: Int = 0, exercise: UUID): Set =
+            Set(weights = weights, reps = reps, exercise = exercise)
 
         /**
          * Returns a copy of the specified Set but with a new id, and with the specified

@@ -3,7 +3,7 @@ package com.github.wnebyte.workoutapp.ui.workoutlist
 import android.util.Log
 import androidx.lifecycle.*
 import com.github.wnebyte.workoutapp.database.Repository
-import com.github.wnebyte.workoutapp.model.Workout
+import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 
 private const val TAG = "WorkoutListViewModel"
 
@@ -13,17 +13,17 @@ class WorkoutListViewModel(private val state: SavedStateHandle): ViewModel() {
 
     private val repository = Repository.get()
 
-    val workoutListLiveData: LiveData<List<Workout>> =
+    val workoutListLiveData: LiveData<List<WorkoutWithExercises>> =
         state.getLiveData<String>(FILTER_KEY).switchMap { filter ->
             when (filter) {
                 "completed" -> {
-                    repository.getCompletedWorkoutsOrderByDate(false)
+                    repository.getCompletedWorkoutsWithExercisesOrderByDate(false)
                 }
                 "uncompleted" -> {
-                    repository.getNonCompletedWorkoutsOrderByDate(false)
+                    repository.getNonCompletedWorkoutsWithExercisesOrderByDate(false)
                 }
                 else -> {
-                    repository.getWorkoutsOrderByDate(false)
+                    repository.getWorkoutsWithExercisesOrderByDate(false)
                 }
             }
         }
@@ -38,8 +38,20 @@ class WorkoutListViewModel(private val state: SavedStateHandle): ViewModel() {
         state.set(FILTER_KEY, filter)
     }
 
-    fun deleteWorkout(workout: Workout) {
-        Log.i(TAG, "Deleting workout: ${workout.id}")
-        repository.deleteWorkout(workout)
+    fun deleteWorkout(workout: WorkoutWithExercises) {
+        Log.i(TAG, "Deleting workout: ${workout.workout.id}")
+        repository.deleteWorkout(workout.workout)
+        workout.exercises.forEach { exercise ->
+            repository.deleteExercise(exercise.exercise)
+            repository.deleteSet(exercise.sets)
+        }
+    }
+
+    fun saveWorkout(workout: WorkoutWithExercises) {
+        repository.saveWorkout(workout.workout)
+        workout.exercises.forEach { exercise ->
+            repository.saveExercise(exercise.exercise)
+            repository.saveSet(exercise.sets)
+        }
     }
 }

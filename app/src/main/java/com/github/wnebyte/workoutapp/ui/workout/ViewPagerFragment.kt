@@ -12,6 +12,7 @@ import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.ui.workout.session.SessionFragment
 import com.github.wnebyte.workoutapp.ui.workout.stopwatch.StopwatchFragment
 import java.lang.IllegalStateException
+import kotlin.collections.ArrayList
 
 class ViewPagerFragment : Fragment() {
 
@@ -28,7 +29,7 @@ class ViewPagerFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_workout_viewpager, container, false)
+        return inflater.inflate(R.layout.fragment_workout_view_pager, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

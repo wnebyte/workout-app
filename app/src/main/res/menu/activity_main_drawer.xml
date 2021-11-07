@@ -1,22 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="navigation_view">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:showIn="navigation_view"
+    >
 
     <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_dashboard"
+            android:title="Home"
+            android:icon="@drawable/ic_baseline_home_24"
+            tools:ignore="HardcodedText" />
+
         <item android:title="Workouts"
             tools:ignore="HardcodedText">
             <menu>
                 <group android:checkableBehavior="single">
                     <item
+                        android:id="@+id/nav_workout_details_final"
+                        android:title="Recent Workout"
+                        android:icon="@drawable/ic_baseline_access_time_24"
+                        tools:ignore="HardcodedText"
+                        />
+                    <item
                         android:id="@+id/nav_workout_list"
                         android:title="Workouts"
-                        android:icon="@drawable/ic_baseline_directions_run_24"
+                        android:icon="@drawable/ic_baseline_fitness_center_24"
                         />
                     <item
                         android:id="@+id/nav_workout_create"
                         android:title="New Workout"
-                        android:icon="@drawable/ic_add_24"
+                        android:icon="@drawable/ic_baseline_add_box_24"
                         />
                 </group>
             </menu>
@@ -35,7 +50,7 @@
                     <item
                         android:id="@+id/nav_exercise_create"
                         android:title="New Exercise"
-                        android:icon="@drawable/ic_add_24"
+                        android:icon="@drawable/ic_baseline_add_box_24"
                         />
                 </group>
             </menu>

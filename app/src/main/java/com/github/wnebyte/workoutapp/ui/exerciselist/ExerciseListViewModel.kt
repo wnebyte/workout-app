@@ -6,7 +6,6 @@ import com.github.wnebyte.workoutapp.database.Repository
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 
 private const val TAG = "ExerciseListViewModel"
-private const val EXERCISE_LIST_LIVE_DATA_KEY = "ExerciseListLiveData"
 
 class ExerciseListViewModel(private val state: SavedStateHandle): ViewModel() {
 
@@ -18,9 +17,21 @@ class ExerciseListViewModel(private val state: SavedStateHandle): ViewModel() {
                 distinctUntilChanged()
             }
 
+    fun saveExercise(exercise: ExerciseWithSets) {
+        repository.saveExercise(exercise.exercise)
+        repository.saveSet(exercise.sets)
+    }
+
     fun deleteExercise(exercise: ExerciseWithSets) {
         Log.i(TAG, "Deleting: ${exercise.exercise.id}")
         repository.deleteExercise(exercise.exercise)
         repository.deleteSet(exercise.sets)
+    }
+
+    fun deleteExercises(exercises: List<ExerciseWithSets>) {
+        exercises.forEach { exercise ->
+            repository.deleteExercise(exercise.exercise)
+            repository.deleteSet(exercise.sets)
+        }
     }
 }
