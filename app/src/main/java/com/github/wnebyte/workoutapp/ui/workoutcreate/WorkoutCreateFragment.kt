@@ -34,7 +34,6 @@ import java.lang.Exception
 import java.util.*
 import com.github.wnebyte.workoutapp.util.DateUtil.Companion.normalize
 import com.google.android.material.snackbar.Snackbar
-import jp.wasabeef.recyclerview.animators.FlipInTopXAnimator
 
 private const val TAG = "WorkoutCreateFragment"
 
@@ -214,6 +213,9 @@ class WorkoutCreateFragment: Fragment() {
         timePicker = null
     }
 
+    /**
+     * Binds an instance of [WorkoutWithExercises] to the UI.
+     */
     private fun updateUI() {
         // bind workout name to ui
         binding.name
@@ -232,12 +234,25 @@ class WorkoutCreateFragment: Fragment() {
         adapter.submitList(workout.exercises)
     }
 
+    /**
+     * Removes the [ExerciseWithSets] positioned at [index] from the underlying
+     * data-set and adds it to [removedItems].
+     * The adapter will thereafter be notified of a removed item at position index.
+     * @param index the index of the to-be removed item.
+     */
     private fun dataSetRemove(index: Int) {
         val exercise = workout.exercises.removeAt(index)
         removedItems.add(exercise)
         adapter.notifyItemRemoved(index)
     }
 
+    /**
+     * Inserts the specified [ExerciseWithSets] at position [index] in the underlying data-set, and
+     * removes it from [removedItems].
+     * The adapter will thereafter be notified of an inserted item at position index.
+     * @param index the index of the to-be inserted item.
+     * @param exercise the item to be inserted.
+     */
     private fun dataSetInsert(index: Int, exercise: ExerciseWithSets) {
         removedItems.remove(exercise)
         workout.exercises.add(index, exercise)
@@ -261,12 +276,20 @@ class WorkoutCreateFragment: Fragment() {
             binding.body.recyclerView.adapter = adapter
         }
 
+        /**
+         * Bind the specified [exercise] to the ViewHolder.
+         * @param exercise the be bound.
+         */
         fun bind(exercise: ExerciseWithSets) {
             this.exercise = exercise
             binding.body.title.text = exercise.exercise.name
             adapter.submitList(exercise.sets)
         }
 
+        /**
+         * Removes the [ExerciseWithSets] instance associated with [getAdapterPosition] from the UI,
+         * and prompts the display of a Snackbar where the user can undo said removal.
+         */
         private fun removeExercise() {
             val index = adapterPosition
             dataSetRemove(index)
@@ -297,6 +320,10 @@ class WorkoutCreateFragment: Fragment() {
         : RecyclerView.ViewHolder(binding.root) {
         private lateinit var set: Set
 
+        /**
+         * Binds the specified [set] to the ViewHolder.
+         * @param set to be bound.
+         */
         fun bind(set: Set) {
             this.set = set
             "${set.weights} x ${set.reps}".also { binding.tv.text = it }
