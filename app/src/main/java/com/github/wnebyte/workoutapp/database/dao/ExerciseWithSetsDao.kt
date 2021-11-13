@@ -20,7 +20,7 @@ interface ExerciseWithSetsDao {
 
     @Transaction
     @Query("SELECT * FROM exercise WHERE workout is null ORDER BY name ASC")
-    fun getOrderedTemplates(): LiveData<List<ExerciseWithSets>>
+    fun getTemplatesOrderByName(): LiveData<List<ExerciseWithSets>>
 
     @Transaction
     @Query("SELECT * FROM exercise WHERE workout is not null AND completed = 1")

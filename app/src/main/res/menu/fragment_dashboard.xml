@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="MenuTitle"
+    tools:ignore="HardcodedText"
+    >
+
+    <item
+        android:id="@+id/backward_arrow"
+        android:title="Back"
+        android:icon="@drawable/ic_baseline_keyboard_arrow_left_24"
+        app:iconTint="@color/white"
+        app:showAsAction="ifRoom"
+        />
+
+    <item
+        android:id="@+id/forward_arrow"
+        android:title="Forward"
+        android:icon="@drawable/ic_baseline_keyboard_arrow_right_24"
+        app:iconTint="@color/white"
+        app:showAsAction="ifRoom"
+        />
+
+</menu>

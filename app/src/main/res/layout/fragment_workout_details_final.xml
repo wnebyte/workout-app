@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:hint="@string/exercise_name"
-        android:textColorHint="@color/black"
+        android:textColorHint="@color/textColorHint"
         app:startIconDrawable="@drawable/ic_baseline_favorite_24"
         >
 
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:hint="@string/workout_date"
-        android:textColorHint="@color/black"
+        android:textColorHint="@color/textColorHint"
         app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
         tools:ignore="HardcodedText"
@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:hint="@string/workout_reminder"
-        android:textColorHint="@color/black"
+        android:textColorHint="@color/textColorHint"
         app:startIconDrawable="@drawable/ic_baseline_notification_add_24"
         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
         >

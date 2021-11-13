@@ -26,13 +26,13 @@ class ExerciseCreateViewModel(private val state: SavedStateHandle): ViewModel() 
             return
         } else {
             val exercise = ExerciseWithSets.newInstance(workoutId)
-            saveExercise(exercise)
+            repository.saveExercise(exercise.exercise)
             exerciseIdLiveData.value = exercise.exercise.id
         }
     }
 
     fun saveExercise(exercise: ExerciseWithSets) {
-        repository.saveExercise(exercise.exercise)
+        repository.updateExercise(exercise.exercise)
         repository.saveSet(exercise.sets)
     }
 

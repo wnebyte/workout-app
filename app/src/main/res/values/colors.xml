@@ -16,4 +16,12 @@
     <color name="secondary">#ffab40</color>
     <color name="secondaryLight">#ffdd71</color>
     <color name="secondaryDark">#c77c02</color>
+
+    <color name="textColor">#000000</color>
+    <color name="textColorHint">#000000</color>
+
+    <color name="green">#0c9430</color>
+    <color name="gray">#777777</color>
+    <color name="transparent">#90111000</color> <!-- #99000000 -->
+    <color name="transparent_1">#171717</color>
 </resources>

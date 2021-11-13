@@ -3,6 +3,8 @@ package com.github.wnebyte.workoutapp.ext
 import android.text.TextUtils
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toLastOfLastMonth
+import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toLastOfTheMonth
 import java.lang.IllegalStateException
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -27,6 +29,59 @@ class Extensions {
             } catch (e: ParseException) {
                 null
             }
+        }
+
+        fun Date.toYear(): Int {
+            val calendar = Calendar.getInstance()
+            calendar.time = this
+            return calendar.get(Calendar.YEAR)
+        }
+
+        fun Date.toMonth(): Int {
+            val calendar = Calendar.getInstance()
+            calendar.time = this
+            return calendar.get(Calendar.MONTH)
+        }
+
+        fun Date.toDay(): Int {
+            val calendar = Calendar.getInstance()
+            calendar.time = this
+            return calendar.get(Calendar.DATE)
+        }
+
+        fun Date.toLastOfTheMonth(): Date {
+            val calendar = Calendar.getInstance()
+            calendar.time = this
+            val max = calendar.getActualMaximum(Calendar.DATE)
+            calendar.set(Calendar.DATE, max)
+            return calendar.time
+        }
+
+        fun Date.toLastOfLastMonth(): Date {
+            val calendar = Calendar.getInstance()
+            calendar.time = this
+            calendar.add(Calendar.MONTH, -1)
+            val max = calendar.getActualMaximum(Calendar.DATE)
+            calendar.set(Calendar.DATE, max)
+            return calendar.time
+        }
+
+        fun Date.toLastOfNextMonth(): Date {
+            val calendar = Calendar.getInstance()
+            calendar.time = this
+            calendar.add(Calendar.MONTH, +1)
+            val max = calendar.getActualMaximum(Calendar.DATE)
+            calendar.set(Calendar.DATE, max)
+            return calendar.time
+        }
+
+        fun Date.toFirstOfLastMonth(): Date {
+            val calendar = Calendar.getInstance()
+            calendar.time = this
+            calendar.add(Calendar.MONTH, -1)
+            val min = calendar.getActualMinimum(Calendar.DATE)
+            calendar.set(Calendar.DATE, min)
+            return calendar.time
         }
 
         fun <T> AutoCompleteTextView.showDropdown(adapter: ArrayAdapter<T>?) {
@@ -97,6 +152,22 @@ class Extensions {
          */
         fun String.Companion.empty(): String {
             return ""
+        }
+
+        fun Float.isPositive(): Boolean {
+            return this >= 0.0f
+        }
+
+        fun Float.toSign(): String {
+            return if (isPositive()) {
+                "+"
+            } else {
+                "-"
+            }
+        }
+
+        fun List<Double>.avg(): Double {
+            return this.sumByDouble { it } / this.size
         }
     }
 }

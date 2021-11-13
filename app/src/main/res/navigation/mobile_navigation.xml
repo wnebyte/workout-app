@@ -3,14 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/nav_dashboard"
+    app:startDestination="@id/nav_home"
     >
 
     <fragment
-        android:id="@+id/nav_dashboard"
-        android:name="com.github.wnebyte.workoutapp.ui.dashboard.DashboardFragment"
-        android:label="@string/nav_dashboard"
-        tools:layout="@layout/fragment_dashboard" >
+        android:id="@+id/nav_home"
+        android:name="com.github.wnebyte.workoutapp.ui.home.HomeFragment"
+        android:label="@string/nav_home"
+        tools:layout="@layout/fragment_home"
+        />
+
+    <fragment
+        android:id="@+id/nav_progress"
+        android:name="com.github.wnebyte.workoutapp.ui.progress.ProgressFragment"
+        android:label="@string/nav_progress"
+        tools:layout="@layout/fragment_progress" >
     </fragment>
 
     <fragment
@@ -105,7 +112,8 @@
         android:id="@+id/nav_workout_details_final"
         android:name="com.github.wnebyte.workoutapp.ui.workoutdetailsfinal.WorkoutDetailsFinalFragment"
         android:label="@string/nav_workout_details"
-        tools:layout="@layout/fragment_workout_details_final">
+        tools:layout="@layout/fragment_workout_details_final"
+        >
         <argument
             android:name="workoutId"
             app:argType="java.util.UUID"

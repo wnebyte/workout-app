@@ -21,7 +21,8 @@
     <string name="menu_import">Import</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_reorder">Order</string>
-    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_progress">Progress</string>
     <string name="nav_exercise_list">Exercises</string>
     <string name="nav_exercise_details">Exercise Details</string>
     <string name="nav_exercise_create">New Exercise</string>

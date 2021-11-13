@@ -8,21 +8,23 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/nav_dashboard"
+            android:id="@+id/nav_home"
             android:title="Home"
             android:icon="@drawable/ic_baseline_home_24"
-            tools:ignore="HardcodedText" />
+            tools:ignore="HardcodedText"
+            />
+
+        <item
+            android:id="@+id/nav_progress"
+            android:title="Progress"
+            android:icon="@drawable/ic_baseline_history_24"
+            tools:ignore="HardcodedText"
+            />
 
         <item android:title="Workouts"
             tools:ignore="HardcodedText">
             <menu>
                 <group android:checkableBehavior="single">
-                    <item
-                        android:id="@+id/nav_workout_details_final"
-                        android:title="Recent Workout"
-                        android:icon="@drawable/ic_baseline_access_time_24"
-                        tools:ignore="HardcodedText"
-                        />
                     <item
                         android:id="@+id/nav_workout_list"
                         android:title="Workouts"

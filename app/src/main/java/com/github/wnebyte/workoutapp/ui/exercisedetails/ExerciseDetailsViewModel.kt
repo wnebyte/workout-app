@@ -28,13 +28,8 @@ class ExerciseDetailsViewModel(private val state: SavedStateHandle): ViewModel()
     }
 
     fun saveExercise(exercise: ExerciseWithSets) {
-        repository.saveExercise(exercise.exercise)
+        repository.updateExercise(exercise.exercise)
         repository.saveSet(exercise.sets)
-    }
-
-    fun deleteExercise(exercise: ExerciseWithSets) {
-        repository.deleteExercise(exercise.exercise)
-        repository.deleteSet(exercise.sets)
     }
 
     fun deleteSets(sets: List<Set>) {

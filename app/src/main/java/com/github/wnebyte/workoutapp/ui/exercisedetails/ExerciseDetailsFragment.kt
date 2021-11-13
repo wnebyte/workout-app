@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.FragmentExerciseDetailsBinding
 import com.github.wnebyte.workoutapp.databinding.SetBinding
+import com.github.wnebyte.workoutapp.ext.Extensions.Companion.empty
 import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toEmptyString
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
@@ -51,6 +52,8 @@ class ExerciseDetailsFragment: Fragment() {
 
     private lateinit var exercise: ExerciseWithSets
 
+    private var hashCode: Int? = null
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         try {
@@ -76,7 +79,7 @@ class ExerciseDetailsFragment: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.add_set -> {
-                addSet()
+                dataSetAdd()
                 true
             } else -> {
                 super.onOptionsItemSelected(item)
@@ -107,6 +110,7 @@ class ExerciseDetailsFragment: Fragment() {
                 exercise?.let { it ->
                     Log.i(TAG, "Got exercise: ${it.exercise.id}")
                     this.exercise = it
+                    this.hashCode = it.hashCode()
                     updateUI()
                 }
             }
@@ -121,8 +125,12 @@ class ExerciseDetailsFragment: Fragment() {
 
     override fun onStop() {
         super.onStop()
-        vm.saveExercise(exercise)
-        vm.deleteSets(removedItems)
+        if (exercise.hashCode() != hashCode) {
+            vm.saveExercise(exercise)
+        }
+        if (removedItems.isNotEmpty()) {
+            vm.deleteSets(removedItems)
+        }
     }
 
     override fun onDetach() {
@@ -135,16 +143,48 @@ class ExerciseDetailsFragment: Fragment() {
         _binding = null
     }
 
+    /**
+     * Binds an instance of [ExerciseWithSets] to the UI.
+     */
     private fun updateUI() {
         binding.name
             .setText(exercise.exercise.name, TextView.BufferType.EDITABLE)
         adapter.submitList(exercise.sets)
     }
 
-    private fun addSet() {
+    /**
+     * Adds a new item to the tail end of the underlying data-set.
+     * The adapter will thereafter be notified of an inserted item.
+     */
+    private fun dataSetAdd() {
         exercise.sets.add(
             Set.newInstance(exercise = exercise.exercise.id))
         adapter.notifyItemInserted(adapter.itemCount)
+    }
+
+    /**
+     * Removes the item positioned at [index] from the underlying
+     * data-set, and adds it to [removedItems].
+     * The adapter will thereafter be notified of a removed item at position index.
+     * @param index the index of the to-be removed item.
+     */
+    private fun dataSetRemove(index: Int) {
+        val item = exercise.sets.removeAt(index)
+        removedItems.add(item)
+        adapter.notifyItemRemoved(index)
+    }
+
+    /**
+     * Inserts the specified [item] at position [index] in the underlying data-set, and
+     * removes it from [removedItems].
+     * The adapter will thereafter be notified of an inserted item at position index.
+     * @param index the index of the to-be inserted item.
+     * @param item the set to be inserted.
+     */
+    private fun dataSetInsert(index: Int, item: Set) {
+        removedItems.remove(item)
+        exercise.sets.add(item)
+        adapter.notifyItemInserted(index)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -172,6 +212,11 @@ class ExerciseDetailsFragment: Fragment() {
                 }
             }
         }
+
+        /**
+         * Bind the specified [set] to the ViewHolder.
+         * @param set to be bound.
+         */
         fun bind(set: Set) {
             this.set = set
             binding.weights
@@ -180,16 +225,17 @@ class ExerciseDetailsFragment: Fragment() {
                 .setText(set.reps.toEmptyString(), TextView.BufferType.EDITABLE)
         }
 
+        /**
+         * Removes the [Set] instance associated with [getAdapterPosition] from the UI,
+         * and prompts the display of a Snackbar where the user is presented with the option
+         * of undoing said removal.
+         */
         private fun removeSet() {
             val index = adapterPosition
-            removedItems.add(set)
-            exercise.sets.remove(set)
-            adapter.notifyItemRemoved(index)
-            val snackbar = Snackbar.make(binding.root, "", Snackbar.LENGTH_LONG)
-                .setAction(resources.getString(R.string.undo)) {
-                    removedItems.remove(set)
-                    exercise.sets.add(index, set)
-                    adapter.notifyItemInserted(index)
+            dataSetRemove(index)
+            val snackbar = Snackbar.make(binding.root, String.empty(), Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo) {
+                    dataSetInsert(index, set)
                 }
             snackbar.show()
         }

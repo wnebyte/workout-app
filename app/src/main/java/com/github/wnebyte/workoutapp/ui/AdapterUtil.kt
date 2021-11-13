@@ -1,10 +1,8 @@
 package com.github.wnebyte.workoutapp.ui
 
 import androidx.recyclerview.widget.DiffUtil
-import com.github.wnebyte.workoutapp.model.ExerciseWithSets
+import com.github.wnebyte.workoutapp.model.*
 import com.github.wnebyte.workoutapp.model.Set
-import com.github.wnebyte.workoutapp.model.Workout
-import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 
 class AdapterUtil {
 
@@ -94,6 +92,24 @@ class AdapterUtil {
                     TODO("Not yet implemented")
                 }
 
+            }
+
+        val DIFF_UTIL_PROGRESS_ITEM_CALLBACK: DiffUtil.ItemCallback<ProgressItem> =
+            object: DiffUtil.ItemCallback<ProgressItem>() {
+
+                override fun areItemsTheSame(
+                    oldItem: ProgressItem,
+                    newItem: ProgressItem
+                ): Boolean {
+                    return oldItem.id == newItem.id
+                }
+
+                override fun areContentsTheSame(
+                    oldItem: ProgressItem,
+                    newItem: ProgressItem
+                ): Boolean {
+                    return oldItem == newItem
+                }
             }
     }
 }

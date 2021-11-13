@@ -241,8 +241,8 @@ class WorkoutCreateFragment: Fragment() {
      * @param index the index of the to-be removed item.
      */
     private fun dataSetRemove(index: Int) {
-        val exercise = workout.exercises.removeAt(index)
-        removedItems.add(exercise)
+        val item = workout.exercises.removeAt(index)
+        removedItems.add(item)
         adapter.notifyItemRemoved(index)
     }
 

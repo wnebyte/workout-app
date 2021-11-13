@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
+<com.github.wnebyte.workoutapp.ui.InterceptTouchCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
@@ -9,9 +9,10 @@
     android:checkable="true"
     android:clickable="true"
     android:focusable="true"
+    android:soundEffectsEnabled="true"
     card_view:cardBackgroundColor="@color/cardview_light_background"
     card_view:cardCornerRadius="7dp"
-    card_view:cardElevation="10dp"
+    card_view:cardElevation="5dp"
     card_view:cardUseCompatPadding="true"
     >
 
@@ -28,4 +29,4 @@
         android:visibility="gone"
         />
 
-</com.google.android.material.card.MaterialCardView>
+</com.github.wnebyte.workoutapp.ui.InterceptTouchCardView>

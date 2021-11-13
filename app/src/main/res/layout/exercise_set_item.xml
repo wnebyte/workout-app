@@ -7,7 +7,7 @@
     android:padding="8dp">
 
     <EditText
-        android:id="@+id/weights"
+        android:id="@+id/avg_weights_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
@@ -26,7 +26,7 @@
         android:inputType="number"
         android:text="Reps"
         android:textAlignment="center"
-        app:layout_constraintStart_toEndOf="@id/weights"
+        app:layout_constraintStart_toEndOf="@id/avg_weights_tv"
         app:layout_constraintEnd_toStartOf="@id/button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"

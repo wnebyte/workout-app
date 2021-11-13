@@ -207,7 +207,7 @@ class Repository private constructor(context: Context) {
         database.exerciseWithSetsDao().getTemplates()
 
     fun getOrderedTemplateExercisesWithSets(): LiveData<List<ExerciseWithSets>> =
-        database.exerciseWithSetsDao().getOrderedTemplates()
+        database.exerciseWithSetsDao().getTemplatesOrderByName()
 
     fun getWorkoutWithExercises(id: UUID): LiveData<WorkoutWithExercises?> =
         database.workoutWithExercisesDao().get(id)
@@ -232,6 +232,9 @@ class Repository private constructor(context: Context) {
 
     fun getMostRecentlyCompletedWorkoutWithExercises(): LiveData<WorkoutWithExercises?> =
         database.workoutWithExercisesDao().getMostRecentlyCompleted(Date().time)
+
+    fun getWorkoutsWithExercisesCompletedBetween(from: Date, to: Date): LiveData<List<WorkoutWithExercises>> =
+        database.workoutWithExercisesDao().getCompletedBetween(from.time, to.time)
 
     fun deleteAllSets() =
         executor.execute {
