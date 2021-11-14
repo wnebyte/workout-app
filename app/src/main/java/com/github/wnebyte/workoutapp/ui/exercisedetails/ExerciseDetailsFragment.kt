@@ -23,6 +23,7 @@ import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toEmptyString
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
+import com.github.wnebyte.workoutapp.ui.MutableListAdapter
 import com.github.wnebyte.workoutapp.ui.OnSwipeListener
 import com.google.android.material.snackbar.Snackbar
 import jp.wasabeef.recyclerview.animators.FadeInRightAnimator
@@ -170,6 +171,7 @@ class ExerciseDetailsFragment: Fragment() {
      */
     private fun dataSetRemove(index: Int) {
         val item = exercise.sets.removeAt(index)
+        Log.i(TAG, "Removing item: $item at index: $index")
         removedItems.add(item)
         adapter.notifyItemRemoved(index)
     }
@@ -182,8 +184,9 @@ class ExerciseDetailsFragment: Fragment() {
      * @param item the set to be inserted.
      */
     private fun dataSetInsert(index: Int, item: Set) {
+        Log.i(TAG, "Inserting item: $item at index: $index")
         removedItems.remove(item)
-        exercise.sets.add(item)
+        exercise.sets.add(index, item)
         adapter.notifyItemInserted(index)
     }
 

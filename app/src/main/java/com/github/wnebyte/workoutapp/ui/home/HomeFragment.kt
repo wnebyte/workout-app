@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.github.wnebyte.workoutapp.R
+import com.github.wnebyte.workoutapp.ui.MyFragmentStateAdapter
 import com.github.wnebyte.workoutapp.ui.home.last.LastWorkoutOverviewFragment
 import com.github.wnebyte.workoutapp.ui.home.next.NextWorkoutOverviewFragment
 import com.google.android.material.tabs.TabLayout
@@ -49,7 +50,30 @@ class HomeFragment : Fragment() {
             .attach()
     }
 
-    private class ViewPagerFragmentAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
+    private inner class ViewPagerFragmentAdapter(fragment: Fragment)
+        : MyFragmentStateAdapter(fragment) {
+
+        override fun createFragment(position: Int): Fragment {
+            return when (position) {
+                0 -> {
+                    NextWorkoutOverviewFragment
+                        .newInstance()
+                }
+                1 -> {
+                    LastWorkoutOverviewFragment
+                        .newInstance()
+                }
+                else -> {
+                    throw IllegalStateException(
+                        "position: $position is not supported."
+                    )
+                }
+            }
+        }
+    }
+
+    /*
+        private inner class ViewPagerFragmentAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
 
         private val fragments: ArrayList<Fragment> = ArrayList()
 
@@ -82,6 +106,6 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-
     }
+     */
 }

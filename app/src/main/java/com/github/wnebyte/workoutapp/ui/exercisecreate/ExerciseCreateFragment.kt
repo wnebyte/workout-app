@@ -192,7 +192,7 @@ class ExerciseCreateFragment: Fragment() {
      */
     private fun dataSetInsert(index: Int, item: Set) {
         removedItems.remove(item)
-        exercise.sets.add(item)
+        exercise.sets.add(index, item)
         adapter.notifyItemInserted(index)
     }
 
