@@ -41,7 +41,8 @@
             android:textColor="@color/gray"
             app:layout_constraintStart_toEndOf="@+id/img"
             app:layout_constraintTop_toTopOf="@id/img"
-            tools:ignore="HardcodedText" />
+            tools:ignore="HardcodedText"
+            />
 
         <TextView
             android:id="@+id/avg_tv"

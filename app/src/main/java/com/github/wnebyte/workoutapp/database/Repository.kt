@@ -236,6 +236,12 @@ class Repository private constructor(context: Context) {
     fun getWorkoutsWithExercisesCompletedBetween(from: Date, to: Date): LiveData<List<WorkoutWithExercises>> =
         database.workoutWithExercisesDao().getCompletedBetween(from.time, to.time)
 
+    fun getNextWorkoutWithExercises(): LiveData<WorkoutWithExercises?> =
+        database.workoutWithExercisesDao().getNext(Date().time)
+
+    fun getLastWorkoutWithExercises(): LiveData<WorkoutWithExercises?> =
+        database.workoutWithExercisesDao().getLast(Date().time)
+
     fun deleteAllSets() =
         executor.execute {
             database.setDao().deleteAll()

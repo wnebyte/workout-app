@@ -21,6 +21,7 @@
             tools:ignore="HardcodedText"
             />
 
+
         <item android:title="Workouts"
             tools:ignore="HardcodedText">
             <menu>
@@ -30,11 +31,13 @@
                         android:title="Workouts"
                         android:icon="@drawable/ic_baseline_fitness_center_24"
                         />
+                    <!--
                     <item
                         android:id="@+id/nav_workout_create"
                         android:title="New Workout"
                         android:icon="@drawable/ic_baseline_add_box_24"
                         />
+                    -->
                 </group>
             </menu>
         </item>
@@ -49,11 +52,13 @@
                         android:title="Exercises"
                         android:icon="@drawable/ic_baseline_favorite_24"
                         />
+                    <!--
                     <item
                         android:id="@+id/nav_exercise_create"
                         android:title="New Exercise"
                         android:icon="@drawable/ic_baseline_add_box_24"
                         />
+                     -->
                 </group>
             </menu>
         </item>

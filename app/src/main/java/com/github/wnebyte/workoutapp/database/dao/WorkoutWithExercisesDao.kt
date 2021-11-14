@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
+import com.github.wnebyte.workoutapp.database.TypeConverter
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import java.util.*
 
@@ -21,6 +22,14 @@ interface WorkoutWithExercisesDao {
     @Transaction
     @Query("SELECT * FROM workout WHERE completed = 1 AND date <= (:today) ORDER BY date LIMIT 1")
     fun getMostRecentlyCompleted(today: Long): LiveData<WorkoutWithExercises?>
+
+    @Transaction
+    @Query("SELECT * FROM workout WHERE completed = 0 AND date >= (:now) ORDER BY date ASC LIMIT 1")
+    fun getNext(now: Long): LiveData<WorkoutWithExercises?>
+
+    @Transaction
+    @Query("SELECT * FROM workout WHERE completed = 1 AND date <= (:now) ORDER BY date DESC LIMIT 1")
+    fun getLast(now: Long): LiveData<WorkoutWithExercises?>
 
     @Transaction
     @Query("SELECT * FROM workout WHERE completed = 1 ORDER BY CASE WHEN :asc = 1 THEN date END ASC, CASE WHEN :asc = 0 then date END DESC")

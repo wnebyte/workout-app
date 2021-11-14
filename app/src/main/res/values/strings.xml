@@ -56,6 +56,8 @@
     <string name="notification_ticker">Ticker</string>
     <string name="notification_content_title">Content Title</string>
     <string name="notification_content_text">Content Text</string>
+    <string name="next_workout_title">Upcoming</string>
+    <string name="last_workout_title">Previous</string>
     <string-array name="reminder_items">
         <item>05:00 before</item>
     </string-array>
