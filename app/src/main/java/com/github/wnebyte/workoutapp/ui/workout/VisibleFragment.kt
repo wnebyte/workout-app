@@ -20,23 +20,20 @@ abstract class VisibleFragment: Fragment() {
     }
 
     protected fun registerReceiver() {
-        if (context != null) {
-            Log.i(TAG, "Receiver registered")
-            val filter = IntentFilter(ForegroundService.ACTION_SHOW_NOTIFICATION)
-            requireContext().registerReceiver(
-                onShowNotification,
-                filter,
-                ForegroundService.PERM_PRIVATE,
-                null
-            )
-        }
+        Log.i(TAG, "receiver registered")
+        val filter = IntentFilter(ForegroundService.ACTION_SHOW_NOTIFICATION)
+        requireContext().registerReceiver(
+            onShowNotification,
+            filter,
+            ForegroundService.PERM_PRIVATE,
+            null
+        )
     }
 
     protected fun unregisterReceiver() {
-        if (context != null) {
-            Log.i(TAG, "Receiver unregistered")
-            requireContext().unregisterReceiver(onShowNotification)
-        }
+        Log.i(TAG, "receiver unregistered")
+        requireContext()
+            .unregisterReceiver(onShowNotification)
     }
 
     /*

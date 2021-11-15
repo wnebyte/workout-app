@@ -18,7 +18,7 @@ import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
 
-private const val TAG = "AbstractDisplayFragment"
+private const val TAG = "AbstractWorkoutOverviewFragment"
 
 abstract class AbstractWorkoutOverviewFragment : Fragment() {
 

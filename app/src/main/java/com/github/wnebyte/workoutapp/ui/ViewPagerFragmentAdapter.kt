@@ -3,7 +3,7 @@ package com.github.wnebyte.workoutapp.ui
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-abstract class MyFragmentStateAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+abstract class ViewPagerFragmentAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
     private val fragments: ArrayList<Fragment> = arrayListOf()
 
