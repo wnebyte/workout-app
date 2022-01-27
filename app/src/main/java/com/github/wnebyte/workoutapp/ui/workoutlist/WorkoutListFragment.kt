@@ -67,15 +67,15 @@ class WorkoutListFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.show_all -> {
-                vm.setFilter("all")
+                vm.setFilter(Filter.ALL)
                 true
             }
             R.id.show_completed -> {
-                vm.setFilter("completed")
+                vm.setFilter(Filter.COMPLETED)
                 true
             }
             R.id.show_uncompleted -> {
-                vm.setFilter("uncompleted")
+                vm.setFilter(Filter.UNCOMPLETED)
                 true
             }
             else -> {
@@ -110,6 +110,14 @@ class WorkoutListFragment : Fragment() {
                 }
             }
         )
+        val filter = FilterPreferences.getStoredFilter(requireContext())
+        vm.setFilter(filter)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        val filter = vm.getFilter()
+        FilterPreferences.setStoredFilter(requireContext(), filter)
     }
 
     override fun onDetach() {

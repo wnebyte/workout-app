@@ -14,12 +14,12 @@ class WorkoutListViewModel(private val state: SavedStateHandle): ViewModel() {
     private val repository = Repository.get()
 
     val workoutListLiveData: LiveData<List<WorkoutWithExercises>> =
-        state.getLiveData<String>(FILTER_KEY).switchMap { filter ->
-            when (filter) {
-                "completed" -> {
+        state.getLiveData<Int>(FILTER_KEY).switchMap { filter ->
+            when (Filter.parse(filter)) {
+                Filter.COMPLETED -> {
                     repository.getCompletedWorkoutsWithExercisesOrderByDate(false)
                 }
-                "uncompleted" -> {
+                Filter.UNCOMPLETED -> {
                     repository.getNonCompletedWorkoutsWithExercisesOrderByDate(false)
                 }
                 else -> {
@@ -28,14 +28,13 @@ class WorkoutListViewModel(private val state: SavedStateHandle): ViewModel() {
             }
         }
 
-    init {
-        if (!state.contains(FILTER_KEY)) {
-            setFilter("all")
-        }
+    fun setFilter(filter: Filter) {
+        state.set<Int>(FILTER_KEY, filter.toInt())
     }
 
-    fun setFilter(filter: String) {
-        state.set(FILTER_KEY, filter)
+    fun getFilter(): Filter {
+        val int = state.getLiveData<Int>(FILTER_KEY).value ?: 0
+        return Filter.parse(int)
     }
 
     fun deleteWorkout(workout: WorkoutWithExercises) {
