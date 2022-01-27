@@ -7,33 +7,57 @@
     >
 
     <item
-        android:id="@+id/reorder"
-        android:title="@string/menu_reorder"
-        android:icon="@drawable/ic_reorder"
+        android:id="@+id/order"
+        android:title="@string/menu_order"
+        android:icon="@drawable/ic_order_24"
         app:showAsAction="ifRoom"
         >
         <menu>
-            <item
-                android:id="@+id/show_all"
-                android:title="All"
-                android:icon="@drawable/ic_baseline_all_inclusive_24"
-                app:iconTint="@color/black"
-                tools:ignore="HardcodedText"
-                />
-            <item
-                android:id="@+id/show_completed"
-                android:title="Completed"
-                android:icon="@drawable/ic_baseline_check_box_24"
-                app:iconTint="@color/black"
-                tools:ignore="HardcodedText"
-                />
-            <item
-                android:id="@+id/show_uncompleted"
-                android:title="Uncompleted"
-                android:icon="@drawable/ic_baseline_check_box_outline_blank_24"
-                app:iconTint="@color/black"
-                tools:ignore="HardcodedText"
-                />
+            <group android:id="@+id/group_order" android:checkableBehavior="none">
+
+            </group>
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/filter"
+        android:title="@string/menu_filter"
+        android:icon="@drawable/ic_baseline_filter_list_24"
+        app:showAsAction="ifRoom"
+        >
+        <menu>
+            <!--
+            <group android:id="@+id/group_label" android:checkableBehavior="none">
+                <item
+                    android:id="@+id/label"
+                    android:title="Filter by"
+
+                    />
+            </group>
+            -->
+            <group android:id="@+id/group_filter" android:checkableBehavior="none">
+                <item
+                    android:id="@+id/show_all"
+                    android:title="All"
+                    android:icon="@drawable/ic_baseline_all_inclusive_24"
+                    app:iconTint="@color/black"
+                    tools:ignore="HardcodedText"
+                    />
+                <item
+                    android:id="@+id/show_completed"
+                    android:title="Completed"
+                    android:icon="@drawable/ic_baseline_check_24"
+                    app:iconTint="@color/black"
+                    tools:ignore="HardcodedText"
+                    />
+                <item
+                    android:id="@+id/show_uncompleted"
+                    android:title="Uncompleted"
+                    android:icon="@drawable/ic_baseline_incomplete_circle_24"
+                    app:iconTint="@color/black"
+                    tools:ignore="HardcodedText"
+                    />
+            </group>
         </menu>
     </item>
 

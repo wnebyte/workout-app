@@ -34,12 +34,12 @@ class ViewPagerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater
-            .inflate(R.layout.fragment_workout_view_pager, container, false)
+            .inflate(R.layout.fragment_view_pager, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewPager = view.findViewById(R.id.pager)
-        tabLayout = view.findViewById(R.id.tabDots)
+        tabLayout = view.findViewById(R.id.tab_layout)
         fragmentArgs = args.copy().toBundle()
         fragmentArgs.remove(PENDING_INTENT_KEY)
         adapter = ViewPagerFragmentAdapter(this, fragmentArgs)

@@ -3,8 +3,6 @@ package com.github.wnebyte.workoutapp.ext
 import android.text.TextUtils
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toLastOfLastMonth
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toLastOfTheMonth
 import java.lang.IllegalStateException
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -14,36 +12,43 @@ class Extensions {
 
     companion object {
 
+        /*
+        ###########################
+        #           DATE          #
+        ###########################
+        */
+
         fun Date.format(
-            sdf: String = "yyyy/MM/dd HH:mm"
+            sdf: String = "yyyy/MM/dd HH:mm",
+            locale: Locale = Locale.getDefault()
         ): String {
-            return SimpleDateFormat(sdf, Locale.getDefault()).format(this)
+            return SimpleDateFormat(sdf, locale).format(this)
         }
 
-        fun dateToString(
-            date: String,
-            sdf: String = "yyyy/MM/dd HH:mm"
+        fun String.toDate(
+            sdf: String = "yyyy/MM/dd HH:mm",
+            locale: Locale = Locale.getDefault()
         ): Date? {
             return try {
-                SimpleDateFormat(sdf, Locale.getDefault()).parse(date)
+                SimpleDateFormat(sdf, locale).parse(this)
             } catch (e: ParseException) {
                 null
             }
         }
 
-        fun Date.toYear(): Int {
+        fun Date.year(): Int {
             val calendar = Calendar.getInstance()
             calendar.time = this
             return calendar.get(Calendar.YEAR)
         }
 
-        fun Date.toMonth(): Int {
+        fun Date.month(): Int {
             val calendar = Calendar.getInstance()
             calendar.time = this
             return calendar.get(Calendar.MONTH)
         }
 
-        fun Date.toDay(): Int {
+        fun Date.day(): Int {
             val calendar = Calendar.getInstance()
             calendar.time = this
             return calendar.get(Calendar.DATE)
@@ -158,6 +163,10 @@ class Extensions {
             return this >= 0.0f
         }
 
+        fun Float.isNegative(): Boolean {
+            return !isPositive()
+        }
+
         fun Float.toSign(): String {
             return if (isPositive()) {
                 "+"
@@ -166,7 +175,7 @@ class Extensions {
             }
         }
 
-        fun List<Double>.avg(): Double {
+        fun Collection<Double>.avg(): Double {
             return this.sumByDouble { it } / this.size
         }
     }

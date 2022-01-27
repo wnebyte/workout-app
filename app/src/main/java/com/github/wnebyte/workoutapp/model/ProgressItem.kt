@@ -7,5 +7,5 @@ data class ProgressItem(
     val name: String,
     val avg: Double,
     val unit: String,
-    val monthlyChange: Float
+    val change: Float
 )

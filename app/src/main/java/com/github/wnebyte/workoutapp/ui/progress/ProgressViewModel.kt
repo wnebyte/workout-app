@@ -8,8 +8,7 @@ import com.github.wnebyte.workoutapp.ext.Extensions.Companion.format
 import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toFirstOfLastMonth
 import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toLastOfLastMonth
 import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toLastOfNextMonth
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toMonth
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toYear
+import com.github.wnebyte.workoutapp.ext.Extensions.Companion.month
 import com.github.wnebyte.workoutapp.model.ProgressItem
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
@@ -41,7 +40,7 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
                 repository.getWorkoutsWithExercisesCompletedBetween(
                     from, to
                 ).switchMap {
-                        MutableLiveData(transform(it, to.toMonth()))
+                        MutableLiveData(transform(it, to.month()))
                     }
             })
 
@@ -81,7 +80,7 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
                 val avg0 = partition
                     .filter { e -> e.exercise.name == name }
                     .map { e -> e.sets.map { s -> s.weights }.avg() }.avg()
-                val avg1 = partitions[decr(refMonth)]
+                val avg1 = partitions[decrementMonth(refMonth)]
                     ?.filter { e -> e.exercise.name == name }
                     ?.map { e -> e.sets.map { s -> s.weights }.avg() }?.avg() ?: 0.0
                 list.add(
@@ -89,10 +88,19 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
                         name = name,
                         avg = avg0,
                         unit = "kg",
-                        monthlyChange = if (avg0 != 0.0 && avg1 != 0.0) {
-                                ((avg0 / avg1) * 100).toFloat()
-                        } else {
+                        change = if (avg0 == 0.0 || avg1 == 0.0) {
                             0.0f
+                        } else {
+                            val f: Float = (avg0 / avg1).toFloat()
+                            val r = when (f > 1.0f) {
+                                true -> {
+                                    f - 1.0f
+                                }
+                                false -> {
+                                    1.0f - f
+                                }
+                            }
+                            r * 100
                         }
                     )
                 )
@@ -112,7 +120,7 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
         for (workout in workouts) {
             val date = workout.workout.date
             date?.let {
-                val month = it.toMonth()
+                val month = it.month()
                 if (!map.containsKey(month)) {
                     map[month] = workout.exercises
                 } else {
@@ -123,17 +131,15 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
         return map
     }
 
-    private fun distinct(workouts: List<ExerciseWithSets>?): Set<String> {
+    private fun distinct(exercises: List<ExerciseWithSets>?): Set<String> {
         val set = mutableSetOf<String>()
-        workouts?.let {
-            for (workout in it) {
-                set.addAll(it.map { e -> e.exercise.name })
-            }
+        exercises?.let {
+            set.addAll(it.map { e -> e.exercise.name })
         }
         return set
     }
 
-    private fun decr(value: Int): Int {
+    private fun decrementMonth(value: Int): Int {
         return when (value) {
             0 -> {
                 11

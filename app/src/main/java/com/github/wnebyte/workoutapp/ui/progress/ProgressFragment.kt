@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.FragmentProgressBinding
 import com.github.wnebyte.workoutapp.databinding.ProgressItemBinding
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toMonth
+import com.github.wnebyte.workoutapp.ext.Extensions.Companion.month
 import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toSign
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toYear
+import com.github.wnebyte.workoutapp.ext.Extensions.Companion.year
 import com.github.wnebyte.workoutapp.model.ProgressItem
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import java.text.DateFormatSymbols
@@ -85,7 +85,7 @@ class ProgressFragment : Fragment() {
 
     private fun updateUI(items: List<ProgressItem>) {
         val date = vm.getDate()
-        ("${dfs.months[date.toMonth()]} ${date.toYear()}")
+        ("${dfs.months[date.month()]} ${date.year()}")
             .also { binding.dateTv.text = it }
         adapter.submitList(items)
     }
@@ -97,9 +97,9 @@ class ProgressFragment : Fragment() {
             fun bind(item: ProgressItem) {
                 this.item = item
                 binding.nameTv.text = item.name
-                binding.avgTv.text = item.avg.toString()
+                binding.avgTv.text = String.format("%.2f", item.avg)
                 binding.unitTv.text = item.unit
-                (item.monthlyChange.toSign() + "${item.monthlyChange}%")
+                (item.change.toSign() + "${item.change}%")
                     .also { binding.percentageTv.text = it }
             }
         }

@@ -25,9 +25,9 @@ abstract class ViewPagerHostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater
-            .inflate(R.layout.fragment_workout_view_pager, container, false)
+            .inflate(R.layout.fragment_view_pager, container, false)
         viewPager = view.findViewById(R.id.pager)
-        tabLayout = view.findViewById(R.id.tabDots)
+        tabLayout = view.findViewById(R.id.tab_layout)
         return view
     }
 
