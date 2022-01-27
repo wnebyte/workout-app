@@ -13,6 +13,8 @@ import com.github.wnebyte.workoutapp.model.ProgressItem
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import java.util.*
+import kotlin.math.max
+import kotlin.math.min
 
 private const val TAG = "ProgressViewModel"
 
@@ -92,15 +94,7 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
                             0.0f
                         } else {
                             val f: Float = (avg0 / avg1).toFloat()
-                            val r = when (f > 1.0f) {
-                                true -> {
-                                    f - 1.0f
-                                }
-                                false -> {
-                                    1.0f - f
-                                }
-                            }
-                            r * 100
+                            (max(f, 1.0f) - min(f, 1.0f)) * 100
                         }
                     )
                 )

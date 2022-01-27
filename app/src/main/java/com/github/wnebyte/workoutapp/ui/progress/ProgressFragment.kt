@@ -99,8 +99,8 @@ class ProgressFragment : Fragment() {
                 binding.nameTv.text = item.name
                 binding.avgTv.text = String.format("%.2f", item.avg)
                 binding.unitTv.text = item.unit
-                (item.change.toSign() + "${item.change}%")
-                    .also { binding.percentageTv.text = it }
+                (item.change.toSign() + String.format("%.2f", item.change))
+                    .also {  binding.percentageTv.text = it }
             }
         }
 
