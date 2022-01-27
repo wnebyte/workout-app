@@ -19,6 +19,8 @@ import com.github.wnebyte.workoutapp.util.Extensions.Companion.year
 import com.github.wnebyte.workoutapp.model.ProgressItem
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import com.github.wnebyte.workoutapp.ui.OnSwipeListener
+import jp.wasabeef.recyclerview.animators.FadeInRightAnimator
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 import java.text.DateFormatSymbols
 
 private const val TAG = "ProgressFragment"
@@ -72,6 +74,9 @@ class ProgressFragment : Fragment(), OnSwipeListener {
             .inflate(layoutInflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
+        binding.recyclerView.itemAnimator = SlideInUpAnimator().apply {
+            addDuration = 150
+        }
         gestureDetector = GestureDetectorCompat(requireContext(), this)
         return binding.root
     }
