@@ -6,6 +6,7 @@
     tools:ignore="HardcodedText"
     >
 
+    <!--
     <item
         android:id="@+id/order"
         android:title="@string/menu_order"
@@ -18,6 +19,7 @@
             </group>
         </menu>
     </item>
+    -->
 
     <item
         android:id="@+id/filter"

@@ -98,7 +98,7 @@ class ExerciseListFragment : Fragment() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private inner class ExerciseHolder(private val binding: ActionableExerciseCardBinding):
+    private inner class ExerciseHolder(private val binding: ExerciseCardActionableBinding):
         RecyclerView.ViewHolder(binding.root),
         OnSwipeListener,
         View.OnTouchListener {
@@ -147,7 +147,7 @@ class ExerciseListFragment : Fragment() {
         (AdapterUtil.DIFF_UTIL_EXERCISE_WITH_SETS_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseHolder {
-            val view = ActionableExerciseCardBinding
+            val view = ExerciseCardActionableBinding
                 .inflate(layoutInflater, parent, false)
             return ExerciseHolder(view)
         }

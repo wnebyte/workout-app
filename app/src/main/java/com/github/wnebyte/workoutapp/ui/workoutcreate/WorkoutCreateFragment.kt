@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.R
-import com.github.wnebyte.workoutapp.databinding.ActionableExerciseCardBinding
+import com.github.wnebyte.workoutapp.databinding.ExerciseCardActionableBinding
 import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutCreateBinding
 import com.github.wnebyte.workoutapp.databinding.SetItemBinding
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.empty
@@ -259,7 +259,7 @@ class WorkoutCreateFragment: Fragment() {
         adapter.notifyItemInserted(index)
     }
 
-    private inner class ExerciseHolder(private val binding: ActionableExerciseCardBinding)
+    private inner class ExerciseHolder(private val binding: ExerciseCardActionableBinding)
         : RecyclerView.ViewHolder(binding.root) {
         private lateinit var exercise: ExerciseWithSets
         private val adapter = SetAdapter()
@@ -305,7 +305,7 @@ class WorkoutCreateFragment: Fragment() {
         (AdapterUtil.DIFF_UTIL_EXERCISE_WITH_SETS_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseHolder {
-            val view = ActionableExerciseCardBinding
+            val view = ExerciseCardActionableBinding
                 .inflate(layoutInflater, parent, false)
             return ExerciseHolder(view)
         }

@@ -15,6 +15,7 @@ import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutListBinding
 import com.github.wnebyte.workoutapp.databinding.WorkoutCardBinding
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
 import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
@@ -141,14 +142,17 @@ class WorkoutListFragment : Fragment() {
         fun bind(workout: WorkoutWithExercises) {
             this.workout = workout
             binding.body.nameTv.text = workout.workout.name
-            binding.body.dateTv.text = workout.workout.date?.toString()
-            if (workout.workout.completed) {
-                binding.body.checkIv.visibility = View.VISIBLE
-                binding.body.workoutButton.visibility = View.GONE
-            } else {
-                binding.body.checkIv.visibility = View.GONE
-                binding.body.workoutButton.visibility = View.VISIBLE
-            }
+            binding.body.dateTv.text = workout.workout.date?.format("EEE d MMM yyyy HH:mm")
+            binding.body.checkIv.setImageResource(
+                when (workout.workout.completed) {
+                    true -> {
+                        R.drawable.ic_baseline_check_24
+                    }
+                    false -> {
+                        R.drawable.ic_baseline_incomplete_circle_24
+                    }
+                }
+            )
         }
 
         private fun deleteWorkout() {
