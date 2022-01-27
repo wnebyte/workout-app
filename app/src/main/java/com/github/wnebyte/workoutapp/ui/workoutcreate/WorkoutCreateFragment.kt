@@ -21,9 +21,9 @@ import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.ActionableExerciseCardBinding
 import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutCreateBinding
 import com.github.wnebyte.workoutapp.databinding.SetItemBinding
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.empty
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.format
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.showDropdown
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.empty
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.showDropdown
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Reminder
 import com.github.wnebyte.workoutapp.model.Set

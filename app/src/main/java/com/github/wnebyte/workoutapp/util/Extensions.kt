@@ -1,4 +1,4 @@
-package com.github.wnebyte.workoutapp.ext
+package com.github.wnebyte.workoutapp.util
 
 import android.text.TextUtils
 import android.widget.ArrayAdapter
@@ -171,7 +171,7 @@ class Extensions {
             return if (isPositive()) {
                 "+"
             } else {
-                "-"
+                ""
             }
         }
 

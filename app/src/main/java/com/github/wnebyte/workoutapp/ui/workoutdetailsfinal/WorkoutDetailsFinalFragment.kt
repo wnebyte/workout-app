@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.databinding.ExerciseCardBinding
 import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutDetailsFinalBinding
 import com.github.wnebyte.workoutapp.databinding.SetItemBinding
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.format
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Reminder
 import com.github.wnebyte.workoutapp.model.Set

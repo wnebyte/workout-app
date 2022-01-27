@@ -13,7 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.navArgs
 import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutStopwatchBinding
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toChar
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.toChar
 import com.github.wnebyte.workoutapp.ui.workout.ForegroundService
 import com.github.wnebyte.workoutapp.ui.workout.VisibleFragment
 import com.github.wnebyte.workoutapp.util.Clock

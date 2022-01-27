@@ -18,12 +18,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.FragmentExerciseDetailsBinding
 import com.github.wnebyte.workoutapp.databinding.SetBinding
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.empty
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toEmptyString
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.empty
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.toEmptyString
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
-import com.github.wnebyte.workoutapp.ui.MutableListAdapter
 import com.github.wnebyte.workoutapp.ui.OnSwipeListener
 import com.google.android.material.snackbar.Snackbar
 import jp.wasabeef.recyclerview.animators.FadeInRightAnimator

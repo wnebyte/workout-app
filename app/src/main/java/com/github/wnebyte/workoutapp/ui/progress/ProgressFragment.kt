@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.FragmentProgressBinding
 import com.github.wnebyte.workoutapp.databinding.ProgressItemBinding
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.month
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toSign
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.year
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.month
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.toSign
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.year
 import com.github.wnebyte.workoutapp.model.ProgressItem
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import java.text.DateFormatSymbols
@@ -45,11 +45,11 @@ class ProgressFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.forward_arrow -> {
-                vm.incrementMonthlyRange()
+                vm.incrementMonth()
                 true
             }
             R.id.backward_arrow -> {
-                vm.decrementMonthlyRange()
+                vm.decrementMonth()
                 true
             }
             else -> {
@@ -99,7 +99,7 @@ class ProgressFragment : Fragment() {
                 binding.nameTv.text = item.name
                 binding.avgTv.text = String.format("%.2f", item.avg)
                 binding.unitTv.text = item.unit
-                (item.change.toSign() + String.format("%.2f", item.change))
+                (item.change.toSign() + String.format("%.2f", item.change * 100) + "%")
                     .also {  binding.percentageTv.text = it }
             }
         }

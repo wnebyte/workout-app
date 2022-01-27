@@ -1,11 +1,11 @@
 package com.github.wnebyte.workoutapp
 
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.format
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.day
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toFirstOfLastMonth
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toLastOfNextMonth
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.toLastOfTheMonth
-import com.github.wnebyte.workoutapp.ext.Extensions.Companion.month
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.day
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.toFirstOfLastMonth
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.toLastOfNextMonth
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.toLastOfTheMonth
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.month
 import org.junit.Assert
 import org.junit.Test
 import java.util.*
