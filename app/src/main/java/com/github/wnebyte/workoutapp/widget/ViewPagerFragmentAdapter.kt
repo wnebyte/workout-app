@@ -1,4 +1,4 @@
-package com.github.wnebyte.workoutapp.ui
+package com.github.wnebyte.workoutapp.widget
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter

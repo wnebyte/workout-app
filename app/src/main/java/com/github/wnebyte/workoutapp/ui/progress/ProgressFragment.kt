@@ -20,6 +20,8 @@ import com.github.wnebyte.workoutapp.model.ProgressItem
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import com.github.wnebyte.workoutapp.ui.OnSwipeListener
 import jp.wasabeef.recyclerview.animators.FadeInRightAnimator
+import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator
+import jp.wasabeef.recyclerview.animators.SlideInRightAnimator
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 import java.text.DateFormatSymbols
 
@@ -52,11 +54,11 @@ class ProgressFragment : Fragment(), OnSwipeListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.forward_arrow -> {
-                vm.incrementMonth()
+                incrementMonth()
                 true
             }
             R.id.backward_arrow -> {
-                vm.decrementMonth()
+                decrementMonth()
                 true
             }
             else -> {
@@ -74,9 +76,6 @@ class ProgressFragment : Fragment(), OnSwipeListener {
             .inflate(layoutInflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
-        binding.recyclerView.itemAnimator = SlideInUpAnimator().apply {
-            addDuration = 150
-        }
         gestureDetector = GestureDetectorCompat(requireContext(), this)
         return binding.root
     }
@@ -99,17 +98,31 @@ class ProgressFragment : Fragment(), OnSwipeListener {
         }
     }
 
-    override fun onSwipeLeft() {
-        vm.incrementMonth()
-    }
-
-    override fun onSwipeRight() {
-        vm.decrementMonth()
-    }
-
     override fun onDestroy() {
         gestureDetector = null
         super.onDestroy()
+    }
+
+    override fun onSwipeLeft() {
+        incrementMonth()
+    }
+
+    override fun onSwipeRight() {
+        decrementMonth()
+    }
+
+    private fun incrementMonth() {
+        binding.recyclerView.itemAnimator = SlideInRightAnimator().apply {
+            addDuration = 350
+        }
+        vm.incrementMonth()
+    }
+
+    private fun decrementMonth() {
+        binding.recyclerView.itemAnimator = SlideInLeftAnimator().apply {
+            addDuration = 350
+        }
+        vm.decrementMonth()
     }
 
     private fun updateUI(items: List<ProgressItem>) {

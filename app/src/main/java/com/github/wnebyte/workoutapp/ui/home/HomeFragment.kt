@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.github.wnebyte.workoutapp.ui.ViewPagerHostFragment
-import com.github.wnebyte.workoutapp.ui.ViewPagerFragmentAdapter
+import com.github.wnebyte.workoutapp.widget.ViewPagerFragmentAdapter
 import com.github.wnebyte.workoutapp.ui.home.last.LastWorkoutOverviewFragment
 import com.github.wnebyte.workoutapp.ui.home.next.NextWorkoutOverviewFragment
 import java.lang.IllegalStateException

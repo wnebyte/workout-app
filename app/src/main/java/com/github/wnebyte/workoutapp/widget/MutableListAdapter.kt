@@ -1,4 +1,4 @@
-package com.github.wnebyte.workoutapp.ui
+package com.github.wnebyte.workoutapp.widget
 
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter

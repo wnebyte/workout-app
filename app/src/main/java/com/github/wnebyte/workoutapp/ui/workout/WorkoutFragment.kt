@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
-import com.github.wnebyte.workoutapp.ui.ViewPagerFragmentAdapter
+import com.github.wnebyte.workoutapp.widget.ViewPagerFragmentAdapter
 import com.github.wnebyte.workoutapp.ui.ViewPagerHostFragment
 import com.github.wnebyte.workoutapp.ui.workout.session.SessionFragment
 import com.github.wnebyte.workoutapp.ui.workout.stopwatch.StopwatchFragment

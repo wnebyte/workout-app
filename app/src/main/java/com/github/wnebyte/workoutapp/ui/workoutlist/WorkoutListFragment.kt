@@ -1,6 +1,7 @@
 package com.github.wnebyte.workoutapp.ui.workoutlist
 
 import android.content.Context
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -15,6 +16,7 @@ import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutListBinding
 import com.github.wnebyte.workoutapp.databinding.WorkoutCardBinding
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.empty
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
 import com.google.android.material.snackbar.Snackbar
 import java.util.*
@@ -146,9 +148,11 @@ class WorkoutListFragment : Fragment() {
             binding.body.checkIv.setImageResource(
                 when (workout.workout.completed) {
                     true -> {
+                        binding.body.workoutButton.visibility = View.GONE
                         R.drawable.ic_baseline_check_24
                     }
                     false -> {
+                        binding.body.workoutButton.visibility = View.VISIBLE
                         R.drawable.ic_baseline_incomplete_circle_24
                     }
                 }
@@ -157,20 +161,14 @@ class WorkoutListFragment : Fragment() {
 
         private fun deleteWorkout() {
             vm.deleteWorkout(workout)
-            val snackbar = Snackbar.make(binding.root, "", Snackbar.LENGTH_LONG)
-                .setAction("UNDO") {
+            val snackbar = Snackbar.make(binding.root, String.empty(), Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo) {
                     vm.saveWorkout(workout)
                 }
             snackbar.show()
         }
 
         override fun onClick(view: View) {
-            if (!workout.workout.completed) {
-                callbacks?.onWorkout(workout.workout.id)
-            }
-        }
-
-        override fun onLongClick(view: View): Boolean {
             when (workout.workout.completed) {
                 true -> {
                     callbacks?.onEditCompletedWorkout(
@@ -180,6 +178,12 @@ class WorkoutListFragment : Fragment() {
                     callbacks?.onEditWorkout(
                         workout.workout.id, this@WorkoutListFragment::class.java)
                 }
+            }
+        }
+
+        override fun onLongClick(view: View): Boolean {
+            if (!workout.workout.completed) {
+                callbacks?.onWorkout(workout.workout.id)
             }
             return true
         }
