@@ -1,4 +1,4 @@
-package com.github.wnebyte.workoutapp.ui
+package com.github.wnebyte.workoutapp.widget
 
 import android.content.Context
 import android.content.res.TypedArray

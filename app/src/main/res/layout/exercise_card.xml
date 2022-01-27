@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.github.wnebyte.workoutapp.ui.InterceptTouchCardView
+<com.github.wnebyte.workoutapp.widget.InterceptTouchCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
@@ -29,4 +29,4 @@
         android:visibility="gone"
         />
 
-</com.github.wnebyte.workoutapp.ui.InterceptTouchCardView>
+</com.github.wnebyte.workoutapp.widget.InterceptTouchCardView>

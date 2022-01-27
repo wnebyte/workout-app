@@ -1,8 +1,10 @@
 package com.github.wnebyte.workoutapp.ui.progress
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,11 +18,12 @@ import com.github.wnebyte.workoutapp.util.Extensions.Companion.toSign
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.year
 import com.github.wnebyte.workoutapp.model.ProgressItem
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
+import com.github.wnebyte.workoutapp.ui.OnSwipeListener
 import java.text.DateFormatSymbols
 
 private const val TAG = "ProgressFragment"
 
-class ProgressFragment : Fragment() {
+class ProgressFragment : Fragment(), OnSwipeListener {
 
     private val vm: ProgressViewModel by viewModels()
 
@@ -31,6 +34,8 @@ class ProgressFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var _binding: FragmentProgressBinding? = null
+
+    private var gestureDetector: GestureDetectorCompat? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,9 +72,11 @@ class ProgressFragment : Fragment() {
             .inflate(layoutInflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
+        gestureDetector = GestureDetectorCompat(requireContext(), this)
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         vm.progressItemListLiveData.observe(
@@ -81,6 +88,23 @@ class ProgressFragment : Fragment() {
                 }
             }
         )
+        binding.root.setOnTouchListener { _, event ->
+            gestureDetector?.onTouchEvent(event)
+            true
+        }
+    }
+
+    override fun onSwipeLeft() {
+        vm.incrementMonth()
+    }
+
+    override fun onSwipeRight() {
+        vm.decrementMonth()
+    }
+
+    override fun onDestroy() {
+        gestureDetector = null
+        super.onDestroy()
     }
 
     private fun updateUI(items: List<ProgressItem>) {
