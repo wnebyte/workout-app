@@ -1,21 +1,23 @@
 package com.github.wnebyte.workoutapp
 
+import java.util.*
+import java.io.Serializable
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.NavDeepLinkBuilder
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavDeepLinkBuilder
+import com.google.android.material.navigation.NavigationView
 import com.github.wnebyte.workoutapp.ui.exercisecreate.ExerciseCreateFragment
 import com.github.wnebyte.workoutapp.ui.exercisedetails.ExerciseDetailsFragment
 import com.github.wnebyte.workoutapp.ui.exerciseimport.ExerciseImportFragment
@@ -30,8 +32,6 @@ import com.github.wnebyte.workoutapp.ui.workoutdetails.WorkoutDetailsFragment
 import com.github.wnebyte.workoutapp.ui.workoutdetails.WorkoutDetailsFragmentDirections
 import com.github.wnebyte.workoutapp.ui.workoutlist.WorkoutListFragment
 import com.github.wnebyte.workoutapp.ui.workoutlist.WorkoutListFragmentDirections
-import java.io.Serializable
-import java.util.*
 
 private const val TAG = "MainActivity"
 
@@ -215,9 +215,7 @@ class MainActivity: AppCompatActivity(),
     }
 
     companion object {
-        fun newIntent(context: Context): Intent =
-            Intent(context, MainActivity::class.java)
-
+        // Todo: should route the user to their dest via WorkoutListFragment.
         fun newPendingWorkoutIntent(context: Context, workoutId: UUID): PendingIntent =
             NavDeepLinkBuilder(context)
                 .setGraph(R.navigation.mobile_navigation)

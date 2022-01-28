@@ -129,10 +129,7 @@ class WorkoutListFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-    /*
-    uses WorkoutWithExercises > Workout to support removing/re-adding via the snackbar
-     */
+    
     private inner class WorkoutHolder(private val binding: WorkoutCardBinding) :
         RecyclerView.ViewHolder(binding.root),
         View.OnClickListener,
@@ -142,11 +139,9 @@ class WorkoutListFragment : Fragment() {
         init {
             binding.body.root.setOnClickListener(this)
             binding.body.root.setOnLongClickListener(this)
-            binding.body.editButton.setOnClickListener { this.onLongClick(it) }
-            binding.body.workoutButton.setOnClickListener { this.onClick(it) }
-            binding.body.deleteButton.setOnClickListener {
-                deleteWorkout()
-            }
+            binding.body.editButton.setOnClickListener { navEdit() }
+            binding.body.workoutButton.setOnClickListener { navWorkout() }
+            binding.body.deleteButton.setOnClickListener { deleteWorkout() }
         }
 
         fun bind(workout: WorkoutWithExercises) {
@@ -167,6 +162,15 @@ class WorkoutListFragment : Fragment() {
             )
         }
 
+        override fun onClick(view: View) {
+            navEdit()
+        }
+
+        override fun onLongClick(view: View): Boolean {
+            navWorkout()
+            return true
+        }
+
         private fun deleteWorkout() {
             vm.deleteWorkout(workout)
             val snackbar = Snackbar.make(binding.root, String.empty(), Snackbar.LENGTH_LONG)
@@ -176,7 +180,7 @@ class WorkoutListFragment : Fragment() {
             snackbar.show()
         }
 
-        override fun onClick(view: View) {
+        private fun navEdit() {
             when (workout.workout.completed) {
                 true -> {
                     callbacks?.onEditCompletedWorkout(
@@ -189,11 +193,10 @@ class WorkoutListFragment : Fragment() {
             }
         }
 
-        override fun onLongClick(view: View): Boolean {
+        private fun navWorkout() {
             if (!workout.workout.completed) {
                 callbacks?.onWorkout(workout.workout.id)
             }
-            return true
         }
     }
 
