@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="8dp"
-    android:background="@color/black"
     >
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        >
 
         <TextView
             android:id="@+id/date_tv"
@@ -21,13 +21,13 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:text="January 2020"
-            android:textColor="@color/white"
             tools:ignore="HardcodedText"
+            style="?android:attr/textAppearance"
             />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="2dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:layout_toStartOf="@id/date_tv"
@@ -36,7 +36,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="2dp"
             android:layout_centerVertical="true"
             android:layout_marginEnd="16dp"
             android:layout_toEndOf="@id/date_tv"
@@ -48,7 +48,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         />
 
 </com.github.wnebyte.workoutapp.widget.InterceptLinearLayout>

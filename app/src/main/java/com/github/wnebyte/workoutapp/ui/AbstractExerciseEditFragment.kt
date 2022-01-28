@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.R
@@ -21,18 +22,19 @@ import com.github.wnebyte.workoutapp.util.Extensions.Companion.toEmptyString
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
 import com.google.android.material.snackbar.Snackbar
+import jp.wasabeef.recyclerview.animators.FadeInRightAnimator
 
-abstract class AbstractExerciseEditFragment(): Fragment() {
+abstract class AbstractExerciseEditFragment: Fragment() {
 
-    private val adapter = SetAdapter()
+    protected val adapter = SetAdapter()
 
-    private val binding get() = _binding!!
+    protected val binding get() = _binding!!
 
-    private var _binding: FragmentExerciseEditBinding? = null
+    protected var _binding: FragmentExerciseEditBinding? = null
 
-    private val removedItems: MutableList<Set> = mutableListOf()
+    protected val removedItems: MutableList<Set> = mutableListOf()
 
-    private lateinit var exercise: ExerciseWithSets
+    protected lateinit var exercise: ExerciseWithSets
 
     protected var hashCode: Int? = null
 
@@ -43,6 +45,12 @@ abstract class AbstractExerciseEditFragment(): Fragment() {
     ): View? {
         _binding = FragmentExerciseEditBinding
             .inflate(layoutInflater, container, false)
+        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        binding.recyclerView.adapter = adapter
+        binding.recyclerView.itemAnimator = FadeInRightAnimator().apply {
+            addDuration = 250
+            removeDuration = 250
+        }
         return binding.root
     }
 
@@ -53,7 +61,7 @@ abstract class AbstractExerciseEditFragment(): Fragment() {
     /**
      * Binds an instance of [ExerciseWithSets] to the UI.
      */
-    private fun updateUI() {
+    protected fun updateUI() {
         binding.name
             .setText(exercise.exercise.name, TextView.BufferType.EDITABLE)
         adapter.submitList(exercise.sets)
@@ -63,7 +71,7 @@ abstract class AbstractExerciseEditFragment(): Fragment() {
      * Adds a new item to the tail end of the underlying data-set.
      * The adapter will thereafter be notified of an inserted item.
      */
-    private fun dataSetAdd() {
+    protected fun dataSetAdd() {
         exercise.sets.add(
             Set.newInstance(exercise = exercise.exercise.id))
         adapter.notifyItemInserted(adapter.itemCount)
@@ -75,7 +83,7 @@ abstract class AbstractExerciseEditFragment(): Fragment() {
      * The adapter will thereafter be notified of a removed item at position index.
      * @param index the index of the to-be removed item.
      */
-    private fun dataSetRemove(index: Int) {
+    protected fun dataSetRemove(index: Int) {
         val item = exercise.sets.removeAt(index)
         removedItems.add(item)
         adapter.notifyItemRemoved(index)
@@ -88,14 +96,14 @@ abstract class AbstractExerciseEditFragment(): Fragment() {
      * @param index the index of the to-be inserted item.
      * @param item the set to be inserted.
      */
-    private fun dataSetInsert(index: Int, item: Set) {
+    protected fun dataSetInsert(index: Int, item: Set) {
         removedItems.remove(item)
         exercise.sets.add(item)
         adapter.notifyItemInserted(index)
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private inner class SetHolder(private val binding: SetBinding):
+    protected inner class SetHolder(private val binding: SetBinding):
         RecyclerView.ViewHolder(binding.root),
         OnSwipeListener,
         View.OnTouchListener {
@@ -157,7 +165,7 @@ abstract class AbstractExerciseEditFragment(): Fragment() {
         }
     }
 
-    private inner class SetAdapter: ListAdapter<Set, SetHolder>
+    protected inner class SetAdapter: ListAdapter<Set, SetHolder>
         (AdapterUtil.DIFF_UTIL_SET_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SetHolder {

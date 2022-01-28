@@ -1,5 +1,7 @@
 package com.github.wnebyte.workoutapp.ui.exerciselist
 
+import java.util.*
+import java.lang.Exception
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
@@ -14,14 +16,12 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.github.wnebyte.workoutapp.databinding.*
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import com.github.wnebyte.workoutapp.ui.OnSwipeListener
-import com.google.android.material.snackbar.Snackbar
-import java.lang.Exception
-import java.util.*
 
 private const val TAG = "ExerciseListFragment"
 

@@ -19,10 +19,8 @@ import com.github.wnebyte.workoutapp.util.Extensions.Companion.year
 import com.github.wnebyte.workoutapp.model.ProgressItem
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import com.github.wnebyte.workoutapp.ui.OnSwipeListener
-import jp.wasabeef.recyclerview.animators.FadeInRightAnimator
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator
 import jp.wasabeef.recyclerview.animators.SlideInRightAnimator
-import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 import java.text.DateFormatSymbols
 
 private const val TAG = "ProgressFragment"
@@ -48,7 +46,7 @@ class ProgressFragment : Fragment(), OnSwipeListener {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.fragment_dashboard, menu)
+        inflater.inflate(R.menu.fragment_progress, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

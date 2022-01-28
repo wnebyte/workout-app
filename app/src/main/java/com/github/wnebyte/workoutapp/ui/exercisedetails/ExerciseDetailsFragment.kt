@@ -40,19 +40,19 @@ class ExerciseDetailsFragment: Fragment() {
 
     private val args: ExerciseDetailsFragmentArgs by navArgs()
 
+    private val adapter = SetAdapter()
+
+    private val removedItems: MutableList<Set> = mutableListOf()
+
     private val binding get() = _binding!!
 
     private var _binding: FragmentExerciseDetailsBinding? = null
 
     private var callbacks: Callbacks? = null
 
-    private val adapter = SetAdapter()
-
-    private val removedItems: MutableList<Set> = mutableListOf()
+    private var hashCode: Int? = null
 
     private lateinit var exercise: ExerciseWithSets
-
-    private var hashCode: Int? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -153,8 +153,8 @@ class ExerciseDetailsFragment: Fragment() {
     }
 
     /**
-     * Adds a new item to the tail end of the underlying data-set.
-     * The adapter will thereafter be notified of an inserted item.
+     * Adds a new [Set] with default values to the backed dataset and
+     * notifies the adapter.
      */
     private fun dataSetAdd() {
         exercise.sets.add(
@@ -163,10 +163,9 @@ class ExerciseDetailsFragment: Fragment() {
     }
 
     /**
-     * Removes the item positioned at [index] from the underlying
-     * data-set, and adds it to [removedItems].
-     * The adapter will thereafter be notified of a removed item at position index.
-     * @param index the index of the to-be removed item.
+     * Removes the [Set] positioned at the specified [index] from the backed dataset and
+     * adds it to [removedItems] and notifies the adapter.
+     * @param index the index of item to be removed.
      */
     private fun dataSetRemove(index: Int) {
         val item = exercise.sets.removeAt(index)
@@ -176,10 +175,9 @@ class ExerciseDetailsFragment: Fragment() {
     }
 
     /**
-     * Inserts the specified [item] at position [index] in the underlying data-set, and
-     * removes it from [removedItems].
-     * The adapter will thereafter be notified of an inserted item at position index.
-     * @param index the index of the to-be inserted item.
+     * Inserts the specified [item] at the specified [index] in the backed dataset and
+     * removes the item from [removedItems] and notifies the adapter.
+     * @param index the index of the item.
      * @param item the set to be inserted.
      */
     private fun dataSetInsert(index: Int, item: Set) {
@@ -228,8 +226,8 @@ class ExerciseDetailsFragment: Fragment() {
         }
 
         /**
-         * Removes the [Set] instance associated with [getAdapterPosition] from the UI,
-         * and prompts the display of a Snackbar where the user is presented with the option
+         * Removes the [Set] associated with [getAdapterPosition] from the UI,
+         * and prompts the display of a Snackbar that presents the user with the option
          * of undoing said removal.
          */
         private fun removeSet() {

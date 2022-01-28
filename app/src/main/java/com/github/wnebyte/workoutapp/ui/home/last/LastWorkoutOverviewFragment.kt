@@ -1,6 +1,7 @@
 package com.github.wnebyte.workoutapp.ui.home.last
 
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.github.wnebyte.workoutapp.R
@@ -13,7 +14,7 @@ class LastWorkoutOverviewFragment : AbstractWorkoutOverviewFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        super.binding.title.text = resources.getString(R.string.last_workout_title)
+        binding.title.text = resources.getString(R.string.last_workout_title)
     }
 
     companion object {

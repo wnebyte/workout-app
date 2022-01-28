@@ -1,6 +1,7 @@
 package com.github.wnebyte.workoutapp.ui.home
 
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -26,11 +27,11 @@ abstract class AbstractWorkoutOverviewFragment : Fragment() {
 
     protected val binding get() = _binding!!
 
-    private val adapter = ExerciseAdapter()
+    protected val adapter = ExerciseAdapter()
 
-    private var _binding: FragmentWorkoutOverviewBinding? = null
+    protected var _binding: FragmentWorkoutOverviewBinding? = null
 
-    private var workout: WorkoutWithExercises? = null
+    protected var workout: WorkoutWithExercises? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,18 +56,31 @@ abstract class AbstractWorkoutOverviewFragment : Fragment() {
                 }
             }
         )
+
     }
 
-    private fun updateUI() {
+    override fun onStop() {
+        super.onStop()
+        binding.chronometer.stop()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    protected open fun updateUI() {
         workout?.let { it ->
             it.workout.date?.let {
-                binding.chronometer.text = it.format("yyyy/MM/dd")
+                val offset = (System.currentTimeMillis() - SystemClock.elapsedRealtime())
+                binding.chronometer.base = it.time - offset
+                binding.chronometer.start()
             }
             adapter.submitList(it.exercises)
         }
     }
 
-    private inner class ExerciseHolder(private val binding: ExerciseCardBinding)
+    protected inner class ExerciseHolder(private val binding: ExerciseCardBinding)
         : RecyclerView.ViewHolder(binding.root) {
         private lateinit var exercise: ExerciseWithSets
         private val adapter = SetAdapter()
@@ -83,7 +97,7 @@ abstract class AbstractWorkoutOverviewFragment : Fragment() {
         }
     }
 
-    private inner class ExerciseAdapter: ListAdapter<ExerciseWithSets, ExerciseHolder>
+    protected inner class ExerciseAdapter: ListAdapter<ExerciseWithSets, ExerciseHolder>
         (AdapterUtil.DIFF_UTIL_EXERCISE_WITH_SETS_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseHolder {
@@ -98,7 +112,7 @@ abstract class AbstractWorkoutOverviewFragment : Fragment() {
         }
     }
 
-    private inner class SetHolder(private val binding: SetItemBinding) :
+    protected inner class SetHolder(private val binding: SetItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         private lateinit var set: Set
 
@@ -108,7 +122,7 @@ abstract class AbstractWorkoutOverviewFragment : Fragment() {
         }
     }
 
-    private inner class SetAdapter : ListAdapter<Set, SetHolder>
+    protected inner class SetAdapter : ListAdapter<Set, SetHolder>
         (AdapterUtil.DIFF_UTIL_SET_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SetHolder {

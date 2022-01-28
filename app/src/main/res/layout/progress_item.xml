@@ -6,16 +6,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="120dp"
-    android:clickable="false"
-    android:focusable="false"
-    android:longClickable="false"
-    card_view:cardBackgroundColor="@color/transparent"
-    card_view:rippleColor="@color/green"
-    card_view:cardCornerRadius="20dp"
+    android:layout_gravity="center"
+    card_view:cardBackgroundColor="@color/cardview_light_background"
+    card_view:cardCornerRadius="7dp"
     card_view:cardElevation="5dp"
     card_view:cardUseCompatPadding="true"
-    card_view:strokeColor="@color/green"
-    card_view:strokeWidth="1.5dp"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,7 +24,6 @@
             android:layout_height="45dp"
             android:layout_marginStart="20dp"
             android:src="@drawable/ic_baseline_fitness_center_24"
-            app:tint="@color/green"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             card_view:layout_constraintBottom_toBottomOf="parent"
@@ -53,7 +47,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:text="55"
-            android:textColor="@color/white"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@id/img"
             app:layout_constraintStart_toEndOf="@id/img"
@@ -68,7 +61,6 @@
             app:layout_constraintStart_toEndOf="@id/avg_tv"
             app:layout_constraintBottom_toBottomOf="@id/img"
             android:text="kg"
-            android:textColor="@color/white"
             tools:ignore="HardcodedText"
             />
 

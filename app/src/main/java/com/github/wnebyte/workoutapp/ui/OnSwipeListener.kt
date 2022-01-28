@@ -1,10 +1,10 @@
 package com.github.wnebyte.workoutapp.ui
 
+import java.lang.Exception
+import kotlin.math.abs
 import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
-import java.lang.Exception
-import kotlin.math.abs
 
 private const val TAG = "OnSwipeListener"
 
