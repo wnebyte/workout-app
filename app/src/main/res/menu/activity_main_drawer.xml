@@ -27,7 +27,7 @@
             <menu>
                 <group android:checkableBehavior="single">
                     <item
-                        android:id="@+id/nav_workout_list"
+                        android:id="@+id/workout_navigation"
                         android:title="Workouts"
                         android:icon="@drawable/ic_baseline_fitness_center_24"
                         />

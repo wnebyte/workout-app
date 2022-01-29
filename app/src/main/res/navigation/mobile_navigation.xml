@@ -10,8 +10,14 @@
         android:id="@+id/nav_home"
         android:name="com.github.wnebyte.workoutapp.ui.home.HomeFragment"
         android:label="@string/nav_home"
-        tools:layout="@layout/fragment_workout_overview"
-        />
+        tools:layout="@layout/fragment_workout_overview">
+        <!--
+        <action
+            android:id="@+id/action_nav_home_to_workout_list"
+            app:destination="@+id/workout_navigation"
+            />
+        -->
+        </fragment>
 
     <fragment
         android:id="@+id/nav_progress"
@@ -68,119 +74,129 @@
             app:nullable="false" />
     </fragment>
 
-    <fragment
-        android:id="@+id/nav_workout_list"
-        android:name="com.github.wnebyte.workoutapp.ui.workoutlist.WorkoutListFragment"
-        android:label="@string/nav_workout_list"
-        tools:layout="@layout/fragment_workout_list">
-        <action
-            android:id="@+id/action_nav_workout_list_to_nav_workout_details"
-            app:destination="@id/nav_workout_details" />
-        <action
-            android:id="@+id/action_nav_workout_list_to_nav_workout_details_final"
-            app:destination="@+id/nav_workout_details_final"/>
-        <action
-            android:id="@+id/action_nav_workout_list_to_nav_workout_create"
-            app:destination="@id/nav_workout_create" />
-        <action
-            android:id="@+id/action_nav_workout_list_to_nav_workout_view_pager"
-            app:destination="@id/nav_workout_view_pager" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/nav_workout_details"
-        android:name="com.github.wnebyte.workoutapp.ui.workoutdetails.WorkoutDetailsFragment"
-        android:label="@string/nav_workout_details"
-        tools:layout="@layout/fragment_workout_details">
-        <argument
-            android:name="workoutId"
-            app:argType="java.util.UUID"
-            app:nullable="false" />
-        <action
-            android:id="@+id/action_nav_workout_details_to_nav_exercise_import"
-            app:destination="@id/nav_exercise_import" />
-        <action
-            android:id="@+id/action_nav_workout_details_to_nav_exercise_create"
-            app:destination="@id/nav_exercise_create" />
-        <action
-            android:id="@+id/action_nav_workout_details_to_nav_exercise_details"
-            app:destination="@+id/nav_exercise_details"
-            />
-    </fragment>
-
-    <fragment
-        android:id="@+id/nav_workout_details_final"
-        android:name="com.github.wnebyte.workoutapp.ui.workoutdetailsfinal.WorkoutDetailsFinalFragment"
-        android:label="@string/nav_workout_details"
-        tools:layout="@layout/fragment_workout_details_final"
+    <navigation
+        android:id="@+id/workout_navigation"
+        app:startDestination="@id/nav_workout_list"
         >
-        <argument
-            android:name="workoutId"
-            app:argType="java.util.UUID"
-            app:nullable="true"
-            android:defaultValue="@null"
-            />
-    </fragment>
 
-    <fragment
-        android:id="@+id/nav_workout_create"
-        android:name="com.github.wnebyte.workoutapp.ui.workoutcreate.WorkoutCreateFragment"
-        android:label="@string/nav_workout_create"
-        tools:layout="@layout/fragment_workout_create">
-        <action
-            android:id="@+id/action_nav_workout_create_to_nav_exercise_import"
-            app:destination="@id/nav_exercise_import" />
-        <action
-            android:id="@+id/action_nav_workout_create_to_nav_exercise_create"
-            app:destination="@id/nav_exercise_create" />
-        <action
-            android:id="@+id/action_nav_workout_create_to_nav_exercise_details"
-            app:destination="@+id/nav_exercise_details"
-            />
-    </fragment>
+        <fragment
+            android:id="@+id/nav_workout_list"
+            android:name="com.github.wnebyte.workoutapp.ui.workoutlist.WorkoutListFragment"
+            android:label="@string/nav_workout_list"
+            tools:layout="@layout/fragment_workout_list">
+            <action
+                android:id="@+id/action_nav_workout_list_to_nav_workout_details"
+                app:destination="@id/nav_workout_details" />
+            <action
+                android:id="@+id/action_nav_workout_list_to_nav_workout_details_final"
+                app:destination="@+id/nav_workout_details_final"/>
+            <action
+                android:id="@+id/action_nav_workout_list_to_nav_workout_create"
+                app:destination="@id/nav_workout_create" />
+            <action
+                android:id="@+id/action_nav_workout_list_to_nav_workout_view_pager"
+                app:destination="@id/nav_workout_view_pager" />
+            <deepLink app:uri="https://properbackstack.com/level1"/>
+        </fragment>
 
-    <fragment
-        android:id="@+id/nav_workout_view_pager"
-        android:name="com.github.wnebyte.workoutapp.ui.workout.ViewPagerFragment"
-        android:label="@string/nav_workout_view_pager"
-        tools:layout="@layout/fragment_view_pager">
-        <argument
-            android:name="workoutId"
-            app:argType="java.util.UUID"
-            app:nullable="false" />
-        <argument
-            android:name="pendingIntent"
-            app:argType="boolean"
-            android:defaultValue="false"
-            />
-        <action
-            android:id="@+id/action_nav_view_pager_to_nav_workout_details"
-            app:destination="@+id/nav_workout_details" />
-        <action
-            android:id="@+id/action_nav_view_pager_to_nav_workout_details_final"
-            app:destination="@+id/nav_workout_details_final" />
-    </fragment>
+        <fragment
+            android:id="@+id/nav_workout_details"
+            android:name="com.github.wnebyte.workoutapp.ui.workoutdetails.WorkoutDetailsFragment"
+            android:label="@string/nav_workout_details"
+            tools:layout="@layout/fragment_workout_details">
+            <argument
+                android:name="workoutId"
+                app:argType="java.util.UUID"
+                app:nullable="false" />
+            <action
+                android:id="@+id/action_nav_workout_details_to_nav_exercise_import"
+                app:destination="@id/nav_exercise_import" />
+            <action
+                android:id="@+id/action_nav_workout_details_to_nav_exercise_create"
+                app:destination="@id/nav_exercise_create" />
+            <action
+                android:id="@+id/action_nav_workout_details_to_nav_exercise_details"
+                app:destination="@+id/nav_exercise_details"
+                />
+        </fragment>
 
-    <fragment
-        android:id="@+id/nav_workout_session"
-        android:name="com.github.wnebyte.workoutapp.ui.workout.session.SessionFragment"
-        android:label="@string/nav_workout_session"
-        tools:layout="@layout/fragment_workout_session">
-        <argument
-            android:name="workoutId"
-            app:argType="java.util.UUID"
-            app:nullable="false" />
-    </fragment>
+        <fragment
+            android:id="@+id/nav_workout_details_final"
+            android:name="com.github.wnebyte.workoutapp.ui.workoutdetailsfinal.WorkoutDetailsFinalFragment"
+            android:label="@string/nav_workout_details"
+            tools:layout="@layout/fragment_workout_details_final"
+            >
+            <argument
+                android:name="workoutId"
+                app:argType="java.util.UUID"
+                app:nullable="true"
+                android:defaultValue="@null"
+                />
+        </fragment>
 
-    <fragment
-        android:id="@+id/nav_workout_stopwatch"
-        android:name="com.github.wnebyte.workoutapp.ui.workout.stopwatch.StopwatchFragment"
-        android:label="@string/nav_workout_stopwatch"
-        tools:layout="@layout/fragment_workout_stopwatch">
-        <argument
-            android:name="workoutId"
-            app:argType="java.util.UUID"
-            app:nullable="false" />
-    </fragment>
+        <fragment
+            android:id="@+id/nav_workout_create"
+            android:name="com.github.wnebyte.workoutapp.ui.workoutcreate.WorkoutCreateFragment"
+            android:label="@string/nav_workout_create"
+            tools:layout="@layout/fragment_workout_create">
+            <action
+                android:id="@+id/action_nav_workout_create_to_nav_exercise_import"
+                app:destination="@id/nav_exercise_import" />
+            <action
+                android:id="@+id/action_nav_workout_create_to_nav_exercise_create"
+                app:destination="@id/nav_exercise_create" />
+            <action
+                android:id="@+id/action_nav_workout_create_to_nav_exercise_details"
+                app:destination="@+id/nav_exercise_details"
+                />
+        </fragment>
+
+        <fragment
+            android:id="@+id/nav_workout_view_pager"
+            android:name="com.github.wnebyte.workoutapp.ui.workout.ViewPagerFragment"
+            android:label="@string/nav_workout_view_pager"
+            tools:layout="@layout/fragment_view_pager">
+            <argument
+                android:name="workoutId"
+                app:argType="java.util.UUID"
+                app:nullable="false" />
+            <argument
+                android:name="pendingIntent"
+                app:argType="boolean"
+                android:defaultValue="false"
+                />
+            <action
+                android:id="@+id/action_nav_view_pager_to_nav_workout_details"
+                app:destination="@+id/nav_workout_details" />
+            <action
+                android:id="@+id/action_nav_view_pager_to_nav_workout_details_final"
+                app:destination="@+id/nav_workout_details_final" />
+            <deepLink app:uri="https://properbackstack.com/level2/{workoutId}/{pendingIntent}" />
+        </fragment>
+
+        <fragment
+            android:id="@+id/nav_workout_session"
+            android:name="com.github.wnebyte.workoutapp.ui.workout.session.SessionFragment"
+            android:label="@string/nav_workout_session"
+            tools:layout="@layout/fragment_workout_session">
+            <argument
+                android:name="workoutId"
+                app:argType="java.util.UUID"
+                app:nullable="false" />
+        </fragment>
+
+        <fragment
+            android:id="@+id/nav_workout_stopwatch"
+            android:name="com.github.wnebyte.workoutapp.ui.workout.stopwatch.StopwatchFragment"
+            android:label="@string/nav_workout_stopwatch"
+            tools:layout="@layout/fragment_workout_stopwatch">
+            <argument
+                android:name="workoutId"
+                app:argType="java.util.UUID"
+                app:nullable="false" />
+        </fragment>
+
+
+    </navigation>
 
 </navigation>

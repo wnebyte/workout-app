@@ -218,6 +218,7 @@ class MainActivity: AppCompatActivity(),
         // Todo: should route the user to their dest via WorkoutListFragment.
         fun newPendingWorkoutIntent(context: Context, workoutId: UUID): PendingIntent =
             NavDeepLinkBuilder(context)
+                .setComponentName(MainActivity::class.java)
                 .setGraph(R.navigation.mobile_navigation)
                 .setDestination(R.id.nav_workout_view_pager)
                 .setArguments(Bundle().apply {
