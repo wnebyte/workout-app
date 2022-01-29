@@ -56,7 +56,7 @@ class MainActivity: AppCompatActivity(),
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
-        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+        navController.addOnDestinationChangedListener { _, destination, _ ->
             Log.i(TAG, "navigating to dest: $destination")
             if (destination.id == R.id.nav_workout_list && navView.checkedItem == null) {
                 val menuItem = navView.menu.findItem(R.id.workout_navigation)

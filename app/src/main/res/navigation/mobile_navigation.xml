@@ -11,12 +11,6 @@
         android:name="com.github.wnebyte.workoutapp.ui.home.HomeFragment"
         android:label="@string/nav_home"
         tools:layout="@layout/fragment_workout_overview">
-        <!--
-        <action
-            android:id="@+id/action_nav_home_to_workout_list"
-            app:destination="@+id/workout_navigation"
-            />
-        -->
         </fragment>
 
     <fragment
