@@ -18,6 +18,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.github.wnebyte.workoutapp.ui.AbstractExerciseEditFragment
 import com.google.android.material.navigation.NavigationView
 import com.github.wnebyte.workoutapp.ui.exercisecreate.ExerciseCreateFragment
 import com.github.wnebyte.workoutapp.ui.exercisedetails.ExerciseDetailsFragment
@@ -38,9 +39,8 @@ private const val TAG = "MainActivity"
 
 class MainActivity: AppCompatActivity(),
     ExerciseListFragment.Callbacks,
-    ExerciseDetailsFragment.Callbacks,
-    ExerciseCreateFragment.Callbacks,
     ExerciseImportFragment.Callbacks,
+    AbstractExerciseEditFragment.Callbacks,
     WorkoutListFragment.Callbacks,
     WorkoutDetailsFragment.Callbacks,
     WorkoutCreateFragment.Callbacks,

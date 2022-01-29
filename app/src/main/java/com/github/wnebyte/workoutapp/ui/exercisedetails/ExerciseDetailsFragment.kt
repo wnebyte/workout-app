@@ -1,125 +1,28 @@
 package com.github.wnebyte.workoutapp.ui.exercisedetails
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
-import android.text.TextUtils
-import android.util.Log
 import android.view.*
-import android.widget.TextView
-import androidx.core.view.GestureDetectorCompat
-import androidx.core.widget.doOnTextChanged
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.github.wnebyte.workoutapp.R
-import com.github.wnebyte.workoutapp.databinding.FragmentExerciseDetailsBinding
-import com.github.wnebyte.workoutapp.databinding.SetBinding
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.empty
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.toEmptyString
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
-import com.github.wnebyte.workoutapp.model.Set
-import com.github.wnebyte.workoutapp.ui.AdapterUtil
-import com.github.wnebyte.workoutapp.ui.OnSwipeListener
-import com.google.android.material.snackbar.Snackbar
-import jp.wasabeef.recyclerview.animators.FadeInRightAnimator
-import java.lang.Exception
+import com.github.wnebyte.workoutapp.ui.AbstractExerciseEditFragment
 
-private const val TAG = "ExerciseDetailsFragment"
+class ExerciseDetailsFragment: AbstractExerciseEditFragment() {
 
-class ExerciseDetailsFragment: Fragment() {
+    override val TAG = "ExerciseDetailsFragment"
 
-    interface Callbacks {
-        fun onFinished()
-    }
-
-    private val vm: ExerciseDetailsViewModel by viewModels()
+    override val vm: ExerciseDetailsViewModel by viewModels()
 
     private val args: ExerciseDetailsFragmentArgs by navArgs()
-
-    private val adapter = SetAdapter()
-
-    private val removedItems: MutableList<Set> = mutableListOf()
-
-    private val binding get() = _binding!!
-
-    private var _binding: FragmentExerciseDetailsBinding? = null
-
-    private var callbacks: Callbacks? = null
-
-    private var hashCode: Int? = null
-
-    private lateinit var exercise: ExerciseWithSets
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        try {
-            callbacks = context as Callbacks
-        } catch (ex: Exception) {
-            throw IllegalStateException(
-                "Hosting activity needs to implement Callbacks interface"
-            )
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         exercise = ExerciseWithSets.newInstance()
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.fragment_exercise_details, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.add_set -> {
-                dataSetAdd()
-                true
-            } else -> {
-                super.onOptionsItemSelected(item)
-            }
-        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentExerciseDetailsBinding.inflate(inflater, container, false)
-        binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        binding.recyclerView.adapter = adapter
-        binding.recyclerView.itemAnimator = FadeInRightAnimator().apply {
-            addDuration = 250
-            removeDuration = 250
-        }
-        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vm.exerciseLiveData.observe(
-            viewLifecycleOwner,
-            { exercise ->
-                exercise?.let { it ->
-                    Log.i(TAG, "Got exercise: ${it.exercise.id}")
-                    this.exercise = it
-                    this.hashCode = it.hashCode()
-                    updateUI()
-                }
-            }
-        )
-        binding.name.doOnTextChanged { text, _, _, _ ->
-            if (!TextUtils.isEmpty(text)) {
-                exercise.exercise.name = text.toString()
-            }
-        }
+        binding.buttonBar.root.visibility = View.GONE
         vm.loadExercise(args.exerciseId)
     }
 
@@ -130,142 +33,6 @@ class ExerciseDetailsFragment: Fragment() {
         }
         if (removedItems.isNotEmpty()) {
             vm.deleteSets(removedItems)
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        callbacks = null
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    /**
-     * Binds an instance of [ExerciseWithSets] to the UI.
-     */
-    private fun updateUI() {
-        binding.name
-            .setText(exercise.exercise.name, TextView.BufferType.EDITABLE)
-        adapter.submitList(exercise.sets)
-    }
-
-    /**
-     * Adds a new [Set] with default values to the backed dataset and
-     * notifies the adapter.
-     */
-    private fun dataSetAdd() {
-        exercise.sets.add(
-            Set.newInstance(exercise = exercise.exercise.id))
-        adapter.notifyItemInserted(adapter.itemCount)
-    }
-
-    /**
-     * Removes the [Set] positioned at the specified [index] from the backed dataset and
-     * adds it to [removedItems] and notifies the adapter.
-     * @param index the index of item to be removed.
-     */
-    private fun dataSetRemove(index: Int) {
-        val item = exercise.sets.removeAt(index)
-        Log.i(TAG, "Removing item: $item at index: $index")
-        removedItems.add(item)
-        adapter.notifyItemRemoved(index)
-    }
-
-    /**
-     * Inserts the specified [item] at the specified [index] in the backed dataset and
-     * removes the item from [removedItems] and notifies the adapter.
-     * @param index the index of the item.
-     * @param item the set to be inserted.
-     */
-    private fun dataSetInsert(index: Int, item: Set) {
-        Log.i(TAG, "Inserting item: $item at index: $index")
-        removedItems.remove(item)
-        exercise.sets.add(index, item)
-        adapter.notifyItemInserted(index)
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private inner class SetHolder(private val binding: SetBinding):
-        RecyclerView.ViewHolder(binding.root),
-        OnSwipeListener,
-        View.OnTouchListener {
-        private lateinit var set: Set
-        private val gestureDetector = GestureDetectorCompat(requireContext(), this)
-
-        init {
-            binding.weights.setOnTouchListener(this)
-            binding.reps.setOnTouchListener(this)
-            binding.repsLayout.setEndIconOnClickListener {
-                removeSet()
-            }
-            binding.weights.doOnTextChanged { text, _, _, _ ->
-                if (!TextUtils.isEmpty(text)) {
-                    set.weights = text.toString().toDouble()
-                }
-            }
-            binding.reps.doOnTextChanged { text, _, _, _ ->
-                if (!TextUtils.isEmpty(text)) {
-                    set.reps = text.toString().toInt()
-                }
-            }
-        }
-
-        /**
-         * Bind the specified [set] to the ViewHolder.
-         * @param set to be bound.
-         */
-        fun bind(set: Set) {
-            this.set = set
-            binding.weights
-                .setText(set.weights.toEmptyString(), TextView.BufferType.EDITABLE)
-            binding.reps
-                .setText(set.reps.toEmptyString(), TextView.BufferType.EDITABLE)
-        }
-
-        /**
-         * Removes the [Set] associated with [getAdapterPosition] from the UI,
-         * and prompts the display of a Snackbar that presents the user with the option
-         * of undoing said removal.
-         */
-        private fun removeSet() {
-            val index = adapterPosition
-            dataSetRemove(index)
-            val snackbar = Snackbar.make(binding.root, String.empty(), Snackbar.LENGTH_LONG)
-                .setAction(R.string.undo) {
-                    dataSetInsert(index, set)
-                }
-            snackbar.show()
-        }
-
-        override fun onSwipeRight() {
-            removeSet()
-        }
-
-        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-            gestureDetector.onTouchEvent(event)
-            return false
-        }
-    }
-
-    private inner class SetAdapter: ListAdapter<Set, SetHolder>
-        (AdapterUtil.DIFF_UTIL_SET_CALLBACK) {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SetHolder {
-            val view = SetBinding.inflate(layoutInflater, parent, false)
-            return SetHolder(view)
-        }
-
-        override fun onBindViewHolder(holder: SetHolder, position: Int) {
-            val set = getItem(position)
-            return holder.bind(set)
-        }
-
-        override fun onViewAttachedToWindow(holder: SetHolder) {
-            super.onViewAttachedToWindow(holder)
-          //  holder.itemView.requestFocus()
         }
     }
 }

@@ -1,12 +1,12 @@
 package com.github.wnebyte.workoutapp.ui
 
+import java.lang.Exception
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
 import android.widget.TextView
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.widget.doOnTextChanged
@@ -26,17 +26,59 @@ import jp.wasabeef.recyclerview.animators.FadeInRightAnimator
 
 abstract class AbstractExerciseEditFragment: Fragment() {
 
+    interface Callbacks {
+        fun onFinished()
+    }
+
+    protected open val TAG = "AbstractExerciseEditFragment"
+
+    protected abstract val vm: AbstractExerciseEditViewModel
+
     protected val adapter = SetAdapter()
+
+    protected val removedItems: MutableList<Set> = mutableListOf()
 
     protected val binding get() = _binding!!
 
     protected var _binding: FragmentExerciseEditBinding? = null
 
-    protected val removedItems: MutableList<Set> = mutableListOf()
+    protected var hashCode: Int? = null
+
+    protected var callbacks: Callbacks? = null
 
     protected lateinit var exercise: ExerciseWithSets
 
-    protected var hashCode: Int? = null
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        try {
+            callbacks = context as Callbacks
+        } catch (ex: Exception) {
+            throw IllegalStateException(
+                "Hosting activity needs to implement Callbacks interface"
+            )
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_exercise_edit, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.add_set -> {
+                dataSetAdd()
+                true
+            } else -> {
+                return super.onOptionsItemSelected(item)
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,17 +93,39 @@ abstract class AbstractExerciseEditFragment: Fragment() {
             addDuration = 250
             removeDuration = 250
         }
+        vm.exerciseLiveData.observe(
+            viewLifecycleOwner,
+            { exercise ->
+                exercise?.let { it ->
+                    Log.i(TAG, "Got exercise: ${it.exercise.id}")
+                    this.exercise = it
+                    this.hashCode = it.hashCode()
+                    updateUI()
+                }
+            }
+        )
+        binding.name.doOnTextChanged { text, _, _, _ ->
+            if (!TextUtils.isEmpty(text)) {
+                exercise.exercise.name = text.toString()
+            }
+        }
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
     }
 
     /**
      * Binds an instance of [ExerciseWithSets] to the UI.
      */
-    protected fun updateUI() {
+    protected open fun updateUI() {
         binding.name
             .setText(exercise.exercise.name, TextView.BufferType.EDITABLE)
         adapter.submitList(exercise.sets)
@@ -98,7 +162,7 @@ abstract class AbstractExerciseEditFragment: Fragment() {
      */
     protected fun dataSetInsert(index: Int, item: Set) {
         removedItems.remove(item)
-        exercise.sets.add(item)
+        exercise.sets.add(index, item)
         adapter.notifyItemInserted(index)
     }
 
@@ -156,7 +220,7 @@ abstract class AbstractExerciseEditFragment: Fragment() {
         }
 
         override fun onSwipeRight() {
-            removeSet()
+
         }
 
         override fun onTouch(v: View?, event: MotionEvent?): Boolean {
@@ -176,11 +240,6 @@ abstract class AbstractExerciseEditFragment: Fragment() {
         override fun onBindViewHolder(holder: SetHolder, position: Int) {
             val set = getItem(position)
             return holder.bind(set)
-        }
-
-        override fun onViewAttachedToWindow(holder: SetHolder) {
-            super.onViewAttachedToWindow(holder)
-            //  holder.itemView.requestFocus()
         }
     }
 }
