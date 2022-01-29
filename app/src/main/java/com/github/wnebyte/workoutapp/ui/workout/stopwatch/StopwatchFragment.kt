@@ -30,9 +30,11 @@ class StopwatchFragment : VisibleFragment() {
 
     private val binding get() = _binding!!
 
-    private lateinit var receiver: BroadcastReceiver
+    private var _digits: Array<TextView>? = null
 
-    private var textViews: Array<TextView>? = null
+    private val digits get() = _digits!!
+
+    private lateinit var receiver: BroadcastReceiver
 
     override fun onStart() {
         super.onStart()
@@ -58,8 +60,7 @@ class StopwatchFragment : VisibleFragment() {
     override fun onPause() {
         super.onPause()
         super.unregisterReceiver()
-        val index = binding.viewFlipper.displayedChild
-        vm.index = index
+        vm.index = binding.vf.displayedChild
     }
 
     override fun onCreateView(
@@ -69,7 +70,7 @@ class StopwatchFragment : VisibleFragment() {
     ): View {
         _binding = FragmentWorkoutStopwatchBinding
             .inflate(layoutInflater, container, false)
-        textViews = arrayOf(
+        _digits = arrayOf(
             binding.i0, binding.i1, binding.i2,
             binding.i3, binding.i4, binding.i5, binding.i6
         )
@@ -84,7 +85,7 @@ class StopwatchFragment : VisibleFragment() {
             }
         }
         // re-register onClickListeners whenever the view-flipper's layout changes
-        binding.viewFlipper.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+        binding.vf.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
             registerOnClickListeners()
         }
         return binding.root
@@ -99,25 +100,25 @@ class StopwatchFragment : VisibleFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        textViews = null
+        _digits = null
     }
 
     private fun updateUI() {
-        binding.viewFlipper.displayedChild = vm.index
+        binding.vf.displayedChild = vm.index
         val values = Clock.formatMMSSMS(vm.value).toCharArray()
 
         for (i in values.indices) {
-            val tv = textViews?.get(i)
-            val currentChar = tv?.text?.toChar()
+            val tv = digits[i]
+            val currentChar = tv.text.toChar()
             val newChar = values[i]
             if (currentChar != newChar) {
-                tv?.text = newChar.toString()
+                tv.text = newChar.toString()
             }
         }
     }
 
     private fun registerOnClickListeners() {
-        when (binding.viewFlipper.displayedChild) {
+        when (binding.vf.displayedChild) {
             0 -> {
                 binding.buttonBar0.startButton.setOnClickListener {
                     requireContext()
@@ -128,7 +129,7 @@ class StopwatchFragment : VisibleFragment() {
                                 0L
                             )
                         )
-                    binding.viewFlipper.displayedChild = 1
+                    binding.vf.displayedChild = 1
                 }
             }
             1 -> {
@@ -141,7 +142,7 @@ class StopwatchFragment : VisibleFragment() {
                                 null
                             )
                         )
-                    binding.viewFlipper.displayedChild = 2
+                    binding.vf.displayedChild = 2
                 }
             }
             2 -> {
@@ -154,7 +155,7 @@ class StopwatchFragment : VisibleFragment() {
                                 vm.value
                             )
                         )
-                    binding.viewFlipper.displayedChild = 1
+                    binding.vf.displayedChild = 1
                 }
                 binding.buttonBar2.resetButton.setOnClickListener {
                     vm.value = 0L
