@@ -18,6 +18,32 @@
         android:name="com.github.wnebyte.workoutapp.ui.progress.ProgressFragment"
         android:label="@string/nav_progress"
         tools:layout="@layout/fragment_progress" >
+        <action
+            android:id="@+id/action_nav_progress_to_nav_progress_details"
+            app:destination="@id/nav_progress_details" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_progress_details"
+        android:name="com.github.wnebyte.workoutapp.ui.progressdetails.ProgressDetailsFragment"
+        android:label="@string/nav_progress_details"
+        tools:layout="@layout/fragment_progress_details"
+        >
+        <argument
+            android:name="exerciseName"
+            app:argType="string"
+            app:nullable="false"
+            />
+        <argument
+            android:name="year"
+            app:argType="integer"
+            app:nullable="false"
+            />
+        <argument
+            android:name="month"
+            app:argType="integer"
+            app:nullable="false"
+            />
     </fragment>
 
     <fragment
@@ -189,7 +215,6 @@
                 app:argType="java.util.UUID"
                 app:nullable="false" />
         </fragment>
-
 
     </navigation>
 

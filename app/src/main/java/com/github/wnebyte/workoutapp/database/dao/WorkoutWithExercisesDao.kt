@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.github.wnebyte.workoutapp.database.TypeConverter
+import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import java.util.*
 
@@ -38,6 +39,10 @@ interface WorkoutWithExercisesDao {
     @Transaction
     @Query("SELECT * FROM workout WHERE completed = 1 AND (:from) <= date AND date <= (:to)")
     fun getCompletedBetween(from: Long, to: Long): LiveData<List<WorkoutWithExercises>>
+
+    @Transaction
+    @Query("SELECT * FROM workout, exercise WHERE exercise.workout = workout.id AND exercise.name = (:exerciseName) AND workout.completed = 1 AND (:from) <= date AND date <= (:to)")
+    fun getCompletedBetweenContainingExercise(exerciseName: String, from: Long, to: Long): LiveData<List<WorkoutWithExercises>>
 
     @Transaction
     @Query("SELECT * FROM workout WHERE completed = 0")

@@ -25,6 +25,8 @@ import com.github.wnebyte.workoutapp.ui.exercisedetails.ExerciseDetailsFragment
 import com.github.wnebyte.workoutapp.ui.exerciseimport.ExerciseImportFragment
 import com.github.wnebyte.workoutapp.ui.exerciselist.ExerciseListFragment
 import com.github.wnebyte.workoutapp.ui.exerciselist.ExerciseListFragmentDirections
+import com.github.wnebyte.workoutapp.ui.progress.ProgressFragment
+import com.github.wnebyte.workoutapp.ui.progress.ProgressFragmentDirections
 import com.github.wnebyte.workoutapp.ui.workout.ViewPagerFragment
 import com.github.wnebyte.workoutapp.ui.workout.ViewPagerFragmentDirections
 import com.github.wnebyte.workoutapp.ui.workout.session.SessionFragment
@@ -44,7 +46,8 @@ class MainActivity: AppCompatActivity(),
     WorkoutListFragment.Callbacks,
     WorkoutDetailsFragment.Callbacks,
     WorkoutCreateFragment.Callbacks,
-    SessionFragment.Callbacks
+    SessionFragment.Callbacks,
+    ProgressFragment.Callbacks
 {
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -219,6 +222,13 @@ class MainActivity: AppCompatActivity(),
         val navController = findNavController(R.id.nav_host_fragment)
         val action = WorkoutListFragmentDirections
             .actionNavWorkoutListToNavWorkoutViewPager(workoutId)
+        navController.navigate(action)
+    }
+
+    override fun onProgressDetails() {
+        val navController = findNavController(R.id.nav_host_fragment)
+        val action = ProgressFragmentDirections
+            .actionNavProgressToNavProgressDetails("", 1, 1) // params will be discarded by the dest
         navController.navigate(action)
     }
 

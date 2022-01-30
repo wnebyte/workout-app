@@ -1,6 +1,7 @@
 package com.github.wnebyte.workoutapp.ui.progress
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -21,11 +22,17 @@ import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import com.github.wnebyte.workoutapp.ui.OnSwipeListener
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator
 import jp.wasabeef.recyclerview.animators.SlideInRightAnimator
+import java.lang.Exception
+import java.lang.IllegalStateException
 import java.text.DateFormatSymbols
 
 private const val TAG = "ProgressFragment"
 
 class ProgressFragment : Fragment(), OnSwipeListener {
+
+    interface Callbacks {
+        fun onProgressDetails()
+    }
 
     private val vm: ProgressViewModel by viewModels()
 
@@ -37,7 +44,22 @@ class ProgressFragment : Fragment(), OnSwipeListener {
 
     private var _binding: FragmentProgressBinding? = null
 
-    private var gestureDetector: GestureDetectorCompat? = null
+    private var _gestureDetector: GestureDetectorCompat? = null
+
+    private val gestureDetector get() = _gestureDetector!!
+
+    private var callbacks: Callbacks? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        try {
+            callbacks = context as Callbacks
+        } catch (e: Exception) {
+            throw IllegalStateException(
+                "Hosting activity need to implement callbacks interface"
+            )
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +96,7 @@ class ProgressFragment : Fragment(), OnSwipeListener {
             .inflate(layoutInflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
-        gestureDetector = GestureDetectorCompat(requireContext(), this)
+        _gestureDetector = GestureDetectorCompat(requireContext(), this)
         return binding.root
     }
 
@@ -91,14 +113,20 @@ class ProgressFragment : Fragment(), OnSwipeListener {
             }
         )
         binding.root.setOnTouchListener { _, event ->
-            gestureDetector?.onTouchEvent(event)
-            true
+            gestureDetector.onTouchEvent(event)
         }
+        callbacks?.onProgressDetails()
     }
 
     override fun onDestroy() {
-        gestureDetector = null
+        _gestureDetector = null
+        callbacks = null
         super.onDestroy()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onSwipeLeft() {
@@ -130,21 +158,30 @@ class ProgressFragment : Fragment(), OnSwipeListener {
         adapter.submitList(items)
     }
 
-    private inner class ProgressItemHolder(private val binding: ProgressItemBinding):
-        RecyclerView.ViewHolder(binding.root) {
-            private lateinit var item: ProgressItem
+    private inner class ProgressItemHolder(private val binding: ProgressItemBinding) :
+        RecyclerView.ViewHolder(binding.root),
+        View.OnClickListener {
+        private lateinit var item: ProgressItem
 
-            fun bind(item: ProgressItem) {
-                this.item = item
-                binding.nameTv.text = item.name
-                binding.avgTv.text = String.format("%.2f", item.avg)
-                binding.unitTv.text = item.unit
-                (item.change.toSign() + String.format("%.2f", item.change * 100) + "%")
-                    .also {  binding.percentageTv.text = it }
-            }
+        init {
+            binding.root.setOnClickListener(this)
         }
 
-    private inner class ProgressItemAdapter:
+        fun bind(item: ProgressItem) {
+            this.item = item
+            binding.nameTv.text = item.name
+            binding.avgTv.text = String.format("%.2f", item.avg)
+            binding.unitTv.text = item.unit
+            (item.change.toSign() + String.format("%.2f", item.change * 100) + "%")
+                .also { binding.percentageTv.text = it }
+        }
+
+        override fun onClick(v: View?) {
+            Log.i(TAG, "onClick()")
+        }
+    }
+
+    private inner class ProgressItemAdapter :
         ListAdapter<ProgressItem, ProgressItemHolder>
             (AdapterUtil.DIFF_UTIL_PROGRESS_ITEM_CALLBACK) {
 

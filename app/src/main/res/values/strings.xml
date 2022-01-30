@@ -24,6 +24,7 @@
     <string name="menu_order">Order</string>
     <string name="nav_home">Home</string>
     <string name="nav_progress">Progress</string>
+    <string name="nav_progress_details">Progress Details</string>
     <string name="nav_exercise_list">Exercises</string>
     <string name="nav_exercise_details">Exercise Details</string>
     <string name="nav_exercise_create">New Exercise</string>

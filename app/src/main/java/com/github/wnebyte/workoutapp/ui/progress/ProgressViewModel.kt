@@ -72,15 +72,15 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
         refMonth: Int,
     ): List<ProgressItem> {
         val list = mutableListOf<ProgressItem>()
-        val partitions: Map<Int, List<ExerciseWithSets>> = partitionByMonth(workouts)
-        val partition = partitions[refMonth]
+        val shards: Map<Int, List<ExerciseWithSets>> = shardByMonth(workouts)
+        val shard = shards[refMonth]
 
-        partition?.let { exercises ->
+        shard?.let { exercises ->
             for (name in getDistinctNames(exercises)) {
                 val avg0 = exercises
                     .filter { e -> e.exercise.name == name }
                     .map { e -> e.sets.map { s -> s.weights }.avg() }.avg()
-                val avg1 = partitions[decrementMonth(refMonth)]
+                val avg1 = shards[decrementMonth(refMonth)]
                     ?.filter { e -> e.exercise.name == name }
                     ?.map { e -> e.sets.map { s -> s.weights }.avg() }?.avg() ?: 0.0
                 list.add(
@@ -110,7 +110,7 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
      * Returns a Map consisting of a List of [ExerciseWithSets] associated with the
      * Month that their respective [WorkoutWithExercises] was scheduled to take place.
      */
-    private fun partitionByMonth(workouts: List<WorkoutWithExercises>)
+    private fun shardByMonth(workouts: List<WorkoutWithExercises>)
     : Map<Int, List<ExerciseWithSets>> {
         val map: MutableMap<Int, MutableList<ExerciseWithSets>> = mutableMapOf()
 
