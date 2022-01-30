@@ -23,6 +23,7 @@
             android:layout_marginRight="10dp"
             android:text="January 2020"
             tools:ignore="HardcodedText"
+            style="?android:attr/textAppearance"
             />
 
         <View

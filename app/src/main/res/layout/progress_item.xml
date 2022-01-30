@@ -28,7 +28,6 @@
         android:text="Bench Press"
         app:layout_constraintStart_toEndOf="@+id/img"
         app:layout_constraintTop_toTopOf="@id/img"
-        style="?attr/textAppearanceListItem"
         tools:ignore="HardcodedText"
         />
 
