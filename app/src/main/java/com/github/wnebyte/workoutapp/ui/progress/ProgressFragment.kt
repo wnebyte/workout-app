@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.FragmentProgressBinding
 import com.github.wnebyte.workoutapp.databinding.ProgressItemBinding
+import com.github.wnebyte.workoutapp.databinding.ProgressItemCardBinding
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.month
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toSign
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.year
@@ -25,7 +26,7 @@ import java.text.DateFormatSymbols
 
 private const val TAG = "ProgressFragment"
 
-class ProgressFragment : Fragment(), OnSwipeListener {
+class ProgressFragment : Fragment() {
 
     private val vm: ProgressViewModel by viewModels()
 
@@ -74,7 +75,7 @@ class ProgressFragment : Fragment(), OnSwipeListener {
             .inflate(layoutInflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
-        gestureDetector = GestureDetectorCompat(requireContext(), this)
+       // gestureDetector = GestureDetectorCompat(requireContext(), this)
         return binding.root
     }
 
@@ -90,10 +91,12 @@ class ProgressFragment : Fragment(), OnSwipeListener {
                 }
             }
         )
+        /*
         binding.root.setOnTouchListener { _, event ->
             gestureDetector?.onTouchEvent(event)
             true
         }
+         */
     }
 
     override fun onDestroy() {
@@ -101,6 +104,7 @@ class ProgressFragment : Fragment(), OnSwipeListener {
         super.onDestroy()
     }
 
+    /*
     override fun onSwipeLeft() {
         incrementMonth()
     }
@@ -108,6 +112,7 @@ class ProgressFragment : Fragment(), OnSwipeListener {
     override fun onSwipeRight() {
         decrementMonth()
     }
+     */
 
     private fun incrementMonth() {
         binding.recyclerView.itemAnimator = SlideInRightAnimator().apply {
@@ -130,26 +135,35 @@ class ProgressFragment : Fragment(), OnSwipeListener {
         adapter.submitList(items)
     }
 
-    private inner class ProgressItemHolder(private val binding: ProgressItemBinding):
-        RecyclerView.ViewHolder(binding.root) {
-            private lateinit var item: ProgressItem
+    private inner class ProgressItemHolder(private val binding: ProgressItemCardBinding) :
+        RecyclerView.ViewHolder(binding.root),
+        View.OnClickListener {
+        private lateinit var item: ProgressItem
 
-            fun bind(item: ProgressItem) {
-                this.item = item
-                binding.nameTv.text = item.name
-                binding.avgTv.text = String.format("%.2f", item.avg)
-                binding.unitTv.text = item.unit
-                (item.change.toSign() + String.format("%.2f", item.change * 100) + "%")
-                    .also {  binding.percentageTv.text = it }
-            }
+        init {
+            binding.root.setOnClickListener(this)
         }
 
-    private inner class ProgressItemAdapter:
+        fun bind(item: ProgressItem) {
+            this.item = item
+            binding.body.nameTv.text = item.name
+            binding.body.avgTv.text = String.format("%.2f", item.avg)
+            binding.body.unitTv.text = item.unit
+            (item.change.toSign() + String.format("%.2f", item.change * 100) + "%")
+                .also { binding.body.percentageTv.text = it }
+        }
+
+        override fun onClick(v: View?) {
+            Log.i(TAG, "onClick()")
+        }
+    }
+
+    private inner class ProgressItemAdapter :
         ListAdapter<ProgressItem, ProgressItemHolder>
             (AdapterUtil.DIFF_UTIL_PROGRESS_ITEM_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProgressItemHolder {
-            val view = ProgressItemBinding
+            val view = ProgressItemCardBinding
                 .inflate(layoutInflater, parent, false)
             return ProgressItemHolder(view)
         }
