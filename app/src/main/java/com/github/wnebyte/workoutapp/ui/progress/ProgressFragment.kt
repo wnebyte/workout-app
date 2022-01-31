@@ -28,10 +28,10 @@ import java.text.DateFormatSymbols
 
 private const val TAG = "ProgressFragment"
 
-class ProgressFragment : Fragment(), OnSwipeListener {
+class ProgressFragment : Fragment() {
 
     interface Callbacks {
-        fun onProgressDetails()
+        fun onProgressDetails(progressItem: ProgressItem)
     }
 
     private val vm: ProgressViewModel by viewModels()
@@ -96,7 +96,7 @@ class ProgressFragment : Fragment(), OnSwipeListener {
             .inflate(layoutInflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
-        _gestureDetector = GestureDetectorCompat(requireContext(), this)
+       // _gestureDetector = GestureDetectorCompat(requireContext(), this)
         return binding.root
     }
 
@@ -112,10 +112,11 @@ class ProgressFragment : Fragment(), OnSwipeListener {
                 }
             }
         )
+        /*
         binding.root.setOnTouchListener { _, event ->
             gestureDetector.onTouchEvent(event)
         }
-        callbacks?.onProgressDetails()
+         */
     }
 
     override fun onDestroy() {
@@ -129,6 +130,7 @@ class ProgressFragment : Fragment(), OnSwipeListener {
         _binding = null
     }
 
+    /*
     override fun onSwipeLeft() {
         incrementMonth()
     }
@@ -136,6 +138,7 @@ class ProgressFragment : Fragment(), OnSwipeListener {
     override fun onSwipeRight() {
         decrementMonth()
     }
+     */
 
     private fun incrementMonth() {
         binding.recyclerView.itemAnimator = SlideInRightAnimator().apply {
@@ -178,6 +181,7 @@ class ProgressFragment : Fragment(), OnSwipeListener {
 
         override fun onClick(v: View?) {
             Log.i(TAG, "onClick()")
+            callbacks?.onProgressDetails(item)
         }
     }
 

@@ -36,6 +36,10 @@ class Extensions {
             }
         }
 
+        fun Long.toDate(): Date {
+            return Date(this)
+        }
+
         fun Date.year(): Int {
             val calendar = Calendar.getInstance()
             calendar.time = this

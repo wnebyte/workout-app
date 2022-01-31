@@ -30,20 +30,8 @@
         tools:layout="@layout/fragment_progress_details"
         >
         <argument
-            android:name="exerciseName"
-            app:argType="string"
-            app:nullable="false"
-            />
-        <argument
-            android:name="year"
-            app:argType="integer"
-            app:nullable="false"
-            />
-        <argument
-            android:name="month"
-            app:argType="integer"
-            app:nullable="false"
-            />
+            android:name="progressItem"
+            app:argType="com.github.wnebyte.workoutapp.model.ProgressItem" />
     </fragment>
 
     <fragment

@@ -9,6 +9,7 @@
     android:layout_gravity="center"
     android:clickable="true"
     android:focusable="true"
+    android:longClickable="true"
     card_view:cardBackgroundColor="@color/cardview_light_background"
     card_view:cardCornerRadius="15dp"
     card_view:cardElevation="5dp"
