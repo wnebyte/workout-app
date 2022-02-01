@@ -4,7 +4,6 @@ import java.util.*
 import java.io.Serializable
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -21,14 +20,11 @@ import androidx.fragment.app.Fragment
 import com.github.wnebyte.workoutapp.model.ProgressItem
 import com.github.wnebyte.workoutapp.ui.AbstractExerciseEditFragment
 import com.google.android.material.navigation.NavigationView
-import com.github.wnebyte.workoutapp.ui.exercisecreate.ExerciseCreateFragment
-import com.github.wnebyte.workoutapp.ui.exercisedetails.ExerciseDetailsFragment
 import com.github.wnebyte.workoutapp.ui.exerciseimport.ExerciseImportFragment
 import com.github.wnebyte.workoutapp.ui.exerciselist.ExerciseListFragment
 import com.github.wnebyte.workoutapp.ui.exerciselist.ExerciseListFragmentDirections
 import com.github.wnebyte.workoutapp.ui.progress.ProgressFragment
 import com.github.wnebyte.workoutapp.ui.progress.ProgressFragmentDirections
-import com.github.wnebyte.workoutapp.ui.progressdetails.ProgressDetailsFragmentArgs
 import com.github.wnebyte.workoutapp.ui.workout.ViewPagerFragment
 import com.github.wnebyte.workoutapp.ui.workout.ViewPagerFragmentDirections
 import com.github.wnebyte.workoutapp.ui.workout.session.SessionFragment

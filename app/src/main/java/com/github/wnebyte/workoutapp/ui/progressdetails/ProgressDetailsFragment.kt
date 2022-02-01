@@ -8,6 +8,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.widget.AppCompatDrawableManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -19,6 +22,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IFillFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
@@ -29,6 +33,7 @@ import com.github.wnebyte.workoutapp.model.ProgressItem
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.day
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toDate
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.toStartOfTheDay
 import kotlin.collections.ArrayList
 
 private const val TAG = "ProgressDetailsFragment"
@@ -74,7 +79,7 @@ class ProgressDetailsFragment :
             Log.i(TAG, "x: ${x[i].toDate().format()}, y: ${y[i]}")
         }
 
-        init(progressItem.x, progressItem.y, progressItem.name)
+        init(x, y, progressItem.name)
     }
 
     override fun onDestroyView() {
@@ -99,20 +104,27 @@ class ProgressDetailsFragment :
         chart.setPinchZoom(true)
 
         val xAxis: XAxis = chart.xAxis
+        xAxis.axisMinimum = x.minOf { v -> v }.toFloat()
+        xAxis.axisMaximum = x.maxOf { v -> v }.toFloat()
+        xAxis.valueFormatter = object: ValueFormatter() {
+            override fun getFormattedValue(value: Float): String {
+                return value.toLong().toDate().format("MM/dd")
+            }
+        }
 
         val yAxis: YAxis = chart.axisLeft
         // disable dual axis (only use LEFT axis)
         chart.axisRight.isEnabled = false
 
         // horizontal grid lines
-        yAxis.enableGridDashedLine(10f, 10f, 0f)
+      //  yAxis.enableGridDashedLine(10f, 10f, 0f)
 
-        yAxis.axisMinimum = y.minOf { v -> v }
-        yAxis.axisMaximum = y.maxOf { v -> v }
+        yAxis.axisMinimum = y.minOf { v -> v } / 2f
+        yAxis.axisMaximum = y.maxOf { v -> v } * 1.5f
 
         // add data
-        populateData(x.map { l -> l.toDate().day().toLong() }, y, null, name)
-        chart.animateX(1500)
+        populateData(x.map { v -> v.toFloat() }, y, null, name)
+        chart.animateX(1000)
 
         // get the legend (only possible after adding data)
         val legend = chart.legend
@@ -120,7 +132,7 @@ class ProgressDetailsFragment :
     }
 
     private fun populateData(
-        x: List<Long>,
+        x: List<Float>,
         y: List<Float>,
         icon: Drawable? = null,
         name: String = "Dataset"
@@ -129,7 +141,7 @@ class ProgressDetailsFragment :
         val entries: ArrayList<Entry> = ArrayList(len)
 
         for (i in x.indices) {
-            val entry = Entry(x[i].toFloat(), y[i], icon)
+            val entry = Entry(x[i], y[i], icon)
             entries.add(entry)
         }
 
@@ -145,10 +157,10 @@ class ProgressDetailsFragment :
             set = LineDataSet(entries, name)
             set.setDrawIcons(false)
             // draw dashed line
-            set.enableDashedLine(10f, 5f, 0f)
+           // set.enableDashedLine(10f, 5f, 0f)
             // black lines and points
-            set.color = Color.BLACK
-            set.setCircleColor(Color.BLACK)
+            set.color = R.color.secondaryLight
+            set.setCircleColor(R.color.secondaryLight)
             // line thickness and point size
             set.lineWidth = 1f
             set.circleRadius = 3f
@@ -157,7 +169,7 @@ class ProgressDetailsFragment :
             // customize legend entry
             set.formLineWidth = 1f
             set.formLineDashEffect = DashPathEffect(floatArrayOf(10f, 5f), 0f)
-            set.formSize = 15f
+            set.formSize = 18f
             // text size of values
             set.valueTextSize = 9f
             // draw selection line as dashed
@@ -167,6 +179,7 @@ class ProgressDetailsFragment :
             set.fillFormatter = IFillFormatter { _, _ ->
                 chart.axisLeft.axisMinimum
             }
+            /*
             // set color of filled area
             if (Utils.getSDKInt() >= 18) {
                 // drawables only supported on api level 18 and above
@@ -175,6 +188,7 @@ class ProgressDetailsFragment :
             } else {
                 set.fillColor = R.color.colorAccent
             }
+             */
             val dataSets: ArrayList<ILineDataSet> = ArrayList()
             dataSets.add(set) // add the data sets
             // create a data object with the data sets

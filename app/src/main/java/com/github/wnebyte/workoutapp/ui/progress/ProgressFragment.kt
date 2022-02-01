@@ -180,7 +180,6 @@ class ProgressFragment : Fragment() {
         }
 
         override fun onClick(v: View?) {
-            Log.i(TAG, "onClick()")
             callbacks?.onProgressDetails(item)
         }
     }

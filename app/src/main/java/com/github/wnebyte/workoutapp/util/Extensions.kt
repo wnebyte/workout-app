@@ -1,12 +1,12 @@
 package com.github.wnebyte.workoutapp.util
 
-import android.text.TextUtils
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
+import java.util.*
 import java.lang.IllegalStateException
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import android.text.TextUtils
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 
 class Extensions {
 
@@ -56,6 +56,18 @@ class Extensions {
             val calendar = Calendar.getInstance()
             calendar.time = this
             return calendar.get(Calendar.DATE)
+        }
+
+        fun Date.toStartOfTheDay(): Date {
+            val calendar = Calendar.getInstance()
+            calendar.time = this
+            var min = calendar.getActualMinimum(Calendar.HOUR_OF_DAY)
+            calendar.set(Calendar.HOUR_OF_DAY, min)
+            min = calendar.getActualMinimum(Calendar.MINUTE)
+            calendar.set(Calendar.MINUTE, min)
+            min = calendar.getActualMinimum(Calendar.SECOND)
+            calendar.set(Calendar.SECOND, min)
+            return calendar.time
         }
 
         fun Date.toFirstOfTheMonth(): Date {
