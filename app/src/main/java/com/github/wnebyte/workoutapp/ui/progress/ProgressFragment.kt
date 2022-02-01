@@ -166,8 +166,8 @@ class ProgressFragment : Fragment() {
         fun bind(item: ProgressItem) {
             this.item = item
             binding.body.nameTv.text = item.name
-            binding.body.avgTv.text = String.format("%d(%.2f", item.y.size, item.avgWeights)
-            (item.unit + ")").also { binding.body.unitTv.text = it }
+            binding.body.avgTv.text = String.format("%.2f", item.avgWeights)
+            binding.body.unitTv.text = item.unit
             (item.change.toSign() + String.format("%.2f", item.change * 100) + "%")
                 .also { binding.body.percentageTv.text = it }
         }

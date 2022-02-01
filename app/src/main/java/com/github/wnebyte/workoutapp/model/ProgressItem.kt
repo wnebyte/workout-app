@@ -8,8 +8,7 @@ import kotlinx.parcelize.Parcelize
 data class ProgressItem(
     val id: UUID = UUID.randomUUID(),
     val name: String,
-    val x: List<Long>,
-    val y: List<Float>,
+    val data: List<DataPoint>,
     val avgWeights: Float,
     val avgReps: Float,
     val unit: String,

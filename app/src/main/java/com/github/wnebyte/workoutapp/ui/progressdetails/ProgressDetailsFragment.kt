@@ -1,5 +1,7 @@
 package com.github.wnebyte.workoutapp.ui.progressdetails
 
+import java.util.*
+import kotlin.collections.ArrayList
 import android.graphics.Color
 import android.graphics.DashPathEffect
 import android.graphics.drawable.Drawable
@@ -8,13 +10,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.appcompat.widget.AppCompatDrawableManager
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.*
 import com.github.mikephil.charting.components.LimitLine.LimitLabelPosition
@@ -29,12 +33,14 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.Utils
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.FragmentProgressDetailsBinding
+import com.github.wnebyte.workoutapp.databinding.SetItemBinding
+import com.github.wnebyte.workoutapp.model.DataPoint
+import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.ProgressItem
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.day
+import com.github.wnebyte.workoutapp.model.Set
+import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toDate
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.toStartOfTheDay
-import kotlin.collections.ArrayList
 
 private const val TAG = "ProgressDetailsFragment"
 
@@ -45,6 +51,8 @@ class ProgressDetailsFragment :
 
     private val args: ProgressDetailsFragmentArgs by navArgs()
 
+    private val adapter = SetAdapter()
+
     private var _binding: FragmentProgressDetailsBinding? = null
 
     private val binding get() = _binding!!
@@ -52,6 +60,8 @@ class ProgressDetailsFragment :
     private lateinit var chart: LineChart
 
     private lateinit var progressItem: ProgressItem
+
+    private lateinit var mv: MarkerView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,6 +72,7 @@ class ProgressDetailsFragment :
             .inflate(inflater, container, false)
         this.chart = binding.chart
         this.progressItem = args.progressItem
+        this.mv = MarkerView(requireContext(), R.layout.exercise_card)
         return binding.root
     }
 
@@ -71,15 +82,25 @@ class ProgressDetailsFragment :
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.i(TAG, "x: ${progressItem.x.size}, y: ${progressItem.y.size}")
-        val x = progressItem.x
-        val y = progressItem.y
+        Log.i(TAG, "x: ${progressItem.data.size}")
+        val x = progressItem.data.map { v -> v.x }
+        val y = progressItem.data.map { v -> v.y }
 
         for (i in x.indices) {
             Log.i(TAG, "x: ${x[i].toDate().format()}, y: ${y[i]}")
         }
 
-        init(x, y, progressItem.name)
+        vm.workoutLiveData.observe(
+            viewLifecycleOwner,
+            { exercise ->
+                exercise?.let {
+                    Log.i(TAG, "got exercise: ${it.exercise.id}")
+                    updateMarker(it)
+                }
+            }
+        )
+
+        init(progressItem.data, progressItem.name)
     }
 
     override fun onDestroyView() {
@@ -87,17 +108,33 @@ class ProgressDetailsFragment :
         _binding = null
     }
 
+    // Todo: move out initialization
+    private fun updateMarker(exercise: ExerciseWithSets) {
+        val titleTv: TextView = mv.findViewById(R.id.title)
+        val recyclerView: RecyclerView = mv.findViewById(R.id.recycler_view)
+        val adapter = SetAdapter()
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = adapter
+        titleTv.text = exercise.exercise.name
+        adapter.submitList(exercise.sets)
+    }
+
     private fun init(
-        x: List<Long>,
-        y: List<Float>,
+        data: List<DataPoint>,
         name: String
     ) {
+        val x: List<Long> = data.map { v -> v.x }
+        val y: List<Float> = data.map { v -> v.y }
         chart.setBackgroundColor(Color.WHITE)
         chart.description.isEnabled = false
         chart.setTouchEnabled(true)
         // set listeners
         chart.setOnChartValueSelectedListener(this)
         chart.setDrawGridBackground(false)
+
+        mv.chartView = chart
+        chart.marker = mv
+
         chart.isDragEnabled = true
         chart.isScaleXEnabled = true
         chart.isScaleYEnabled = true
@@ -123,8 +160,8 @@ class ProgressDetailsFragment :
         yAxis.axisMaximum = y.maxOf { v -> v } * 1.5f
 
         // add data
-        populateData(x.map { v -> v.toFloat() }, y, null, name)
-        chart.animateX(1000)
+        populateData(data,null, name)
+        chart.animateX(1250)
 
         // get the legend (only possible after adding data)
         val legend = chart.legend
@@ -132,16 +169,15 @@ class ProgressDetailsFragment :
     }
 
     private fun populateData(
-        x: List<Float>,
-        y: List<Float>,
+        data: List<DataPoint>,
         icon: Drawable? = null,
         name: String = "Dataset"
     ) {
-        val len = x.size
+        val len = data.size
         val entries: ArrayList<Entry> = ArrayList(len)
 
-        for (i in x.indices) {
-            val entry = Entry(x[i], y[i], icon)
+        for (i in data.indices) {
+            val entry = Entry(data[i].x.toFloat(), data[i].y, icon, data[i].id)
             entries.add(entry)
         }
 
@@ -168,7 +204,7 @@ class ProgressDetailsFragment :
             set.setDrawCircleHole(false)
             // customize legend entry
             set.formLineWidth = 1f
-            set.formLineDashEffect = DashPathEffect(floatArrayOf(10f, 5f), 0f)
+           // set.formLineDashEffect = DashPathEffect(floatArrayOf(10f, 5f), 0f)
             set.formSize = 18f
             // text size of values
             set.valueTextSize = 9f
@@ -336,13 +372,39 @@ class ProgressDetailsFragment :
         }
     }
 
-    override fun onValueSelected(e: Entry?, h: Highlight?) {
-        Log.i(TAG, "value selected: $e")
-       // binding.card.root.visibility = View.VISIBLE
+    override fun onValueSelected(e: Entry, h: Highlight?) {
+        Log.i(TAG, "value selected: ${e.data as UUID}")
+        val id: UUID = e.data as UUID
+        vm.loadExercise(id)
     }
 
     override fun onNothingSelected() {
         Log.i(TAG, "nothing selected")
        // binding.card.root.visibility = View.GONE
+    }
+
+    private inner class SetHolder(private val binding: SetItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        private lateinit var set: Set
+
+        fun bind(set: Set) {
+            this.set = set
+            "${set.weights} x ${set.reps}".also { binding.tv.text = it }
+        }
+    }
+
+    private inner class SetAdapter : ListAdapter<Set, SetHolder>
+        (AdapterUtil.DIFF_UTIL_SET_CALLBACK) {
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SetHolder {
+            val view = SetItemBinding
+                .inflate(layoutInflater, parent, false)
+            return SetHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: SetHolder, position: Int) {
+            val set = getItem(position)
+            return holder.bind(set)
+        }
     }
 }

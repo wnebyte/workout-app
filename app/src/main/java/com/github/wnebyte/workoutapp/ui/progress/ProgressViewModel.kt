@@ -4,6 +4,7 @@ import java.util.*
 import android.util.Log
 import androidx.lifecycle.*
 import com.github.wnebyte.workoutapp.database.Repository
+import com.github.wnebyte.workoutapp.model.DataPoint
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toFirstOfLastMonth
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toLastOfLastMonth
@@ -74,30 +75,36 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
         val shards: Map<Int, List<ExerciseTuple>> = shard(workouts)
         val shard = shards[refMonth]
 
-        shard?.let { exercises ->
-            for (name in getDistinctNames(exercises.map { t -> t.exercise })) {
+        shard?.let {
+            for (name in getDistinctNames(it.map { t -> t.exercise })) {
                 // get all the exercises in the shard with the given name
-                val l: List<ExerciseTuple> = exercises
+                val l: List<ExerciseTuple> = it
                     .filter { e -> e.exercise.exercise.name == name }
+                // get the ids
+                val id: List<UUID> = l.map { e -> e.exercise.exercise.id }
                 // get the dates (x)
                 val x: List<Long> = l.map { e -> e.date.time }
                 // get their averages (y)
                 val y: List<Float> = l.map { e -> e.exercise.sets.map { s -> s.weights }
                     .average().toFloat() }
+                // wrap properties in a data class
+                val data: List<DataPoint> = List(id.size) { i -> DataPoint(id[i], x[i], y[i]) }
 
+                // get avg weights for this month
                 val avg0 = y.average().toFloat()
+                // get avg weights for previous month
                 val avg1 = (shards[decrementMonth(refMonth)]
                     ?.filter { e -> e.exercise.exercise.name == name }
                     ?.map { e -> e.exercise.sets.map { s -> s.weights }.average() }
                     ?.average() ?: 0.0f).toFloat()
+                // get avg reps for this month
                 val avg2 = l.map { e -> e.exercise.sets.map { s -> s.reps }.average() }
                     .average().toFloat()
 
                 list.add(
                     ProgressItem(
                         name = name,
-                        x = x,
-                        y = y,
+                        data = data,
                         avgWeights = avg0,
                         avgReps = avg2,
                         unit = "kg",
