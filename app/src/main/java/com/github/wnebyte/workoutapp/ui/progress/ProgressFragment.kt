@@ -13,14 +13,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.FragmentProgressBinding
-import com.github.wnebyte.workoutapp.databinding.ProgressItemBinding
 import com.github.wnebyte.workoutapp.databinding.ProgressItemCardBinding
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.month
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toSign
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.year
 import com.github.wnebyte.workoutapp.model.ProgressItem
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
-import com.github.wnebyte.workoutapp.ui.OnSwipeListener
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator
 import jp.wasabeef.recyclerview.animators.SlideInRightAnimator
 import java.lang.Exception
@@ -155,26 +153,31 @@ class ProgressFragment : Fragment() {
             .also { binding.dateTv.text = it }
         adapter.submitList(items)
     }
-    
+
     private inner class ProgressItemHolder(private val binding: ProgressItemCardBinding) :
         RecyclerView.ViewHolder(binding.root),
         View.OnClickListener {
         private lateinit var item: ProgressItem
 
         init {
-            binding.root.setOnClickListener(this)
+            binding.body.root.setOnClickListener(this)
         }
 
         fun bind(item: ProgressItem) {
             this.item = item
             binding.body.nameTv.text = item.name
-            binding.body.avgTv.text = String.format("%.2f", item.avg)
-            binding.body.unitTv.text = item.unit
+            binding.body.avgTv.text = String.format("%d(%.2f", item.y.size, item.avgWeights)
+            (item.unit + ")").also { binding.body.unitTv.text = it }
             (item.change.toSign() + String.format("%.2f", item.change * 100) + "%")
                 .also { binding.body.percentageTv.text = it }
         }
 
         override fun onClick(v: View?) {
+            Log.i(TAG, "height: ${this.itemView.height}")
+            navEdit()
+        }
+
+        private fun navEdit() {
             callbacks?.onProgressDetails(item)
         }
     }

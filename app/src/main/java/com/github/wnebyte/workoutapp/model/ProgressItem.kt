@@ -10,7 +10,8 @@ data class ProgressItem(
     val name: String,
     val x: List<Long>,
     val y: List<Float>,
-    val avg: Float,
+    val avgWeights: Float,
+    val avgReps: Float,
     val unit: String,
     val change: Float
 ) : Parcelable

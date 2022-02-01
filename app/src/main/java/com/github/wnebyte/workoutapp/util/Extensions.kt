@@ -211,9 +211,5 @@ class Extensions {
                 ""
             }
         }
-
-        fun Collection<Double>.avg(): Double {
-            return this.sumByDouble { it } / this.size
-        }
     }
 }

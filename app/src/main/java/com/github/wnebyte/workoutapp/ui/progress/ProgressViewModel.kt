@@ -12,7 +12,6 @@ import com.github.wnebyte.workoutapp.util.Extensions.Companion.month
 import com.github.wnebyte.workoutapp.model.ProgressItem
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.year
 
 private const val TAG = "ProgressViewModel"
 
@@ -91,13 +90,16 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
                     ?.filter { e -> e.exercise.exercise.name == name }
                     ?.map { e -> e.exercise.sets.map { s -> s.weights }.average() }
                     ?.average() ?: 0.0f).toFloat()
+                val avg2 = l.map { e -> e.exercise.sets.map { s -> s.reps }.average() }
+                    .average().toFloat()
 
                 list.add(
                     ProgressItem(
                         name = name,
                         x = x,
                         y = y,
-                        avg = avg0,
+                        avgWeights = avg0,
+                        avgReps = avg2,
                         unit = "kg",
                         change = if (avg0 == 0.0f || avg1 == 0.0f) {
                             0.0f

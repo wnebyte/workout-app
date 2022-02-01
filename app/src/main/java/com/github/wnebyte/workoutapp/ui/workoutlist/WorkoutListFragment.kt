@@ -180,6 +180,7 @@ class WorkoutListFragment : Fragment() {
         }
 
         private fun navEdit() {
+            Log.i(TAG, "height: ${this.itemView.height}")
             when (workout.workout.completed) {
                 true -> {
                     callbacks?.onEditCompletedWorkout(

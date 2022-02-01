@@ -57,6 +57,17 @@
         />
 
     <TextView
+        android:id="@+id/avg_reps_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        app:layout_constraintStart_toEndOf="@+id/unit_tv"
+        app:layout_constraintBottom_toBottomOf="@+id/img"
+        style="?attr/textAppearanceListItemSecondary"
+        tools:ignore="HardcodedText"
+        />
+
+    <TextView
         android:id="@+id/percentage_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
