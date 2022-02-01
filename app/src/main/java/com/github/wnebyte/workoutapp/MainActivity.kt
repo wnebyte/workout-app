@@ -4,7 +4,6 @@ import java.util.*
 import java.io.Serializable
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -18,13 +17,14 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.github.wnebyte.workoutapp.model.ProgressItem
 import com.github.wnebyte.workoutapp.ui.AbstractExerciseEditFragment
 import com.google.android.material.navigation.NavigationView
-import com.github.wnebyte.workoutapp.ui.exercisecreate.ExerciseCreateFragment
-import com.github.wnebyte.workoutapp.ui.exercisedetails.ExerciseDetailsFragment
 import com.github.wnebyte.workoutapp.ui.exerciseimport.ExerciseImportFragment
 import com.github.wnebyte.workoutapp.ui.exerciselist.ExerciseListFragment
 import com.github.wnebyte.workoutapp.ui.exerciselist.ExerciseListFragmentDirections
+import com.github.wnebyte.workoutapp.ui.progress.ProgressFragment
+import com.github.wnebyte.workoutapp.ui.progress.ProgressFragmentDirections
 import com.github.wnebyte.workoutapp.ui.workout.ViewPagerFragment
 import com.github.wnebyte.workoutapp.ui.workout.ViewPagerFragmentDirections
 import com.github.wnebyte.workoutapp.ui.workout.session.SessionFragment
@@ -44,7 +44,8 @@ class MainActivity: AppCompatActivity(),
     WorkoutListFragment.Callbacks,
     WorkoutDetailsFragment.Callbacks,
     WorkoutCreateFragment.Callbacks,
-    SessionFragment.Callbacks
+    SessionFragment.Callbacks,
+    ProgressFragment.Callbacks
 {
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -219,6 +220,13 @@ class MainActivity: AppCompatActivity(),
         val navController = findNavController(R.id.nav_host_fragment)
         val action = WorkoutListFragmentDirections
             .actionNavWorkoutListToNavWorkoutViewPager(workoutId)
+        navController.navigate(action)
+    }
+
+    override fun onProgressDetails(progressItem: ProgressItem) {
+        val navController = findNavController(R.id.nav_host_fragment)
+        val action = ProgressFragmentDirections
+            .actionNavProgressToNavProgressDetails(progressItem)
         navController.navigate(action)
     }
 

@@ -58,6 +58,7 @@ class WorkoutCreateViewModel(private val state: SavedStateHandle): ViewModel() {
                 val workout = WorkoutWithExercises.newInstance()
                 val count = repository.getWorkoutCount().get() + 1L
                 workout.workout.name = "#$count"
+                workout.workout.date = Date()
                 repository.saveWorkout(workout.workout)
                 mainHandler.post {
                     loadWorkout(workout.workout.id)

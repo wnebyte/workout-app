@@ -4,7 +4,6 @@ import java.util.*
 import android.util.Log
 import androidx.lifecycle.*
 import com.github.wnebyte.workoutapp.database.Repository
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.avg
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toFirstOfLastMonth
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toLastOfLastMonth
@@ -13,6 +12,7 @@ import com.github.wnebyte.workoutapp.util.Extensions.Companion.month
 import com.github.wnebyte.workoutapp.model.ProgressItem
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.year
 
 private const val TAG = "ProgressViewModel"
 
@@ -72,26 +72,37 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
         refMonth: Int,
     ): List<ProgressItem> {
         val list = mutableListOf<ProgressItem>()
-        val partitions: Map<Int, List<ExerciseWithSets>> = partitionByMonth(workouts)
-        val partition = partitions[refMonth]
+        val shards: Map<Int, List<ExerciseTuple>> = shard(workouts)
+        val shard = shards[refMonth]
 
-        partition?.let { exercises ->
-            for (name in getDistinctNames(exercises)) {
-                val avg0 = exercises
-                    .filter { e -> e.exercise.name == name }
-                    .map { e -> e.sets.map { s -> s.weights }.avg() }.avg()
-                val avg1 = partitions[decrementMonth(refMonth)]
-                    ?.filter { e -> e.exercise.name == name }
-                    ?.map { e -> e.sets.map { s -> s.weights }.avg() }?.avg() ?: 0.0
+        shard?.let { exercises ->
+            for (name in getDistinctNames(exercises.map { t -> t.exercise })) {
+                // get all the exercises in the shard with the given name
+                val l: List<ExerciseTuple> = exercises
+                    .filter { e -> e.exercise.exercise.name == name }
+                // get the dates (x)
+                val x: List<Long> = l.map { e -> e.date.time }
+                // get their averages (y)
+                val y: List<Float> = l.map { e -> e.exercise.sets.map { s -> s.weights }
+                    .average().toFloat() }
+
+                val avg0 = y.average().toFloat()
+                val avg1 = (shards[decrementMonth(refMonth)]
+                    ?.filter { e -> e.exercise.exercise.name == name }
+                    ?.map { e -> e.exercise.sets.map { s -> s.weights }.average() }
+                    ?.average() ?: 0.0f).toFloat()
+
                 list.add(
                     ProgressItem(
                         name = name,
+                        x = x,
+                        y = y,
                         avg = avg0,
                         unit = "kg",
-                        change = if (avg0 == 0.0 || avg1 == 0.0) {
+                        change = if (avg0 == 0.0f || avg1 == 0.0f) {
                             0.0f
                         } else {
-                            val f: Float = (avg0 / avg1).toFloat()
+                            val f: Float = (avg0 / avg1)
                             val r: Float = if (f > 1.0f) {
                                 f - 1.0f
                             } else {
@@ -110,7 +121,7 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
      * Returns a Map consisting of a List of [ExerciseWithSets] associated with the
      * Month that their respective [WorkoutWithExercises] was scheduled to take place.
      */
-    private fun partitionByMonth(workouts: List<WorkoutWithExercises>)
+    private fun shardByMonth(workouts: List<WorkoutWithExercises>)
     : Map<Int, List<ExerciseWithSets>> {
         val map: MutableMap<Int, MutableList<ExerciseWithSets>> = mutableMapOf()
 
@@ -122,6 +133,30 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
                     map[month] = workout.exercises
                 } else {
                     map[month]!!.addAll(workout.exercises)
+                }
+            }
+        }
+        return map
+    }
+
+    private fun shard(workouts: List<WorkoutWithExercises>)
+    : Map<Int, List<ExerciseTuple>> {
+        val map: MutableMap<Int, MutableList<ExerciseTuple>> = mutableMapOf()
+
+        for (w in workouts) {
+            val date = w.workout.date
+            date?.let {
+                val month = date.month()
+                if (!map.containsKey(month)) {
+                    val l = mutableListOf<ExerciseTuple>()
+                    for (e in w.exercises) {
+                        l.add(ExerciseTuple(date, e))
+                    }
+                    map[month] = l
+                } else {
+                    for (e in w.exercises) {
+                        map[month]!!.add(ExerciseTuple(date, e))
+                    }
                 }
             }
         }
@@ -147,4 +182,9 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
             }
         }
     }
+
+    private data class ExerciseTuple(
+        val date: Date,
+        val exercise: ExerciseWithSets
+    )
 }

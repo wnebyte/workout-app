@@ -1,12 +1,12 @@
 package com.github.wnebyte.workoutapp.util
 
-import android.text.TextUtils
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
+import java.util.*
 import java.lang.IllegalStateException
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import android.text.TextUtils
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 
 class Extensions {
 
@@ -36,6 +36,10 @@ class Extensions {
             }
         }
 
+        fun Long.toDate(): Date {
+            return Date(this)
+        }
+
         fun Date.year(): Int {
             val calendar = Calendar.getInstance()
             calendar.time = this
@@ -54,11 +58,44 @@ class Extensions {
             return calendar.get(Calendar.DATE)
         }
 
+        fun Date.toStartOfTheDay(): Date {
+            val calendar = Calendar.getInstance()
+            calendar.time = this
+            var min = calendar.getActualMinimum(Calendar.HOUR_OF_DAY)
+            calendar.set(Calendar.HOUR_OF_DAY, min)
+            min = calendar.getActualMinimum(Calendar.MINUTE)
+            calendar.set(Calendar.MINUTE, min)
+            min = calendar.getActualMinimum(Calendar.SECOND)
+            calendar.set(Calendar.SECOND, min)
+            return calendar.time
+        }
+
+        fun Date.toFirstOfTheMonth(): Date {
+            val calendar = Calendar.getInstance()
+            calendar.time = this
+            var min = calendar.getActualMinimum(Calendar.DATE)
+            calendar.set(Calendar.DATE, min)
+            min = calendar.getActualMinimum(Calendar.HOUR_OF_DAY)
+            calendar.set(Calendar.HOUR_OF_DAY, min)
+            min = calendar.getActualMinimum(Calendar.MINUTE)
+            calendar.set(Calendar.MINUTE, min)
+            min = calendar.getActualMinimum(Calendar.SECOND)
+            calendar.set(Calendar.SECOND, min)
+            return calendar.time
+        }
+
+        // Todo: hh/mm/ss are not set correctly
         fun Date.toLastOfTheMonth(): Date {
             val calendar = Calendar.getInstance()
             calendar.time = this
-            val max = calendar.getActualMaximum(Calendar.DATE)
+            var max = calendar.getActualMaximum(Calendar.DATE)
             calendar.set(Calendar.DATE, max)
+            max = calendar.getActualMaximum(Calendar.HOUR_OF_DAY)
+            calendar.set(Calendar.HOUR_OF_DAY, max)
+            max = calendar.getActualMaximum(Calendar.MINUTE)
+            calendar.set(Calendar.MINUTE, max)
+            max = calendar.getActualMaximum(Calendar.SECOND)
+            calendar.set(Calendar.SECOND, max)
             return calendar.time
         }
 
