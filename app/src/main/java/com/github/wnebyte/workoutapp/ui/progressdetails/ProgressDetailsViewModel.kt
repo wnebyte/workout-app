@@ -15,7 +15,7 @@ class ProgressDetailsViewModel(private val state: SavedStateHandle) : ViewModel(
 
     private val exerciseIdLiveData = state.getLiveData<UUID>(EXERCISE_ID_LIVE_DATA_KEY)
 
-    val workoutLiveData: LiveData<ExerciseWithSets?> = (
+    val exerciseLiveData: LiveData<ExerciseWithSets?> = (
             Transformations.switchMap(exerciseIdLiveData) { id ->
                 repository.getExerciseWithSets(id)
             })

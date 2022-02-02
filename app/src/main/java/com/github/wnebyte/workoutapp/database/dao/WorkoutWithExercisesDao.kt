@@ -1,11 +1,11 @@
 package com.github.wnebyte.workoutapp.database.dao
 
-import androidx.lifecycle.LiveData
+import java.util.*
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.lifecycle.LiveData
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
-import java.util.*
 
 @Dao
 interface WorkoutWithExercisesDao {
@@ -37,19 +37,6 @@ interface WorkoutWithExercisesDao {
     @Transaction
     @Query("SELECT * FROM workout WHERE completed = 1 AND (:from) <= date AND date <= (:to)")
     fun getCompletedBetween(from: Long, to: Long): LiveData<List<WorkoutWithExercises>>
-
-    /*
-    @Transaction
-    @MapInfo(keyColumn = "workout.date")
-    @Query("SELECT * FROM workout, exercise " +
-            "WHERE exercise.workout = workout.id AND " +
-            "exercise.name = (:exerciseName) AND " +
-            "workout.completed = 1 AND " +
-            "(:from) <= date " +
-            "AND date <= (:to)"
-    )
-    fun getCompletedBetweenContainingExercise(exerciseName: String, from: Long, to: Long): LiveData<Map<Date, List<ExerciseWithSets>>>
-    */
 
     @Transaction
     @Query("SELECT * FROM workout WHERE completed = 0")

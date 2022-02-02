@@ -10,7 +10,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -19,6 +18,16 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.github.wnebyte.workoutapp.R
+import com.github.wnebyte.workoutapp.databinding.FragmentProgressDetailsBinding
+import com.github.wnebyte.workoutapp.databinding.SetItemBinding
+import com.github.wnebyte.workoutapp.model.DataPoint
+import com.github.wnebyte.workoutapp.model.ExerciseWithSets
+import com.github.wnebyte.workoutapp.model.ProgressItem
+import com.github.wnebyte.workoutapp.model.Set
+import com.github.wnebyte.workoutapp.ui.AdapterUtil
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.toDate
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.*
 import com.github.mikephil.charting.components.LimitLine.LimitLabelPosition
@@ -31,16 +40,6 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.Utils
-import com.github.wnebyte.workoutapp.R
-import com.github.wnebyte.workoutapp.databinding.FragmentProgressDetailsBinding
-import com.github.wnebyte.workoutapp.databinding.SetItemBinding
-import com.github.wnebyte.workoutapp.model.DataPoint
-import com.github.wnebyte.workoutapp.model.ExerciseWithSets
-import com.github.wnebyte.workoutapp.model.ProgressItem
-import com.github.wnebyte.workoutapp.model.Set
-import com.github.wnebyte.workoutapp.ui.AdapterUtil
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.toDate
 
 private const val TAG = "ProgressDetailsFragment"
 
@@ -51,17 +50,27 @@ class ProgressDetailsFragment :
 
     private val args: ProgressDetailsFragmentArgs by navArgs()
 
-    private val adapter = SetAdapter()
-
     private var _binding: FragmentProgressDetailsBinding? = null
 
     private val binding get() = _binding!!
 
-    private lateinit var chart: LineChart
+    private var _chart: LineChart? = null
+
+    private val chart get() = _chart!!
+
+    private var _mv: MarkerView? = null
+
+    private val mv get() = _mv!!
+
+    private var _titleTv: TextView? = null
+
+    private val titleTv get() = _titleTv!!
+
+    private var _recyclerView: RecyclerView? = null
+
+    private val recyclerView get() = _recyclerView!!
 
     private lateinit var progressItem: ProgressItem
-
-    private lateinit var mv: MarkerView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,56 +79,50 @@ class ProgressDetailsFragment :
     ): View {
         _binding = FragmentProgressDetailsBinding
             .inflate(inflater, container, false)
-        this.chart = binding.chart
-        this.progressItem = args.progressItem
-        this.mv = MarkerView(requireContext(), R.layout.exercise_card)
+        _chart = binding.chart
+        _mv = MarkerView(requireContext(), R.layout.exercise_card)
+        _titleTv = mv.findViewById(R.id.title)
+        _recyclerView = mv.findViewById(R.id.recycler_view)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        progressItem = args.progressItem
         return binding.root
     }
 
-    /*
-    SHOULD DISPLAY:
-    graph of exercise specific data for a given month
-     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.i(TAG, "x: ${progressItem.data.size}")
-        val x = progressItem.data.map { v -> v.x }
-        val y = progressItem.data.map { v -> v.y }
-
-        for (i in x.indices) {
-            Log.i(TAG, "x: ${x[i].toDate().format()}, y: ${y[i]}")
-        }
-
-        vm.workoutLiveData.observe(
+        Log.i(TAG, "got: ${progressItem.data.size} data-points")
+        vm.exerciseLiveData.observe(
             viewLifecycleOwner,
             { exercise ->
                 exercise?.let {
                     Log.i(TAG, "got exercise: ${it.exercise.id}")
-                    updateMarker(it)
+                    updateMarkerView(it)
                 }
             }
         )
-
-        init(progressItem.data, progressItem.name)
+        val data: List<DataPoint> = progressItem.data
+        val name = progressItem.name
+        initGraph(data, name)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        _chart = null
+        _mv = null
+        _titleTv = null
+        _recyclerView = null
     }
 
     // Todo: move out initialization
-    private fun updateMarker(exercise: ExerciseWithSets) {
-        val titleTv: TextView = mv.findViewById(R.id.title)
-        val recyclerView: RecyclerView = mv.findViewById(R.id.recycler_view)
+    private fun updateMarkerView(exercise: ExerciseWithSets) {
         val adapter = SetAdapter()
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
         titleTv.text = exercise.exercise.name
         adapter.submitList(exercise.sets)
     }
 
-    private fun init(
+    private fun initGraph(
         data: List<DataPoint>,
         name: String
     ) {
@@ -135,10 +138,11 @@ class ProgressDetailsFragment :
         mv.chartView = chart
         chart.marker = mv
 
-        chart.isDragEnabled = true
-        chart.isScaleXEnabled = true
-        chart.isScaleYEnabled = true
-        chart.setPinchZoom(true)
+        val isEnabled: Boolean = data.size > 1
+        chart.isDragEnabled = isEnabled
+        chart.isScaleXEnabled = isEnabled
+        chart.isScaleYEnabled = isEnabled
+        chart.setPinchZoom(isEnabled)
 
         val xAxis: XAxis = chart.xAxis
         xAxis.axisMinimum = x.minOf { v -> v }.toFloat()
@@ -160,7 +164,7 @@ class ProgressDetailsFragment :
         yAxis.axisMaximum = y.maxOf { v -> v } * 1.5f
 
         // add data
-        populateData(data,null, name)
+        populateGraph(data,null, name)
         chart.animateX(1250)
 
         // get the legend (only possible after adding data)
@@ -168,17 +172,19 @@ class ProgressDetailsFragment :
         legend.form = Legend.LegendForm.LINE
     }
 
-    private fun populateData(
+    private fun populateGraph(
         data: List<DataPoint>,
         icon: Drawable? = null,
         name: String = "Dataset"
     ) {
         val len = data.size
-        val entries: ArrayList<Entry> = ArrayList(len)
-
-        for (i in data.indices) {
-            val entry = Entry(data[i].x.toFloat(), data[i].y, icon, data[i].id)
-            entries.add(entry)
+        val entries: List<Entry> = List(len) { i ->
+            Entry(
+                data[i].x.toFloat(),
+                data[i].y,
+                icon,
+                data[i].id
+            )
         }
 
         val set: LineDataSet
@@ -228,9 +234,9 @@ class ProgressDetailsFragment :
             val dataSets: ArrayList<ILineDataSet> = ArrayList()
             dataSets.add(set) // add the data sets
             // create a data object with the data sets
-            val data = LineData(dataSets)
+            val lineData = LineData(dataSets)
             // set data
-            chart.data = data
+            chart.data = lineData
         }
     }
 

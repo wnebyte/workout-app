@@ -1,14 +1,14 @@
 package com.github.wnebyte.workoutapp.database
 
+import java.util.*
+import java.util.concurrent.Callable
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.github.wnebyte.workoutapp.model.*
 import com.github.wnebyte.workoutapp.model.Set
-import java.util.*
-import java.util.concurrent.Callable
-import java.util.concurrent.Executors
-import java.util.concurrent.Future
 
 private const val DATABASE_NAME = "workout-database"
 

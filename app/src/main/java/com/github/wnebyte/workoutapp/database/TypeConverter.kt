@@ -1,7 +1,7 @@
 package com.github.wnebyte.workoutapp.database
 
-import androidx.room.TypeConverter
 import java.util.*
+import androidx.room.TypeConverter
 
 class TypeConverter {
 
