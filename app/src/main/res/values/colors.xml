@@ -24,4 +24,7 @@
     <color name="gray">#777777</color>
     <color name="transparent">#90111000</color> <!-- #99000000 -->
     <color name="transparent_1">#171717</color>
+
+    <color name="red">#FF0000</color>
+    <color name="red_660">#660000</color>
 </resources>

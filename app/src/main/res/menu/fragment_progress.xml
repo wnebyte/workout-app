@@ -22,4 +22,62 @@
         app:showAsAction="ifRoom"
         />
 
+    <item
+        android:id="@+id/show_by"
+        android:title="Show by"
+        android:icon="@drawable/ic_baseline_filter_list_24"
+        app:showAsAction="ifRoom"
+        >
+        <menu>
+            <group
+                android:id="@+id/group_filter"
+                android:checkableBehavior="single"
+                >
+                <item
+                    android:id="@+id/by_month"
+                    android:title="Month"
+                    android:checked="true"
+                    app:iconTint="@color/black"
+                    tools:ignore="HardcodedText"
+                    />
+                <item
+                    android:id="@+id/by_year"
+                    android:title="Year"
+                    app:iconTint="@color/black"
+                    tools:ignore="HardcodedText"
+                    />
+                <item
+                    android:id="@+id/by_30_days"
+                    android:title="30 Days"
+                    app:iconTint="@color/black"
+                    tools:ignore="HardcodedText"
+                    />
+                <item
+                    android:id="@+id/by_60_days"
+                    android:title="60 Days"
+                    app:iconTint="@color/black"
+                    tools:ignore="HardcodedText"
+                    />
+                <item
+                    android:id="@+id/by_90_days"
+                    android:title="90 Days"
+                    app:iconTint="@color/black"
+                    tools:ignore="HardcodedText"
+                    />
+                <item
+                    android:id="@+id/by_180_days"
+                    android:title="180 Days"
+                    app:iconTint="@color/black"
+                    tools:ignore="HardcodedText"
+                    />
+                <item
+                    android:id="@+id/by_365_days"
+                    android:title="365 Days"
+                    app:iconTint="@color/black"
+                    tools:ignore="HardcodedText"
+                    />
+            </group>
+        </menu>
+    </item>
+
 </menu>

@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.MenuCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -145,20 +146,19 @@ class WorkoutListFragment : Fragment() {
 
         fun bind(workout: WorkoutWithExercises) {
             this.workout = workout
+            val iv: AppCompatImageView = binding.body.iv
             binding.body.nameTv.text = workout.workout.name
-            binding.body.dateTv.text = workout.workout.date?.format("EEE d MMM yyyy HH:mm")
-            binding.body.checkIv.setImageResource(
-                when (workout.workout.completed) {
-                    true -> {
-                        binding.body.workoutButton.visibility = View.GONE
-                        R.drawable.ic_baseline_check_24
-                    }
-                    false -> {
-                        binding.body.workoutButton.visibility = View.VISIBLE
-                        R.drawable.ic_baseline_incomplete_circle_24
-                    }
+            binding.body.dateTv.text = workout.workout.date?.format("EEE, d MMM yyyy HH:mm")
+            when (workout.workout.completed) {
+                true -> {
+                    binding.body.workoutButton.visibility = View.GONE
+                    iv.setImageResource(R.drawable.ic_baseline_check_24)
                 }
-            )
+                false -> {
+                    binding.body.workoutButton.visibility = View.VISIBLE
+                    iv.setImageResource(R.drawable.ic_baseline_incomplete_circle_24)
+                }
+            }
         }
 
         override fun onClick(view: View) {

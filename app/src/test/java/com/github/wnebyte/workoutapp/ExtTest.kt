@@ -4,7 +4,7 @@ import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.day
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toFirstOfLastMonth
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toLastOfNextMonth
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.toLastOfTheMonth
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.toLastOfThisMonth
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.month
 import org.junit.Assert
 import org.junit.Test
@@ -14,7 +14,7 @@ class ExtTest {
 
     @Test
     fun testLastOfTheMonth() {
-        val date: Date = newDateInstance(2021, 11, 12).toLastOfTheMonth()
+        val date: Date = newDateInstance(2021, 11, 12).toLastOfThisMonth()
         Assert.assertEquals(30, date)
     }
 

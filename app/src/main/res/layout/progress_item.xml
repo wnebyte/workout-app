@@ -11,21 +11,24 @@
 
     <ImageView
         android:id="@+id/img"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:src="@drawable/ic_baseline_fitness_center_24"
+        android:src="@drawable/ic_fireman_strongman"
+        android:contentDescription="@string/x_bar_content_desc"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:ignore="ContentDescription" />
+        />
 
     <TextView
         android:id="@+id/name_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="20dp"
         android:text="Bench Press"
+        style="@style/TextAppearance.AppCompat.Title"
+        android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/img"
         app:layout_constraintTop_toTopOf="@id/img"
         tools:ignore="HardcodedText"
@@ -35,12 +38,12 @@
         android:id="@+id/avg_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="20dp"
         android:text="55"
-        android:textSize="16sp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+        android:textColor="?android:attr/textColorSecondary"
         app:layout_constraintBottom_toBottomOf="@id/img"
         app:layout_constraintStart_toEndOf="@id/img"
-        style="?attr/textAppearanceListItemSecondary"
         tools:ignore="HardcodedText"
         />
 
@@ -52,20 +55,11 @@
         app:layout_constraintStart_toEndOf="@+id/avg_tv"
         app:layout_constraintBottom_toBottomOf="@+id/img"
         android:text="kg"
-        style="?attr/textAppearanceListItemSecondary"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+        android:textColor="?android:attr/textColorSecondary"
         tools:ignore="HardcodedText"
         />
 
-    <TextView
-        android:id="@+id/avg_reps_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        app:layout_constraintStart_toEndOf="@+id/unit_tv"
-        app:layout_constraintBottom_toBottomOf="@+id/img"
-        style="?attr/textAppearanceListItemSecondary"
-        tools:ignore="HardcodedText"
-        />
 
     <TextView
         android:id="@+id/percentage_tv"

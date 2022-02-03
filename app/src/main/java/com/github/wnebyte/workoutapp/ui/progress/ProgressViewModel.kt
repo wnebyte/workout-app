@@ -4,76 +4,69 @@ import java.util.*
 import android.util.Log
 import androidx.lifecycle.*
 import com.github.wnebyte.workoutapp.database.Repository
-import com.github.wnebyte.workoutapp.model.DataPoint
+import com.github.wnebyte.workoutapp.model.*
+import com.github.wnebyte.workoutapp.util.TemporalRange
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.toFirstOfLastMonth
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.toLastOfLastMonth
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.toLastOfNextMonth
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.month
-import com.github.wnebyte.workoutapp.model.ProgressItem
-import com.github.wnebyte.workoutapp.model.ExerciseWithSets
-import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.toDate
 
 private const val TAG = "ProgressViewModel"
 
-private const val DATE_KEY = "Date"
+private const val TEMPORAL_RANGE_KEY = "Range"
 
 class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
 
     private val repository = Repository.get()
 
-    val dateLiveData: MutableLiveData<Date> = state.get<Long>(DATE_KEY).let {
-        return@let when (it) {
-            null -> {
-                MutableLiveData(Date())
-            }
-            else -> {
-                MutableLiveData(Date(it))
-            }
-        }
-    }
+    val temporalRangeLiveData: MutableLiveData<TemporalRange> = state.getLiveData(TEMPORAL_RANGE_KEY)
 
     val progressItemListLiveData: LiveData<List<ProgressItem>> = (
-            Transformations.switchMap(dateLiveData) { to ->
-                val from = to.toFirstOfLastMonth()
-                Log.i(TAG, "from: ${from.format()}, to: ${to.format()}")
+            Transformations.switchMap(temporalRangeLiveData) { temporalRange ->
                 repository.getWorkoutsWithExercisesCompletedBetween(
-                    from, to
+                    temporalRange.lower.toDate(), temporalRange.upper.toDate()
                 ).switchMap { workouts ->
-                        MutableLiveData(transform(workouts, to.month()))
-                    }
+                    MutableLiveData(transf(workouts, temporalRange))
+                }
             })
 
-    fun decrementMonth() {
-        val value = dateLiveData.value
-        value?.let {
-            setDate(it.toLastOfLastMonth())
+    init {
+        if (!state.contains(TEMPORAL_RANGE_KEY)) {
+            setTemporalRange(
+                TemporalRange.newInstance(TemporalRange.MONTH))
         }
     }
 
-    fun incrementMonth() {
-        val value = dateLiveData.value
+    fun decrementRange() {
+        val value = temporalRangeLiveData.value
         value?.let {
-            setDate(it.toLastOfNextMonth())
+            setTemporalRange(it.adjustDown())
         }
     }
 
-    fun getDate(): Date {
-        return dateLiveData.value!!
+    fun incrementRange() {
+        val value = temporalRangeLiveData.value
+        value?.let {
+            setTemporalRange(it.adjustUp())
+        }
     }
 
-    private fun setDate(date: Date) {
-        state[DATE_KEY] = date.time
-        dateLiveData.value = date
+    fun getTemporalRange(): TemporalRange {
+        return temporalRangeLiveData.value!!
     }
 
-    private fun transform(
+    fun setTemporalRange(range: TemporalRange) {
+        state[TEMPORAL_RANGE_KEY] = range
+        temporalRangeLiveData.value = range
+        Log.i(TAG, "lower: ${range.lower.toDate().format("yyyy/MM/dd")} " +
+                "upper: ${range.upper.toDate().format("yyyy/MM/dd")}")
+    }
+
+    private fun transf(
         workouts: List<WorkoutWithExercises>,
-        refMonth: Int,
+        range: TemporalRange
     ): List<ProgressItem> {
         val list = mutableListOf<ProgressItem>()
-        val shards: Map<Int, List<ExerciseTuple>> = shard(workouts)
-        val shard = shards[refMonth]
+        val shards: Map<Boolean, List<ExerciseTuple>> = shard(workouts, range)
+        val shard = shards[true]
 
         shard?.let {
             for (name in getDistinctNames(it.map { t -> t.exercise })) {
@@ -93,7 +86,7 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
                 // get avg weights for this month
                 val avg0 = y.average().toFloat()
                 // get avg weights for previous month
-                val avg1 = (shards[decrementMonth(refMonth)]
+                val avg1 = (shards[false]
                     ?.filter { e -> e.exercise.exercise.name == name }
                     ?.map { e -> e.exercise.sets.map { s -> s.weights }.average() }
                     ?.average() ?: 0.0f).toFloat()
@@ -126,45 +119,22 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
         return list
     }
 
-    /**
-     * Returns a Map consisting of a List of [ExerciseWithSets] associated with the
-     * Month that their respective [WorkoutWithExercises] was scheduled to take place.
-     */
-    private fun shardByMonth(workouts: List<WorkoutWithExercises>)
-    : Map<Int, List<ExerciseWithSets>> {
-        val map: MutableMap<Int, MutableList<ExerciseWithSets>> = mutableMapOf()
-
-        for (workout in workouts) {
-            val date = workout.workout.date
-            date?.let {
-                val month = it.month()
-                if (!map.containsKey(month)) {
-                    map[month] = workout.exercises
-                } else {
-                    map[month]!!.addAll(workout.exercises)
-                }
-            }
-        }
-        return map
-    }
-
-    private fun shard(workouts: List<WorkoutWithExercises>)
-    : Map<Int, List<ExerciseTuple>> {
-        val map: MutableMap<Int, MutableList<ExerciseTuple>> = mutableMapOf()
-
+    private fun shard(workouts: List<WorkoutWithExercises>, ref: TemporalRange)
+    : Map<Boolean, List<ExerciseTuple>> {
+        val map: MutableMap<Boolean, MutableList<ExerciseTuple>> = mutableMapOf()
         for (w in workouts) {
             val date = w.workout.date
             date?.let {
-                val month = date.month()
-                if (!map.containsKey(month)) {
+                val bool = ref.shard(date.time)
+                if (!map.containsKey(bool)) {
                     val l = mutableListOf<ExerciseTuple>()
                     for (e in w.exercises) {
                         l.add(ExerciseTuple(date, e))
                     }
-                    map[month] = l
+                    map[bool] = l
                 } else {
                     for (e in w.exercises) {
-                        map[month]!!.add(ExerciseTuple(date, e))
+                        map[bool]!!.add(ExerciseTuple(date, e))
                     }
                 }
             }
@@ -179,17 +149,6 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
             set.addAll(l)
         }
         return set
-    }
-
-    private fun decrementMonth(value: Int): Int {
-        return when (value) {
-            0 -> {
-                11
-            }
-            else -> {
-                value - 1
-            }
-        }
     }
 
     private data class ExerciseTuple(

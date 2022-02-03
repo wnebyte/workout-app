@@ -42,21 +42,21 @@
                     android:id="@+id/show_all"
                     android:title="All"
                     android:icon="@drawable/ic_baseline_all_inclusive_24"
-                    app:iconTint="@color/black"
+                    app:iconTint="@color/primaryLight"
                     tools:ignore="HardcodedText"
                     />
                 <item
                     android:id="@+id/show_completed"
                     android:title="Completed"
                     android:icon="@drawable/ic_baseline_check_24"
-                    app:iconTint="@color/black"
+                    app:iconTint="@color/primaryLight"
                     tools:ignore="HardcodedText"
                     />
                 <item
                     android:id="@+id/show_uncompleted"
                     android:title="Uncompleted"
                     android:icon="@drawable/ic_baseline_incomplete_circle_24"
-                    app:iconTint="@color/black"
+                    app:iconTint="@color/primaryLight"
                     tools:ignore="HardcodedText"
                     />
             </group>
