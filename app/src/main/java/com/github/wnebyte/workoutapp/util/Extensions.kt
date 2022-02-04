@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat
 import android.text.TextUtils
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.hour
 import kotlin.math.abs
 
 class Extensions {
@@ -53,10 +54,34 @@ class Extensions {
             return calendar.get(Calendar.MONTH)
         }
 
-        fun Date.day(): Int {
+        fun Date.date(): Int {
             val calendar = Calendar.getInstance()
             calendar.time = this
             return calendar.get(Calendar.DATE)
+        }
+
+        fun Date.hour(): Int {
+            val calendar = Calendar.getInstance()
+            calendar.time = this
+            return calendar.get(Calendar.HOUR_OF_DAY)
+        }
+
+        fun Date.minute(): Int {
+            val calendar = Calendar.getInstance()
+            calendar.time = this
+            return calendar.get(Calendar.MINUTE)
+        }
+
+        fun Date.second(): Int {
+            val calendar = Calendar.getInstance()
+            calendar.time = this
+            return calendar.get(Calendar.SECOND)
+        }
+
+        fun Date.millisecond(): Int {
+            val calendar = Calendar.getInstance()
+            calendar.time = this
+            return calendar.get(Calendar.MILLISECOND)
         }
 
         fun Date.toFirstOfThisYear(): Date {

@@ -22,7 +22,7 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
     val progressItemListLiveData: LiveData<List<ProgressItem>> = (
             Transformations.switchMap(temporalRangeLiveData) { temporalRange ->
                 repository.getWorkoutsWithExercisesCompletedBetween(
-                    temporalRange.lower.toDate(), temporalRange.upper.toDate()
+                    temporalRange.lower, temporalRange.upper
                 ).switchMap { workouts ->
                     MutableLiveData(transf(workouts, temporalRange))
                 }
@@ -56,8 +56,8 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
     fun setTemporalRange(range: TemporalRange) {
         state[TEMPORAL_RANGE_KEY] = range
         temporalRangeLiveData.value = range
-        Log.i(TAG, "lower: ${range.lower.toDate().format("yyyy/MM/dd")} " +
-                "upper: ${range.upper.toDate().format("yyyy/MM/dd")}")
+        Log.i(TAG, "lower: ${range.lower.format("yyyy/MM/dd")} " +
+                "upper: ${range.upper.format("yyyy/MM/dd")}")
     }
 
     private fun transf(

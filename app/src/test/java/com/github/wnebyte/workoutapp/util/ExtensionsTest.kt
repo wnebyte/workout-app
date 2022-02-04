@@ -1,7 +1,7 @@
-package com.github.wnebyte.workoutapp
+package com.github.wnebyte.workoutapp.util
 
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.day
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.date
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toFirstOfLastMonth
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toLastOfNextMonth
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toLastOfThisMonth
@@ -10,7 +10,7 @@ import org.junit.Assert
 import org.junit.Test
 import java.util.*
 
-class ExtTest {
+class ExtensionsTest {
 
     @Test
     fun testLastOfTheMonth() {
@@ -36,7 +36,7 @@ class ExtTest {
     @Test
     fun testToLastOfNextMonth() {
         val date = newDateInstance(2021, 11, 12)
-        Assert.assertEquals(31, date.toLastOfNextMonth().day())
+        Assert.assertEquals(31, date.toLastOfNextMonth().date())
     }
 
     private fun newDateInstance(year: Int, month: Int, date: Int): Date {

@@ -40,6 +40,7 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.Utils
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.year
 
 private const val TAG = "ProgressDetailsFragment"
 
@@ -128,6 +129,7 @@ class ProgressDetailsFragment :
     ) {
         val x: List<Long> = data.map { v -> v.x }
         val y: List<Float> = data.map { v -> v.y }
+
         chart.setBackgroundColor(Color.WHITE)
         chart.description.isEnabled = false
         chart.setTouchEnabled(true)
@@ -145,20 +147,25 @@ class ProgressDetailsFragment :
         chart.setPinchZoom(isEnabled)
 
         val xAxis: XAxis = chart.xAxis
-        xAxis.axisMinimum = x.minOf { v -> v }.toFloat()
-        xAxis.axisMaximum = x.maxOf { v -> v }.toFloat()
+        val xMin =  x.minOf { v -> v }
+        val xMax = x.maxOf { v -> v }
+        val sdf: String = if (xMin.toDate().year() != xMax.toDate().year()) {
+            "yy/MM/dd"
+        } else {
+            "MM/dd"
+        }
+        xAxis.axisMinimum = xMin.toFloat()
+        xAxis.axisMaximum = xMax.toFloat()
+        xAxis.labelRotationAngle = 90f
         xAxis.valueFormatter = object: ValueFormatter() {
             override fun getFormattedValue(value: Float): String {
-                return value.toLong().toDate().format("MM/dd")
+                return value.toLong().toDate().format(sdf)
             }
         }
 
         val yAxis: YAxis = chart.axisLeft
         // disable dual axis (only use LEFT axis)
         chart.axisRight.isEnabled = false
-
-        // horizontal grid lines
-      //  yAxis.enableGridDashedLine(10f, 10f, 0f)
 
         yAxis.axisMinimum = y.minOf { v -> v } / 2f
         yAxis.axisMaximum = y.maxOf { v -> v } * 1.5f
@@ -221,6 +228,7 @@ class ProgressDetailsFragment :
             set.fillFormatter = IFillFormatter { _, _ ->
                 chart.axisLeft.axisMinimum
             }
+            set.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
             /*
             // set color of filled area
             if (Utils.getSDKInt() >= 18) {
@@ -237,144 +245,6 @@ class ProgressDetailsFragment :
             val lineData = LineData(dataSets)
             // set data
             chart.data = lineData
-        }
-    }
-
-    private fun init() {
-        chart.setBackgroundColor(Color.WHITE)
-        chart.description.isEnabled = false
-        chart.setTouchEnabled(true)
-
-        // set listeners
-        chart.setOnChartValueSelectedListener(this)
-
-        chart.setDrawGridBackground(false)
-
-        /*
-        val mv = MarkerView(requireContext(), R.layout.exercise_card)
-        mv.chartView = chart
-        chart.marker = mv
-        */
-
-        chart.isDragEnabled = true
-        chart.isScaleXEnabled = true
-        chart.isScaleYEnabled = true
-
-        chart.setPinchZoom(true)
-
-        val xAxis: XAxis = chart.xAxis
-        // vertical grid lines
-        xAxis.enableGridDashedLine(10f, 10f, 0f)
-
-        val yAxis: YAxis = chart.axisLeft
-        // disable dual axis (only use LEFT axis)
-        chart.axisRight.isEnabled = false
-        // horizontal grid lines
-        yAxis.enableGridDashedLine(10f, 10f, 0f)
-
-        yAxis.axisMinimum = -50f
-        yAxis.axisMaximum = 200f
-
-        // Create Limit Lines
-        val llXAxis = LimitLine(9f, "Index 10")
-        llXAxis.lineWidth = 4f
-        llXAxis.enableDashedLine(10f, 10f, 0f)
-        llXAxis.labelPosition = LimitLabelPosition.RIGHT_BOTTOM
-        llXAxis.textSize = 10f
-        // llXAxis.typeface = tfRegular
-
-        val ll1 = LimitLine(150f, "Upper Limit")
-        ll1.lineWidth = 4f
-        ll1.enableDashedLine(10f, 10f, 0f)
-        ll1.labelPosition = LimitLabelPosition.RIGHT_TOP
-        ll1.textSize = 10f
-        // ll1.typeface = tfRegular
-
-        val ll2 = LimitLine(-30f, "Lower Limit")
-        ll2.lineWidth = 4f
-        ll2.enableDashedLine(10f, 10f, 0f)
-        ll2.labelPosition = LimitLabelPosition.RIGHT_BOTTOM
-        ll2.textSize = 10f
-        // ll2.typeface = tfRegular
-
-        // draw limit lines behind data instead of on top
-        yAxis.setDrawLimitLinesBehindData(true)
-        xAxis.setDrawLimitLinesBehindData(true)
-
-        // add limit lines
-        yAxis.addLimitLine(ll1)
-        yAxis.addLimitLine(ll2)
-        //xAxis.addLimitLine(llXAxis);
-
-        // add data
-        setData(45, 180f)
-        chart.animateX(1500)
-
-        // get the legend (only possible after adding data)
-        val legend = chart.legend
-        legend.form = Legend.LegendForm.LINE
-    }
-
-    private fun setData(count: Int, range: Float) {
-        val entries: ArrayList<Entry> = arrayListOf()
-        var i = 0.0f
-
-        while (i < count) {
-            val value: Float = ((Math.random() * range) - 30).toFloat()
-            val entry = Entry(i, value, null)
-            entries.add(entry)
-            i++
-        }
-
-        val set: LineDataSet
-
-        if (chart.data != null && chart.data.dataSetCount > 0) {
-            set = chart.data.getDataSetByIndex(0) as LineDataSet
-            set.values = entries
-            set.notifyDataSetChanged()
-            chart.data.notifyDataChanged()
-        } else {
-            // create a dataset and give it a type
-            set = LineDataSet(entries, "DataSet 1")
-            set.setDrawIcons(false)
-            // draw dashed line
-            set.enableDashedLine(10f, 5f, 0f)
-            // black lines and points
-            set.color = Color.BLACK
-            set.setCircleColor(Color.BLACK)
-            // line thickness and point size
-            set.lineWidth = 1f
-            set.circleRadius = 3f
-            // draw points as solid circles
-            set.setDrawCircleHole(false)
-            // customize legend entry
-            set.formLineWidth = 1f
-            set.formLineDashEffect = DashPathEffect(floatArrayOf(10f, 5f), 0f)
-            set.formSize = 15f
-            // text size of values
-            set.valueTextSize = 9f
-            // draw selection line as dashed
-            set.enableDashedHighlightLine(10f, 5f, 0f)
-            // set the filled area
-            set.setDrawFilled(true)
-            set.fillFormatter = IFillFormatter { _, _ ->
-                chart.axisLeft.axisMinimum
-            }
-            // set color of filled area
-            if (Utils.getSDKInt() >= 18) {
-                // drawables only supported on api level 18 and above
-                val drawable = ContextCompat.getDrawable(requireContext(), android.R.drawable.star_on)
-               // set.fillDrawable = drawable
-                set.fillColor = Color.BLACK
-            } else {
-                set.fillColor = Color.BLACK
-            }
-            val dataSets: ArrayList<ILineDataSet> = ArrayList()
-            dataSets.add(set) // add the data sets
-            // create a data object with the data sets
-            val data = LineData(dataSets)
-            // set data
-            chart.data = data
         }
     }
 

@@ -1,10 +1,10 @@
-package com.github.wnebyte.workoutapp
+package com.github.wnebyte.workoutapp.util
 
 import com.github.wnebyte.workoutapp.util.Clock
 import org.junit.Assert
 import org.junit.Test
 
-class ClockUnitTest {
+class ClockTest {
 
     @Test
     fun test00() {
