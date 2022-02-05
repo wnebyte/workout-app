@@ -5,23 +5,10 @@ import java.lang.IllegalStateException
 import java.text.DateFormatSymbols
 import android.os.Parcel
 import android.os.Parcelable
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.addDays
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.month
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.year
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toDate
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.month
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.subtractDays
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.year
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.toFirstOfLastYear
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.toFirstOfNextMonth
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.toFirstOfLastMonth
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.toFirstOfNextYear
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.toLastOfLastMonth
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.toLastOfLastYear
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.toLastOfThisYear
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.toLastOfNextMonth
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.toLastOfNextYear
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.toLastOfThisMonth
-import kotlin.math.abs
 
 data class TemporalRange(
     val field: Int,
@@ -38,47 +25,42 @@ data class TemporalRange(
     )
 
     override fun adjustDown(): TemporalRange {
-        return when (field) {
-            MONTH -> {
-                copy(
-                    field = field,
-                    lower = lower.toFirstOfLastMonth(),
-                    upper = upper.toLastOfLastMonth()
-                )
-            }
-            YEAR -> {
-                copy(
-                    field = field,
-                    lower = lower.toFirstOfLastYear(),
-                    upper = upper.toLastOfLastYear()
-                )
-            }
-            DATE -> {
-                copy(
-                    field = field,
-                    amount = amount,
-                    lower = lower.subtractDays(amount),
-                    upper = upper.subtractDays(amount)
-                )
-            }
-            else -> this
-        }
-    }
-
-    fun testDown(): TemporalRange {
-        return copy(
-            field = field,
-            lower = lower,
-            upper = upper
-        )
-    }
-
-    fun testUp(): TemporalRange {
-        val limit = true
-        return when (limit) {
+        return when ((field == YEAR) || (field == MONTH)) {
             true -> {
                 copy(
                     field = field,
+                    amount = amount,
+                    lower = DateAdjuster(lower)
+                        .subtract(field, amount)
+                        .setMinimum(*slice(field))
+                        .adjust(),
+                    upper = DateAdjuster(upper)
+                        .subtract(field, amount)
+                        .setMaximum(*slice(field))
+                        .adjust()
+                )
+            }
+            false -> {
+                copy(
+                    field = field,
+                    amount = amount,
+                    lower = DateAdjuster(lower)
+                        .subtract(field, amount)
+                        .adjust(),
+                    upper = DateAdjuster(upper)
+                        .subtract(field, amount)
+                        .adjust()
+                )
+            }
+        }
+    }
+
+    override fun adjustUp(): TemporalRange {
+        return when ((field == YEAR) || (field == MONTH)) {
+            true -> {
+                copy(
+                    field = field,
+                    amount = amount,
                     lower = DateAdjuster(lower)
                         .add(field, amount)
                         .setMinimum(*slice(field))
@@ -92,6 +74,7 @@ data class TemporalRange(
             false -> {
                 copy(
                     field = field,
+                    amount = amount,
                     lower = DateAdjuster(lower)
                         .add(field, amount)
                         .adjust(),
@@ -103,71 +86,35 @@ data class TemporalRange(
         }
     }
 
-    override fun adjustUp(): TemporalRange {
-        return when (field) {
-            MONTH -> {
-                copy(
-                    field = field,
-                    // 01/01 -> 01/02
-                    lower = lower.toFirstOfNextMonth(),
-                    // 30/02 -> 31/03
-                    upper = upper.toLastOfNextMonth()
-                )
-            }
-            YEAR -> {
-                copy(
-                    field = field,
-                    // 01/01/20 -> 01/01/21
-                    lower = lower.toFirstOfNextYear(),
-                    // 31/12/21 -> 31/12/22
-                    upper = upper.toLastOfNextYear()
-                )
-            }
-            DATE -> {
-                copy(
-                    field = field,
-                    amount = amount,
-                    lower = lower.addDays(amount),
-                    upper = upper.addDays(amount)
-                )
-            }
-            else -> throw IllegalStateException(
-                "Error (TemporalRange): does not recognize flag: '$field'."
-            )
-        }
-    }
 
-    fun shard(l: Long): Boolean {
-        return when (field) {
-            MONTH -> {
-                l.toDate().month() == upper.month()
-            }
-            YEAR -> {
-                l.toDate().year() == upper.year()
-            }
-            DATE -> {
-                l >= lower.addDays(amount).time
-            }
-            else -> throw IllegalStateException(
-                "Error (Range): does not recognize flag: '$field'."
-            )
-        }
+    /**
+     * Returns whether the specified [date] lies at or after the midway point represented by
+     * this range.
+     */
+    fun after(date: Date): Boolean {
+        return !date.before(
+            DateAdjuster(lower)
+                .add(field, amount)
+                .adjust()
+        )
     }
 
     override fun toString(): String {
         return when (field) {
-            MONTH -> {
-                "${DateFormatSymbols().months[upper.month()]} ${upper.year()}"
-            }
             YEAR -> {
                 "${upper.year()}"
             }
-            // Todo: Should describe the midway-point of the temporal range
+            MONTH -> {
+                "${dfs.months[upper.month()]} ${upper.year()}"
+            }
             DATE -> {
-                "${upper.subtractDays(amount).format("yyyy/MM/dd")} - ${upper.format("yyyy/MM/dd")}"
+                val mid = DateAdjuster(upper)
+                    .subtract(field, amount)
+                    .adjust()
+                "${mid.format("yyyy/MM/dd")} - ${upper.format("yyyy/MM/dd")}"
             }
             else -> throw IllegalStateException(
-                "Error (Range): does not recognize flag: '$field'."
+                "Error (Range): does not recognize field: '$field'."
             )
         }
     }
@@ -180,11 +127,11 @@ data class TemporalRange(
 
         const val DATE: Int = Calendar.DATE
 
-        const val HOUR_OF_DAY: Int = Calendar.HOUR_OF_DAY
+        private const val HOUR_OF_DAY: Int = Calendar.HOUR_OF_DAY
 
-        const val MINUTE: Int = Calendar.MINUTE
+        private const val MINUTE: Int = Calendar.MINUTE
 
-        const val SECOND: Int = Calendar.SECOND
+        private const val SECOND: Int = Calendar.SECOND
 
         private const val MILLISECOND: Int = Calendar.MILLISECOND
 
@@ -198,40 +145,41 @@ data class TemporalRange(
             MILLISECOND
         )
 
+        private val dfs: DateFormatSymbols = DateFormatSymbols.getInstance()
+
         private fun slice(field: Int): IntArray {
-            return FIELDS.sliceArray(IntRange(FIELDS.indexOf(field) + 1, FIELDS.size))
+            return FIELDS.sliceArray(IntRange(FIELDS.indexOf(field) + 1, FIELDS.size - 1))
         }
 
-        fun newInstance(flag: Int, amount: Int = 1): TemporalRange {
+        fun newInstance(
+            field: Int,
+            amount: Int = 1
+        ): TemporalRange {
             val now = Date()
-            return when (flag) {
-                MONTH -> {
+            return when ((field == YEAR) || (field == MONTH)) {
+                true -> {
                     TemporalRange(
-                        MONTH,
-                        amount = 1,
-                        now.toFirstOfLastMonth(),
-                        now.toLastOfThisMonth()
+                        field = field,
+                        amount = amount,
+                        lower = DateAdjuster(now)
+                            .subtract(field, amount)
+                            .setMinimum(*slice(field))
+                            .adjust(),
+                        upper = DateAdjuster(now)
+                            .setMaximum(*slice(field))
+                            .adjust()
                     )
                 }
-                YEAR -> {
+                false -> {
                     TemporalRange(
-                        YEAR,
-                        amount = 1,
-                        now.toFirstOfLastYear(),
-                        now.toLastOfThisYear()
+                        field = field,
+                        amount = amount,
+                        lower = DateAdjuster(now)
+                            .subtract(field, 2 * amount)
+                            .adjust(),
+                        upper = now
                     )
                 }
-                DATE -> {
-                    TemporalRange(
-                        DATE,
-                        amount,
-                        now.subtractDays(2 * amount),
-                        now
-                    )
-                }
-                else -> throw IllegalStateException(
-                    "Error (Range): does not recognize flag: '$flag'."
-                )
             }
         }
 

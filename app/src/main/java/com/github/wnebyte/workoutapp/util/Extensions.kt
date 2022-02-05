@@ -344,5 +344,16 @@ class Extensions {
                 ""
             }
         }
+
+        fun Boolean.parse(value: Int): Boolean {
+            return when (value) {
+                1 -> {
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
+        }
     }
 }

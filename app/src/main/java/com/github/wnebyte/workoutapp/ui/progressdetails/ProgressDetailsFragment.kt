@@ -149,11 +149,7 @@ class ProgressDetailsFragment :
         val xAxis: XAxis = chart.xAxis
         val xMin =  x.minOf { v -> v }
         val xMax = x.maxOf { v -> v }
-        val sdf: String = if (xMin.toDate().year() != xMax.toDate().year()) {
-            "yy/MM/dd"
-        } else {
-            "MM/dd"
-        }
+        val sdf = "yy/MM/dd"
         xAxis.axisMinimum = xMin.toFloat()
         xAxis.axisMaximum = xMax.toFloat()
         xAxis.labelRotationAngle = 90f

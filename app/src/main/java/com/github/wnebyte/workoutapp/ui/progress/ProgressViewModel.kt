@@ -7,7 +7,6 @@ import com.github.wnebyte.workoutapp.database.Repository
 import com.github.wnebyte.workoutapp.model.*
 import com.github.wnebyte.workoutapp.util.TemporalRange
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.toDate
 
 private const val TAG = "ProgressViewModel"
 
@@ -17,14 +16,14 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
 
     private val repository = Repository.get()
 
-    val temporalRangeLiveData: MutableLiveData<TemporalRange> = state.getLiveData(TEMPORAL_RANGE_KEY)
+    val rangeLiveData: MutableLiveData<TemporalRange> = state.getLiveData(TEMPORAL_RANGE_KEY)
 
     val progressItemListLiveData: LiveData<List<ProgressItem>> = (
-            Transformations.switchMap(temporalRangeLiveData) { temporalRange ->
+            Transformations.switchMap(rangeLiveData) { range ->
                 repository.getWorkoutsWithExercisesCompletedBetween(
-                    temporalRange.lower, temporalRange.upper
+                    range.lower, range.upper
                 ).switchMap { workouts ->
-                    MutableLiveData(transf(workouts, temporalRange))
+                    MutableLiveData(transf(workouts, range))
                 }
             })
 
@@ -36,26 +35,26 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
     }
 
     fun decrementRange() {
-        val value = temporalRangeLiveData.value
+        val value = rangeLiveData.value
         value?.let {
             setTemporalRange(it.adjustDown())
         }
     }
 
     fun incrementRange() {
-        val value = temporalRangeLiveData.value
+        val value = rangeLiveData.value
         value?.let {
             setTemporalRange(it.adjustUp())
         }
     }
 
     fun getTemporalRange(): TemporalRange {
-        return temporalRangeLiveData.value!!
+        return rangeLiveData.value!!
     }
 
     fun setTemporalRange(range: TemporalRange) {
         state[TEMPORAL_RANGE_KEY] = range
-        temporalRangeLiveData.value = range
+        rangeLiveData.value = range
         Log.i(TAG, "lower: ${range.lower.format("yyyy/MM/dd")} " +
                 "upper: ${range.upper.format("yyyy/MM/dd")}")
     }
@@ -80,8 +79,10 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
                 // get their averages (y)
                 val y: List<Float> = l.map { e -> e.exercise.sets.map { s -> s.weights }
                     .average().toFloat() }
-                // wrap properties in a data class
-                val data: List<DataPoint> = List(id.size) { i -> DataPoint(id[i], x[i], y[i]) }
+                // wrap values
+                val data: List<DataPoint> = List(id.size) { i ->
+                    DataPoint(id[i], x[i], y[i])
+                }
 
                 // get avg weights for this month
                 val avg0 = y.average().toFloat()
@@ -125,7 +126,7 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
         for (w in workouts) {
             val date = w.workout.date
             date?.let {
-                val bool = ref.shard(date.time)
+                val bool = ref.after(date)
                 if (!map.containsKey(bool)) {
                     val l = mutableListOf<ExerciseTuple>()
                     for (e in w.exercises) {

@@ -24,7 +24,6 @@ import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import com.github.wnebyte.workoutapp.ui.OnSwipeListener
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator
 import jp.wasabeef.recyclerview.animators.SlideInRightAnimator
-import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 
 private const val TAG = "ProgressFragment"
 
@@ -37,18 +36,6 @@ class ProgressFragment : Fragment(), OnSwipeListener {
     private val vm: ProgressViewModel by viewModels()
 
     private val adapter = ProgressItemAdapter()
-
-    private val animLeft: RecyclerView.ItemAnimator = SlideInLeftAnimator().apply {
-        addDuration = 350
-    }
-
-    private val animRight: RecyclerView.ItemAnimator = SlideInRightAnimator().apply {
-        addDuration = 350
-    }
-
-    private val animUp: RecyclerView.ItemAnimator = SlideInUpAnimator().apply {
-        addDuration = 350
-    }
 
     private val binding get() = _binding!!
 
@@ -122,37 +109,44 @@ class ProgressFragment : Fragment(), OnSwipeListener {
             }
             R.id.by_month -> {
                 item.isChecked = true
-                vm.setTemporalRange(TemporalRange.newInstance(TemporalRange.MONTH))
+                vm.setTemporalRange(
+                    TemporalRange.newInstance(TemporalRange.MONTH))
                 true
             }
             R.id.by_year -> {
                 item.isChecked = true
-                vm.setTemporalRange(TemporalRange.newInstance(TemporalRange.YEAR))
+                vm.setTemporalRange(
+                    TemporalRange.newInstance(TemporalRange.YEAR))
                 true
             }
             R.id.by_30_days -> {
                 item.isChecked = true
-                vm.setTemporalRange(TemporalRange.newInstance(TemporalRange.DATE, 30))
+                vm.setTemporalRange(
+                    TemporalRange.newInstance(TemporalRange.DATE, 30))
                 true
             }
             R.id.by_60_days -> {
                 item.isChecked = true
-                vm.setTemporalRange(TemporalRange.newInstance(TemporalRange.DATE, 60))
+                vm.setTemporalRange(
+                    TemporalRange.newInstance(TemporalRange.DATE, 60))
                 true
             }
             R.id.by_90_days -> {
                 item.isChecked = true
-                vm.setTemporalRange(TemporalRange.newInstance(TemporalRange.DATE, 90))
+                vm.setTemporalRange(
+                    TemporalRange.newInstance(TemporalRange.DATE, 90))
                 true
             }
             R.id.by_180_days -> {
                 item.isChecked = true
-                vm.setTemporalRange(TemporalRange.newInstance(TemporalRange.DATE, 180))
+                vm.setTemporalRange(
+                    TemporalRange.newInstance(TemporalRange.DATE, 180))
                 true
             }
             R.id.by_365_days -> {
                 item.isChecked = true
-                vm.setTemporalRange(TemporalRange.newInstance(TemporalRange.DATE, 365))
+                vm.setTemporalRange(
+                    TemporalRange.newInstance(TemporalRange.DATE, 365))
                 true
             }
             else -> {
@@ -170,7 +164,6 @@ class ProgressFragment : Fragment(), OnSwipeListener {
             .inflate(layoutInflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
-        binding.recyclerView.itemAnimator = animUp
         _gestureDetector = GestureDetectorCompat(requireContext(), this)
         return binding.root
     }
@@ -184,7 +177,6 @@ class ProgressFragment : Fragment(), OnSwipeListener {
                 items?.let {
                     Log.i(TAG, "got ${it.size} items")
                     updateUI(it)
-                    binding.recyclerView.itemAnimator = animUp
                 }
             }
         )
@@ -219,12 +211,17 @@ class ProgressFragment : Fragment(), OnSwipeListener {
     }
 
     private fun incrementRange() {
-        binding.recyclerView.itemAnimator = animRight
+        binding.recyclerView.itemAnimator = SlideInRightAnimator().apply {
+            addDuration = 350
+        }
         vm.incrementRange()
     }
 
     private fun decrementRange() {
-        binding.recyclerView.itemAnimator = animLeft
+        binding.recyclerView.itemAnimator = SlideInLeftAnimator().apply {
+            addDuration = 350
+        }
+        vm.decrementRange()
     }
 
     private inner class ProgressItemHolder(private val binding: ProgressItemCardBinding) :
