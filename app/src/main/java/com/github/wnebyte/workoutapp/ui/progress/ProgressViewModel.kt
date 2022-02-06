@@ -117,6 +117,14 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
                 )
             }
         }
+
+        for (kv in shards) {
+            val key = kv.component1()
+            val value = kv.component2()
+            for (v in value) {
+                Log.i(TAG, "[${key}]: ${v.date.format()}")
+            }
+        }
         return list
     }
 

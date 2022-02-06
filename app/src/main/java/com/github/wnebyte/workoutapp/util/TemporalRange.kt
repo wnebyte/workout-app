@@ -147,7 +147,7 @@ data class TemporalRange(
 
         private val dfs: DateFormatSymbols = DateFormatSymbols.getInstance()
 
-        private fun slice(field: Int): IntArray {
+        fun slice(field: Int): IntArray {
             return FIELDS.sliceArray(IntRange(FIELDS.indexOf(field) + 1, FIELDS.size - 1))
         }
 

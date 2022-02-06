@@ -3,7 +3,6 @@ package com.github.wnebyte.workoutapp.ui.progressdetails
 import java.util.*
 import kotlin.collections.ArrayList
 import android.graphics.Color
-import android.graphics.DashPathEffect
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -11,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
@@ -28,9 +26,10 @@ import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toDate
+import com.github.wnebyte.workoutapp.util.DateAdjuster
+import com.github.wnebyte.workoutapp.util.TemporalRange
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.*
-import com.github.mikephil.charting.components.LimitLine.LimitLabelPosition
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -39,8 +38,6 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
-import com.github.mikephil.charting.utils.Utils
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.year
 
 private const val TAG = "ProgressDetailsFragment"
 
@@ -91,17 +88,16 @@ class ProgressDetailsFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.i(TAG, "got: ${progressItem.data.size} data-points")
         vm.exerciseLiveData.observe(
             viewLifecycleOwner,
             { exercise ->
                 exercise?.let {
-                    Log.i(TAG, "got exercise: ${it.exercise.id}")
+                   // Log.i(TAG, "got exercise: ${it.exercise.id}")
                     updateMarkerView(it)
                 }
             }
         )
-        val data: List<DataPoint> = progressItem.data
+        val data: List<DataPoint> = prepareData(progressItem.data)
         val name = progressItem.name
         initGraph(data, name)
     }
@@ -113,6 +109,17 @@ class ProgressDetailsFragment :
         _mv = null
         _titleTv = null
         _recyclerView = null
+    }
+
+    private fun prepareData(data: List<DataPoint>): List<DataPoint> {
+        // sort according to date
+        return data.sortedBy { d -> d.x }.map { d ->
+            val date = DateAdjuster(d.x.toDate())
+                // set the date to the start of the day
+                .setMinimum(*TemporalRange.slice(TemporalRange.DATE))
+                .adjust()
+            DataPoint(d.id, date.time, d.y)
+        }
     }
 
     // Todo: move out initialization
@@ -127,8 +134,13 @@ class ProgressDetailsFragment :
         data: List<DataPoint>,
         name: String
     ) {
-        val x: List<Long> = data.map { v -> v.x }
+      //  val x: List<Long> = data.map { v -> v.x }
         val y: List<Float> = data.map { v -> v.y }
+       // Log.i(TAG, "xLen: ${x.size}, yLen: ${y.size}")
+
+        for (dp in data) {
+            Log.i(TAG, "(${dp.x.toDate().format()}, ${dp.y})")
+        }
 
         chart.setBackgroundColor(Color.WHITE)
         chart.description.isEnabled = false
@@ -147,11 +159,11 @@ class ProgressDetailsFragment :
         chart.setPinchZoom(isEnabled)
 
         val xAxis: XAxis = chart.xAxis
-        val xMin =  x.minOf { v -> v }
-        val xMax = x.maxOf { v -> v }
+      //  val xMin =  x.minOf { v -> v }
+      //  val xMax = x.maxOf { v -> v }
         val sdf = "yy/MM/dd"
-        xAxis.axisMinimum = xMin.toFloat()
-        xAxis.axisMaximum = xMax.toFloat()
+       // xAxis.axisMinimum = xMin.toFloat()
+       // xAxis.axisMaximum = xMax.toFloat()
         xAxis.labelRotationAngle = 90f
         xAxis.valueFormatter = object: ValueFormatter() {
             override fun getFormattedValue(value: Float): String {
@@ -245,14 +257,13 @@ class ProgressDetailsFragment :
     }
 
     override fun onValueSelected(e: Entry, h: Highlight?) {
-        Log.i(TAG, "value selected: ${e.data as UUID}")
+      //  Log.i(TAG, "value selected: ${e.data as UUID}")
         val id: UUID = e.data as UUID
         vm.loadExercise(id)
     }
 
     override fun onNothingSelected() {
-        Log.i(TAG, "nothing selected")
-       // binding.card.root.visibility = View.GONE
+      //  Log.i(TAG, "nothing selected")
     }
 
     private inner class SetHolder(private val binding: SetItemBinding) :

@@ -5,14 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="30dp"
-    android:paddingBottom="30dp"
+    android:paddingTop="26.5dp"
+    android:paddingBottom="26.5dp"
     >
 
     <ImageView
         android:id="@+id/img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="56.72dp"
+        android:layout_height="50dp"
         android:layout_marginStart="20dp"
         android:src="@drawable/ic_fireman_strongman"
         android:contentDescription="@string/x_bar_content_desc"
@@ -27,8 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:text="Bench Press"
+        android:textSize="18sp"
         style="@style/TextAppearance.AppCompat.Title"
-        android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/img"
         app:layout_constraintTop_toTopOf="@id/img"
         tools:ignore="HardcodedText"
@@ -55,8 +55,6 @@
         app:layout_constraintStart_toEndOf="@+id/avg_tv"
         app:layout_constraintBottom_toBottomOf="@+id/img"
         android:text="kg"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-        android:textColor="?android:attr/textColorSecondary"
         tools:ignore="HardcodedText"
         />
 
