@@ -1,13 +1,11 @@
 package com.github.wnebyte.workoutapp.ui.progress
 
 import java.util.*
-import android.util.Log
 import androidx.lifecycle.*
 import com.github.wnebyte.workoutapp.database.Repository
 import com.github.wnebyte.workoutapp.model.*
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.avg
 import com.github.wnebyte.workoutapp.util.TemporalRange
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.avg
 
 private const val TAG = "ProgressViewModel"
 
@@ -17,14 +15,25 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
 
     private val repository = Repository.get()
 
+    private val cache: MutableMap<TemporalRange, List<ProgressItem>> = mutableMapOf()
+
     val rangeLiveData: MutableLiveData<TemporalRange> = state.getLiveData(TEMPORAL_RANGE_KEY)
 
     val progressItemListLiveData: LiveData<List<ProgressItem>> = (
             Transformations.switchMap(rangeLiveData) { range ->
-                repository.getWorkoutsWithExercisesCompletedBetween(
-                    range.lower, range.upper
-                ).switchMap { workouts ->
-                    MutableLiveData(transf(workouts, range))
+                when (cache.containsKey(range)) {
+                    true -> {
+                        MutableLiveData(cache[range])
+                    }
+                    false -> {
+                        repository.getWorkoutsWithExercisesCompletedBetween(
+                            range.lower, range.upper
+                        ).switchMap { workouts ->
+                            val data = transf(workouts, range)
+                            cache[range] = data
+                            MutableLiveData(data)
+                        }
+                    }
                 }
             })
 
@@ -35,6 +44,9 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
         }
     }
 
+    /**
+     * Adjusts down the temporal range.
+     */
     fun decrementRange() {
         val value = rangeLiveData.value
         value?.let {
@@ -42,6 +54,9 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
         }
     }
 
+    /**
+     * Adjusts up the temporal range.
+     */
     fun incrementRange() {
         val value = rangeLiveData.value
         value?.let {
@@ -49,10 +64,18 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
         }
     }
 
+    /**
+     * Returns the temporal range.
+     * @return the temporal range.
+     */
     fun getTemporalRange(): TemporalRange {
         return rangeLiveData.value!!
     }
 
+    /**
+     * Sets the temporal range.
+     * @param range the temporal range.
+     */
     fun setTemporalRange(range: TemporalRange) {
         state[TEMPORAL_RANGE_KEY] = range
         rangeLiveData.value = range
@@ -64,12 +87,12 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
     ): List<ProgressItem> {
         val list = mutableListOf<ProgressItem>()
         val shards: Map<Boolean, List<ExerciseTuple>> = shard(workouts, range)
-        val shard = shards[true]
+        val shard: List<ExerciseTuple>? = shards[true]
 
         // all tuples whose date lies after the "midway" point of the temporal range
         shard?.let {
             // iterate over each distinct exercise name
-            for (name in getDistinctNames(it.map { t -> t.exercise })) {
+            for (name in getDistinctNames(it)) {
                 // get all the tuples in the shard with the given exercise name
                 val l: List<ExerciseTuple> = it
                     .filter { e -> e.exercise.exercise.name == name }
@@ -121,22 +144,29 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
         return list
     }
 
-    private fun shard(workouts: List<WorkoutWithExercises>, ref: TemporalRange)
+    /**
+     * Transforms the specified [workouts] and shards the transformation target type on
+     * [TemporalRange.after].
+     * @param workouts to be transformed.
+     * @param range to be used to partition the specified `workouts`.
+     * @return the result.
+     */
+    private fun shard(workouts: List<WorkoutWithExercises>, range: TemporalRange)
     : Map<Boolean, List<ExerciseTuple>> {
         val map: MutableMap<Boolean, MutableList<ExerciseTuple>> = mutableMapOf()
         for (w in workouts) {
             val date = w.workout.date
             date?.let {
-                val bool = ref.after(date)
+                val bool = range.after(it)
                 if (!map.containsKey(bool)) {
                     val l = mutableListOf<ExerciseTuple>()
                     for (e in w.exercises) {
-                        l.add(ExerciseTuple(date, e))
+                        l.add(ExerciseTuple(it, e))
                     }
                     map[bool] = l
                 } else {
                     for (e in w.exercises) {
-                        map[bool]!!.add(ExerciseTuple(date, e))
+                        map[bool]!!.add(ExerciseTuple(it, e))
                     }
                 }
             }
@@ -144,10 +174,15 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
         return map
     }
 
-    private fun getDistinctNames(exercises: List<ExerciseWithSets>?): Set<String> {
+    /**
+     * Returns the distinct names of the specified [exercises] sorted in ascending order.
+     * @param exercises to be used.
+     * @return the result.
+     */
+    private fun getDistinctNames(exercises: List<ExerciseTuple>?): Set<String> {
         val set = mutableSetOf<String>()
         exercises?.let {
-            val l: List<String> = it.map { e -> e.exercise.name }.sorted()
+            val l: List<String> = it.map { e -> e.exercise.exercise.name }.sorted()
             set.addAll(l)
         }
         return set

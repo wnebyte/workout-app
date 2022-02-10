@@ -88,7 +88,7 @@ data class TemporalRange(
 
 
     /**
-     * Returns whether the specified [date] lies at or after the midway point represented by
+     * Returns whether the specified [date] lies at or beyond the midway point represented by
      * this range.
      */
     fun after(date: Date): Boolean {
