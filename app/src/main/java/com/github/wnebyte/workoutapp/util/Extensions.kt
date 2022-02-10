@@ -84,125 +84,6 @@ class Extensions {
             return calendar.get(Calendar.MILLISECOND)
         }
 
-        fun Date.toFirstOfThisYear(): Date {
-            val calendar = Calendar.getInstance()
-            calendar.time = this
-            var min = calendar.getActualMinimum(Calendar.MONTH)
-            calendar.set(Calendar.MONTH, min)
-            min = calendar.getActualMinimum(Calendar.DATE)
-            calendar.set(Calendar.DATE, min)
-            min = calendar.getActualMinimum(Calendar.HOUR_OF_DAY)
-            calendar.set(Calendar.HOUR_OF_DAY, min)
-            min = calendar.getActualMinimum(Calendar.MINUTE)
-            calendar.set(Calendar.MINUTE, min)
-            min = calendar.getActualMinimum(Calendar.SECOND)
-            calendar.set(Calendar.SECOND, min)
-            return calendar.time
-        }
-
-        fun Date.toFirstOfLastYear(): Date {
-            val calendar = Calendar.getInstance()
-            calendar.time = this
-            calendar.set(Calendar.YEAR, this.year() - 1)
-            var min = calendar.getActualMinimum(Calendar.MONTH)
-            calendar.set(Calendar.MONTH, min)
-            min = calendar.getActualMinimum(Calendar.DATE)
-            calendar.set(Calendar.DATE, min)
-            min = calendar.getActualMinimum(Calendar.HOUR_OF_DAY)
-            calendar.set(Calendar.HOUR_OF_DAY, min)
-            min = calendar.getActualMinimum(Calendar.MINUTE)
-            calendar.set(Calendar.MINUTE, min)
-            min = calendar.getActualMinimum(Calendar.SECOND)
-            calendar.set(Calendar.SECOND, min)
-            return calendar.time
-        }
-
-        fun Date.toLastOfLastYear(): Date {
-            val calendar = Calendar.getInstance()
-            calendar.time = this
-            calendar.set(Calendar.YEAR, year() - 1)
-            var max = calendar.getActualMaximum(Calendar.MONTH)
-            calendar.set(Calendar.MONTH, max)
-            max = calendar.getActualMaximum(Calendar.DATE)
-            calendar.set(Calendar.DATE, max)
-            max = calendar.getActualMaximum(Calendar.MINUTE)
-            calendar.set(Calendar.MINUTE, max)
-            max = calendar.getActualMaximum(Calendar.SECOND)
-            calendar.set(Calendar.SECOND, max)
-            return calendar.time
-        }
-
-        fun Date.toLastOfThisYear(): Date {
-            val calendar = Calendar.getInstance()
-            calendar.time = this
-            var max = calendar.getActualMaximum(Calendar.MONTH)
-            calendar.set(Calendar.MONTH, max)
-            max = calendar.getActualMaximum(Calendar.DATE)
-            calendar.set(Calendar.DATE, max)
-            max = calendar.getActualMaximum(Calendar.MINUTE)
-            calendar.set(Calendar.MINUTE, max)
-            max = calendar.getActualMaximum(Calendar.SECOND)
-            calendar.set(Calendar.SECOND, max)
-            return calendar.time
-        }
-
-        fun Date.toFirstOfTheMonth(): Date {
-            val calendar = Calendar.getInstance()
-            calendar.time = this
-            var min = calendar.getActualMinimum(Calendar.DATE)
-            calendar.set(Calendar.DATE, min)
-            min = calendar.getActualMinimum(Calendar.HOUR_OF_DAY)
-            calendar.set(Calendar.HOUR_OF_DAY, min)
-            min = calendar.getActualMinimum(Calendar.MINUTE)
-            calendar.set(Calendar.MINUTE, min)
-            min = calendar.getActualMinimum(Calendar.SECOND)
-            calendar.set(Calendar.SECOND, min)
-            return calendar.time
-        }
-
-        fun Date.toFirstOfNextMonth(): Date {
-            val calendar = Calendar.getInstance()
-            calendar.time = this
-            calendar.set(Calendar.MONTH, +1)
-            var min = calendar.getActualMinimum(Calendar.DATE)
-            calendar.set(Calendar.DATE, min)
-            min = calendar.getActualMinimum(Calendar.MINUTE)
-            calendar.set(Calendar.MINUTE, min)
-            min = calendar.getActualMinimum(Calendar.SECOND)
-            calendar.set(Calendar.SECOND, min)
-            return calendar.time
-        }
-
-        fun Date.toFirstOfNextYear(): Date {
-            val calendar = Calendar.getInstance()
-            calendar.time = this
-            calendar.set(Calendar.YEAR, year() + 1)
-            var min = calendar.getActualMinimum(Calendar.MONTH)
-            calendar.set(Calendar.MONTH, min)
-            min = calendar.getActualMinimum(Calendar.DATE)
-            calendar.set(Calendar.DATE, min)
-            min = calendar.getActualMinimum(Calendar.MINUTE)
-            calendar.set(Calendar.MINUTE, min)
-            min = calendar.getActualMinimum(Calendar.SECOND)
-            calendar.set(Calendar.SECOND, min)
-            return calendar.time
-        }
-
-        fun Date.toLastOfNextYear(): Date {
-            val calendar = Calendar.getInstance()
-            calendar.time = this
-            calendar.set(Calendar.YEAR, year() + 1)
-            var max = calendar.getActualMaximum(Calendar.MONTH)
-            calendar.set(Calendar.MONTH, max)
-            max = calendar.getActualMaximum(Calendar.DATE)
-            calendar.set(Calendar.DATE, max)
-            max = calendar.getActualMaximum(Calendar.MINUTE)
-            calendar.set(Calendar.MINUTE, max)
-            max = calendar.getActualMaximum(Calendar.SECOND)
-            calendar.set(Calendar.SECOND, max)
-            return calendar.time
-        }
-
         // Todo: hh/mm/ss are not set correctly
         fun Date.toLastOfThisMonth(): Date {
             val calendar = Calendar.getInstance()
@@ -242,20 +123,6 @@ class Extensions {
             calendar.add(Calendar.MONTH, -1)
             val min = calendar.getActualMinimum(Calendar.DATE)
             calendar.set(Calendar.DATE, min)
-            return calendar.time
-        }
-
-        fun Date.addDays(amount: Int): Date {
-            val calendar = Calendar.getInstance()
-            calendar.time = this
-            calendar.add(Calendar.DATE, abs(amount))
-            return calendar.time
-        }
-
-        fun Date.subtractDays(amount: Int): Date {
-            val calendar = Calendar.getInstance()
-            calendar.time = this
-            calendar.add(Calendar.DATE, -1 * abs(amount))
             return calendar.time
         }
 
@@ -337,21 +204,34 @@ class Extensions {
             return !isPositive()
         }
 
+        /**
+         * Returns `+` if this `Float` is positive or `0.0`,
+         * otherwise `-`.
+         */
         fun Float.toSign(): String {
             return if (isPositive()) {
                 "+"
             } else {
-                ""
+                "-"
             }
         }
 
-        fun Boolean.parse(value: Int): Boolean {
-            return when (value) {
-                1 -> {
-                    true
+        fun Collection<Double>.avg(): Double {
+            return when (this.size) {
+                0 -> {
+                    0.0
+                } else -> {
+                    this.sumByDouble { it } / this.size
                 }
-                else -> {
-                    false
+            }
+        }
+
+        fun Collection<Float>.avg(): Float {
+            return when (this.size) {
+                0 -> {
+                    0.0f
+                } else -> {
+                    (this.sumByDouble { it.toDouble() } / this.size).toFloat()
                 }
             }
         }

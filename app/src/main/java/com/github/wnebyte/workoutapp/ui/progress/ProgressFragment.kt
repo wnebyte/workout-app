@@ -2,6 +2,7 @@ package com.github.wnebyte.workoutapp.ui.progress
 
 import java.lang.Exception
 import java.lang.IllegalStateException
+import kotlin.math.abs
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
@@ -235,12 +236,11 @@ class ProgressFragment : Fragment(), OnSwipeListener {
 
         fun bind(item: ProgressItem) {
             this.item = item
-            val theme = resources.newTheme()
             binding.body.nameTv.text = item.name
             binding.body.avgTv.text = String.format("%.2f", item.avgWeights)
                 .replace(",", ".")
             binding.body.unitTv.text = item.unit
-            (item.change.toSign() + String.format("%.2f", item.change * 100) + "%")
+            (item.change.toSign() + String.format("%.2f", abs(item.change) * 100) + "%")
                 .also { binding.body.percentageTv.text = it }
             /*
             when (item.change < 0) {

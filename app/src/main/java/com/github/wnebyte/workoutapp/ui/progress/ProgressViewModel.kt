@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.github.wnebyte.workoutapp.database.Repository
 import com.github.wnebyte.workoutapp.model.*
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.avg
 import com.github.wnebyte.workoutapp.util.TemporalRange
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
 
@@ -55,8 +56,6 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
     fun setTemporalRange(range: TemporalRange) {
         state[TEMPORAL_RANGE_KEY] = range
         rangeLiveData.value = range
-        Log.i(TAG, "lower: ${range.lower.format("yyyy/MM/dd")} " +
-                "upper: ${range.upper.format("yyyy/MM/dd")}")
     }
 
     private fun transf(
@@ -67,64 +66,58 @@ class ProgressViewModel(private val state: SavedStateHandle) : ViewModel() {
         val shards: Map<Boolean, List<ExerciseTuple>> = shard(workouts, range)
         val shard = shards[true]
 
+        // all tuples whose date lies after the "midway" point of the temporal range
         shard?.let {
+            // iterate over each distinct exercise name
             for (name in getDistinctNames(it.map { t -> t.exercise })) {
-                // get all the exercises in the shard with the given name
+                // get all the tuples in the shard with the given exercise name
                 val l: List<ExerciseTuple> = it
                     .filter { e -> e.exercise.exercise.name == name }
-                // get the ids
+                // get their ids
                 val id: List<UUID> = l.map { e -> e.exercise.exercise.id }
-                // get the dates (x)
+                // get their dates (x)
                 val x: List<Long> = l.map { e -> e.date.time }
-                // get their averages (y)
+                // get their weight averages (y)
                 val y: List<Float> = l.map { e -> e.exercise.sets.map { s -> s.weights }
-                    .average().toFloat() }
-                // wrap values
+                    .avg().toFloat() }
+                // wrap their aforementioned values in a DataPoint
                 val data: List<DataPoint> = List(id.size) { i ->
                     DataPoint(id[i], x[i], y[i])
                 }
 
-                // get avg weights for this month
-                val avg0 = y.average().toFloat()
-                // get avg weights for previous month
-                val avg1 = (shards[false]
+                // get avg weights for this "range period"
+                val avgThis: Float = y.avg()
+                // get avg weights for the previous "range period"
+                val yLast = shards[false]
                     ?.filter { e -> e.exercise.exercise.name == name }
-                    ?.map { e -> e.exercise.sets.map { s -> s.weights }.average() }
-                    ?.average() ?: 0.0f).toFloat()
-                // get avg reps for this month
-                val avg2 = l.map { e -> e.exercise.sets.map { s -> s.reps }.average() }
+                    ?.map { e -> e.exercise.sets.map { s -> s.weights }.avg() } ?: listOf()
+                val avgLast: Float = yLast.avg().toFloat()
+                // get avg reps for this "range period"
+                val avgReps = l.map { e -> e.exercise.sets.map { s -> s.reps }.average() }
                     .average().toFloat()
 
-                list.add(
-                    ProgressItem(
-                        name = name,
-                        data = data,
-                        avgWeights = avg0,
-                        avgReps = avg2,
-                        unit = "kg",
-                        change = if (avg0 == 0.0f || avg1 == 0.0f) {
-                            0.0f
+                val progressItem = ProgressItem(
+                    name = name,
+                    data = data,
+                    avgWeights = avgThis,
+                    avgReps = avgReps,
+                    unit = "kg",
+                    change = if (avgThis == 0.0f || avgLast == 0.0f) {
+                        0.0f
+                    } else {
+                        val f: Float = (avgThis / avgLast)
+                        val r: Float = if (f > 1.0f) {
+                            f - 1.0f
                         } else {
-                            val f: Float = (avg0 / avg1)
-                            val r: Float = if (f > 1.0f) {
-                                f - 1.0f
-                            } else {
-                                -1 * (1.0f - f)
-                            }
-                            r
+                            -1 * (1.0f - f)
                         }
-                    )
+                        r
+                    }
                 )
+                list.add(progressItem)
             }
         }
 
-        for (kv in shards) {
-            val key = kv.component1()
-            val value = kv.component2()
-            for (v in value) {
-                Log.i(TAG, "[${key}]: ${v.date.format()}")
-            }
-        }
         return list
     }
 
