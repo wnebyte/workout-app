@@ -18,7 +18,7 @@ This application lets the user schedule, log, and track the progression of their
 
 ### Template Exercise List View (Portrait-Mode)
 
-<img src="https://user-images.githubusercontent.com/45177557/156253014-64fbd3e5-97de-454e-8c71-dc97b20dc7a6.jpg"
+<img src="images/image1.jpg""
 height="500"/>
 
 ### Exercise Create View (Portrait-Mode)
