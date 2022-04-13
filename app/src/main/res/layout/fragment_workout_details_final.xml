@@ -1,89 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="5dp"
+    android:layout_height="match_parent"
+    android:padding="@dimen/fragment_padding"
     tools:context=".ui.workoutdetailsfinal.WorkoutDetailsFinalFragment"
     >
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:hint="@string/exercise_name"
-        android:textColorHint="@color/textColorHint"
-        app:startIconDrawable="@drawable/ic_baseline_favorite_24"
+        android:orientation="vertical"
         >
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/name"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="none"
-            android:enabled="false"
-            />
+            android:layout_marginBottom="@dimen/fragment_item_vertical_spacing"
+            android:hint="@string/exercise_name"
+            android:textColorHint="@color/textColorHint"
+            app:startIconDrawable="@drawable/ic_baseline_favorite_24"
+            >
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:enabled="false"
+                />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/date_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:hint="@string/workout_date"
-        android:textColorHint="@color/textColorHint"
-        app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-        tools:ignore="HardcodedText"
-        >
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/date"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/date_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:imeOptions="actionDone"
-            android:maxLines="1"
-            android:focusable="false"
-            android:inputType="none"
-            android:enabled="false"
-            />
+            android:layout_marginBottom="@dimen/fragment_item_vertical_spacing"
+            android:hint="@string/workout_date"
+            android:textColorHint="@color/textColorHint"
+            app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            tools:ignore="HardcodedText"
+            >
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
+                android:focusable="false"
+                android:inputType="none"
+                android:enabled="false"
+                />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/dropdown_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:hint="@string/workout_reminder"
-        android:textColorHint="@color/textColorHint"
-        app:startIconDrawable="@drawable/ic_baseline_notification_add_24"
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-        >
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <AutoCompleteTextView
-            android:id="@+id/dropdown"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dropdown_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="none"
-            android:focusable="false"
-            tools:ignore="LabelFor"
-            android:enabled="false"
+            android:layout_marginBottom="@dimen/fragment_item_vertical_spacing"
+            android:hint="@string/workout_reminder"
+            android:textColorHint="@color/textColorHint"
+            app:startIconDrawable="@drawable/ic_baseline_notification_add_24"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+            >
+
+            <AutoCompleteTextView
+                android:id="@+id/dropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:focusable="false"
+                tools:ignore="LabelFor"
+                android:enabled="false"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.github.wnebyte.workoutapp.widget.AutoFitRecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:columnWidth="200dp"
+            android:scrollbars="vertical"
             />
 
-    </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
 
-    <com.github.wnebyte.workoutapp.widget.AutoFitRecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:columnWidth="200dp"
-        android:scrollbars="vertical"
-        />
-
-</LinearLayout>
+</ScrollView>

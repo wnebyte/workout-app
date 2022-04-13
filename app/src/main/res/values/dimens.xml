@@ -5,4 +5,8 @@
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <!-- General dimens -->
+    <dimen name="fragment_padding">5dp</dimen>
+    <dimen name="fragment_item_vertical_spacing">10dp</dimen>
+    <dimen name="item_box_corner_radius">10dp</dimen>
 </resources>

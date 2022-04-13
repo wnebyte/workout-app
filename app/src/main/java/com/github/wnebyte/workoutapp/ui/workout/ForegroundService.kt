@@ -11,7 +11,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.wnebyte.workoutapp.MainActivity
 import com.github.wnebyte.workoutapp.NOTIFICATION_CHANNEL_ID
 import com.github.wnebyte.workoutapp.R
-import com.github.wnebyte.workoutapp.util.Clock
+import com.github.wnebyte.workoutapp.util.Stopwatch
 import java.util.*
 
 private const val TAG = "ForegroundService"
@@ -26,7 +26,7 @@ class ForegroundService : Service() {
 
     private lateinit var broadcast: LocalBroadcastManager
 
-    private lateinit var clock: Clock
+    private lateinit var stopwatch: Stopwatch
 
     override fun onCreate() {
         super.onCreate()
@@ -38,7 +38,7 @@ class ForegroundService : Service() {
         val workoutId: UUID = intent.getSerializableExtra(WORKOUT_ID_EXTRA) as UUID
         val startValue: Long = intent.getLongExtra(START_VALUE_EXTRA, 0L)
         val tickRate = 100L
-        clock = object : Clock(tickRate, startValue) {
+        stopwatch = object : Stopwatch(tickRate, startValue) {
 
             override fun onTick(value: Long) {
                 sendResult(value)
@@ -50,13 +50,13 @@ class ForegroundService : Service() {
                 }
             }
         }
-        clock.start()
+        stopwatch.start()
         return START_STICKY
     }
 
     override fun onDestroy() {
         Log.i(TAG, "onDestroy()")
-        clock.stop()
+        stopwatch.stop()
         stopSelf()
         super.onDestroy()
     }

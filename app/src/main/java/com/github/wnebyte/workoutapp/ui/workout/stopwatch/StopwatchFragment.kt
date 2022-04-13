@@ -16,7 +16,7 @@ import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutStopwatchBinding
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toChar
 import com.github.wnebyte.workoutapp.ui.workout.ForegroundService
 import com.github.wnebyte.workoutapp.ui.workout.VisibleFragment
-import com.github.wnebyte.workoutapp.util.Clock
+import com.github.wnebyte.workoutapp.util.Stopwatch
 
 private const val TAG = "StopwatchFragment"
 
@@ -26,13 +26,13 @@ class StopwatchFragment : VisibleFragment() {
 
     private val args: StopwatchFragmentArgs by navArgs()
 
-    private var _binding: FragmentWorkoutStopwatchBinding? = null
-
     private val binding get() = _binding!!
 
-    private var _digits: Array<TextView>? = null
-
     private val digits get() = _digits!!
+
+    private var _binding: FragmentWorkoutStopwatchBinding? = null
+
+    private var _digits: Array<TextView>? = null
 
     private lateinit var receiver: BroadcastReceiver
 
@@ -80,13 +80,15 @@ class StopwatchFragment : VisibleFragment() {
                     ForegroundService.SERVICE_MESSAGE, 0L
                 )
                 vm.value = value
-                vm.index = 1
+                if (vm.isRunning) {
+                    vm.index = 1
+                }
                 updateUI()
             }
         }
         // re-register onClickListeners whenever the view-flipper's layout changes
         binding.vf.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            registerOnClickListeners()
+            addClickListeners()
         }
         return binding.root
     }
@@ -94,7 +96,7 @@ class StopwatchFragment : VisibleFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         updateUI()
-        registerOnClickListeners()
+        addClickListeners()
     }
 
     override fun onDestroyView() {
@@ -105,7 +107,7 @@ class StopwatchFragment : VisibleFragment() {
 
     private fun updateUI() {
         binding.vf.displayedChild = vm.index
-        val values = Clock.formatMMSSMS(vm.value).toCharArray()
+        val values = Stopwatch.formatMMSSMS(vm.value).toCharArray()
 
         for (i in values.indices) {
             val tv = digits[i]
@@ -117,9 +119,10 @@ class StopwatchFragment : VisibleFragment() {
         }
     }
 
-    private fun registerOnClickListeners() {
+    private fun addClickListeners() {
         when (binding.vf.displayedChild) {
             0 -> {
+                // start button is clicked
                 binding.buttonBar0.startButton.setOnClickListener {
                     requireContext()
                         .startService(
@@ -129,10 +132,14 @@ class StopwatchFragment : VisibleFragment() {
                                 0L
                             )
                         )
-                    binding.vf.displayedChild = 1
+                    val index = 1
+                    vm.isRunning = true
+                    vm.index = index
+                    binding.vf.displayedChild = index
                 }
             }
             1 -> {
+                // stop button is clicked
                 binding.buttonBar1.stopButton.setOnClickListener {
                     requireContext()
                         .stopService(
@@ -142,10 +149,14 @@ class StopwatchFragment : VisibleFragment() {
                                 null
                             )
                         )
-                    binding.vf.displayedChild = 2
+                    val index = 2
+                    vm.isRunning = false
+                    vm.index = index
+                    binding.vf.displayedChild = index
                 }
             }
             2 -> {
+                // continue button is clicked
                 binding.buttonBar2.continueButton.setOnClickListener {
                     requireContext()
                         .startService(
@@ -155,11 +166,16 @@ class StopwatchFragment : VisibleFragment() {
                                 vm.value
                             )
                         )
-                    binding.vf.displayedChild = 1
+                    val index = 1
+                    vm.isRunning = true
+                    vm.index = index
+                    binding.vf.displayedChild = index
                 }
+                // reset button is clicked
                 binding.buttonBar2.resetButton.setOnClickListener {
                     vm.value = 0L
                     vm.index = 0
+                    vm.isRunning = false
                     updateUI()
                 }
             }

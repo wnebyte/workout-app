@@ -4,7 +4,9 @@ import android.os.Handler
 import android.os.HandlerThread
 import java.lang.IllegalArgumentException
 
-abstract class Clock(val tickRate: Long, private var value: Long = 0L) {
+private const val HANDLER_THREAD_NAME = "StopwatchHandler"
+
+abstract class Stopwatch(val tickRate: Long, private var value: Long = 0L) {
 
     private lateinit var handlerThread: HandlerThread
 
@@ -13,12 +15,15 @@ abstract class Clock(val tickRate: Long, private var value: Long = 0L) {
     var isRunning: Boolean = false
 
     private fun init() {
-        handlerThread = HandlerThread("clockHandler")
+        handlerThread = HandlerThread(HANDLER_THREAD_NAME)
         handlerThread.start()
         handler = Handler(handlerThread.looper)
     }
 
     fun start() {
+        if (isRunning) {
+            stop()
+        }
         init()
         isRunning = true
         onTick(value)
@@ -45,6 +50,8 @@ abstract class Clock(val tickRate: Long, private var value: Long = 0L) {
     }
 
     companion object {
+
+        // Todo: move format companion functions elsewhere
 
         /**
          * @param value time elapsed in seconds.
