@@ -17,16 +17,15 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.google.android.material.navigation.NavigationView
 import com.github.wnebyte.workoutapp.model.ProgressItem
 import com.github.wnebyte.workoutapp.ui.AbstractExerciseEditFragment
-import com.google.android.material.navigation.NavigationView
 import com.github.wnebyte.workoutapp.ui.exerciseimport.ExerciseImportFragment
 import com.github.wnebyte.workoutapp.ui.exerciselist.ExerciseListFragment
 import com.github.wnebyte.workoutapp.ui.exerciselist.ExerciseListFragmentDirections
 import com.github.wnebyte.workoutapp.ui.progress.ProgressFragment
 import com.github.wnebyte.workoutapp.ui.progress.ProgressFragmentDirections
-import com.github.wnebyte.workoutapp.ui.workout.ViewPagerFragment
-import com.github.wnebyte.workoutapp.ui.workout.ViewPagerFragmentDirections
+import com.github.wnebyte.workoutapp.ui.workout.HostFragment
 import com.github.wnebyte.workoutapp.ui.workout.session.SessionFragment
 import com.github.wnebyte.workoutapp.ui.workoutcreate.WorkoutCreateFragment
 import com.github.wnebyte.workoutapp.ui.workoutcreate.WorkoutCreateFragmentDirections
@@ -176,10 +175,6 @@ class MainActivity: AppCompatActivity(),
                 WorkoutListFragmentDirections
                     .actionNavWorkoutListToNavWorkoutDetails(workoutId)
             }
-            SessionFragment::class.java -> {
-                ViewPagerFragmentDirections
-                    .actionNavViewPagerToNavWorkoutDetails(workoutId)
-            }
             else -> {
                 throw IllegalStateException(
                     "The specified currentFragment is not supported"
@@ -195,10 +190,6 @@ class MainActivity: AppCompatActivity(),
             WorkoutListFragment::class.java -> {
                 WorkoutListFragmentDirections
                     .actionNavWorkoutListToNavWorkoutDetailsFinal(workoutId)
-            }
-            SessionFragment::class.java -> {
-                ViewPagerFragmentDirections
-                    .actionNavViewPagerToNavWorkoutDetailsFinal(workoutId)
             }
             else -> {
                 throw IllegalStateException(
@@ -238,8 +229,8 @@ class MainActivity: AppCompatActivity(),
                 .setGraph(R.navigation.mobile_navigation)
                 .setDestination(R.id.nav_workout_view_pager)
                 .setArguments(Bundle().apply {
-                    putSerializable(ViewPagerFragment.WORKOUT_ID_KEY, workoutId as Serializable)
-                    putBoolean(ViewPagerFragment.PENDING_INTENT_KEY, true)
+                    putSerializable(HostFragment.WORKOUT_ID_KEY, workoutId as Serializable)
+                    putBoolean(HostFragment.PENDING_INTENT_KEY, true)
                 })
                 .createPendingIntent()
     }

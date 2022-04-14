@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.github.wnebyte.workoutapp.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.github.wnebyte.workoutapp.R
 
 abstract class ViewPagerHostFragment : Fragment() {
 
@@ -31,6 +31,7 @@ abstract class ViewPagerHostFragment : Fragment() {
         return view
     }
 
+    // Todo: move this to onCreateView()?
     /**
      * Should be called by subclasses somewhere after onCreateView().
      */

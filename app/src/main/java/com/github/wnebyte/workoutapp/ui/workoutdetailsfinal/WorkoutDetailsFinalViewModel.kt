@@ -1,9 +1,9 @@
 package com.github.wnebyte.workoutapp.ui.workoutdetailsfinal
 
+import java.util.*
 import androidx.lifecycle.*
 import com.github.wnebyte.workoutapp.database.Repository
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
-import java.util.*
 
 private const val TAG = "WorkoutDetailsFinalViewModel"
 private const val WORKOUT_ID_LIVE_DATA_KEY = "WorkoutIdLiveData"
@@ -14,14 +14,14 @@ class WorkoutDetailsFinalViewModel(private val state: SavedStateHandle) : ViewMo
 
     private val workoutIdLiveData = state.getLiveData<UUID>(WORKOUT_ID_LIVE_DATA_KEY)
 
-    var workoutListLiveData: LiveData<WorkoutWithExercises?> = (
-            Transformations.switchMap(workoutIdLiveData) { workoutLiveData ->
-                when (workoutLiveData) {
+    val workoutLiveData: LiveData<WorkoutWithExercises?> = (
+            Transformations.switchMap(workoutIdLiveData) { workoutId ->
+                when (workoutId) {
                     null -> {
                         repository.getMostRecentlyCompletedWorkoutWithExercises()
                     }
                     else -> {
-                        repository.getWorkoutWithExercises(workoutLiveData)
+                        repository.getWorkoutWithExercises(workoutId)
                     }
                 }
             })

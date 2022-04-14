@@ -1,8 +1,8 @@
 package com.github.wnebyte.workoutapp.model
 
+import java.util.*
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.*
 
 @Entity
 data class Workout(

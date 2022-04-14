@@ -16,12 +16,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.databinding.ExerciseCardBinding
 import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutDetailsFinalBinding
 import com.github.wnebyte.workoutapp.databinding.SetItemBinding
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
-import com.github.wnebyte.workoutapp.model.ExerciseWithSets
-import com.github.wnebyte.workoutapp.model.Reminder
-import com.github.wnebyte.workoutapp.model.Set
-import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
+import com.github.wnebyte.workoutapp.model.Set
+import com.github.wnebyte.workoutapp.model.Reminder
+import com.github.wnebyte.workoutapp.model.ExerciseWithSets
+import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 
 private const val TAG = "WorkoutDetailsFinalFragment"
 
@@ -31,11 +31,11 @@ class WorkoutDetailsFinalFragment : Fragment() {
 
     private val args: WorkoutDetailsFinalFragmentArgs by navArgs()
 
-    private var _binding: FragmentWorkoutDetailsFinalBinding? = null
+    private val adapter = ExerciseAdapter()
 
     private val binding get() = _binding!!
 
-    private val adapter = ExerciseAdapter()
+    private var _binding: FragmentWorkoutDetailsFinalBinding? = null
 
     private lateinit var workout: WorkoutWithExercises
 
@@ -51,18 +51,23 @@ class WorkoutDetailsFinalFragment : Fragment() {
     ): View {
         _binding = FragmentWorkoutDetailsFinalBinding.
                 inflate(layoutInflater, container, false)
-        binding.recyclerView.adapter = adapter
+        binding.body.recyclerView.adapter = adapter
+        // disable name, date, dropdown
+        binding.body.name.isEnabled = false
+        binding.body.date.isEnabled = false
+        binding.body.dropdown.isEnabled = false
+        binding.body.dropdownLayout.isEndIconCheckable = false
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vm.workoutListLiveData.observe(
+        vm.workoutLiveData.observe(
             viewLifecycleOwner,
             { workout ->
                 workout?.let {
-                    Log.i(TAG, "Got workout: ${workout.workout.id}")
-                    this.workout = workout
+                    Log.i(TAG, "Got workout: ${it.workout.id}")
+                    this.workout = it
                     updateUI()
                 }
             }
@@ -76,14 +81,14 @@ class WorkoutDetailsFinalFragment : Fragment() {
     }
 
     private fun updateUI() {
-        binding.name
+        binding.body.name
             .setText(workout.workout.name, TextView.BufferType.NORMAL)
         workout.workout.date?.let { date ->
-            binding.date
+            binding.body.date
                 .setText(date.format(), TextView.BufferType.NORMAL)
         }
         workout.workout.reminder?.let {
-            binding.dropdown
+            binding.body.dropdown
                 .setText(Reminder(it).text,false)
         }
         // bind exercises to ui
@@ -98,6 +103,9 @@ class WorkoutDetailsFinalFragment : Fragment() {
         init {
             binding.body.recyclerView.layoutManager = LinearLayoutManager(context)
             binding.body.recyclerView.adapter = adapter
+            binding.root.isClickable = false
+            binding.root.isLongClickable = false
+            binding.root.isFocusable = false
         }
 
         fun bind(exercise: ExerciseWithSets) {

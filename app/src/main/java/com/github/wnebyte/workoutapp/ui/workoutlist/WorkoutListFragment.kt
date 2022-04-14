@@ -1,5 +1,6 @@
 package com.github.wnebyte.workoutapp.ui.workoutlist
 
+import java.util.*
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutListBinding
 import com.github.wnebyte.workoutapp.databinding.WorkoutCardBinding
@@ -18,8 +20,6 @@ import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.empty
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
-import com.google.android.material.snackbar.Snackbar
-import java.util.*
 
 private const val TAG = "WorkoutListFragment"
 
@@ -172,7 +172,7 @@ class WorkoutListFragment : Fragment() {
 
         private fun deleteWorkout() {
             vm.deleteWorkout(workout)
-            val snackbar = Snackbar.make(binding.root, String.empty(), Snackbar.LENGTH_LONG)
+            val snackbar = Snackbar.make(binding.root, "DEL: ${workout.workout.name}", Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo) {
                     vm.saveWorkout(workout)
                 }

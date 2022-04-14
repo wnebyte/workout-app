@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import jp.wasabeef.recyclerview.animators.FadeInRightAnimator
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.FragmentExerciseEditBinding
 import com.github.wnebyte.workoutapp.databinding.SetBinding
@@ -21,8 +23,6 @@ import com.github.wnebyte.workoutapp.util.Extensions.Companion.empty
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toEmptyString
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
-import com.google.android.material.snackbar.Snackbar
-import jp.wasabeef.recyclerview.animators.FadeInRightAnimator
 
 abstract class AbstractExerciseEditFragment: Fragment() {
 
@@ -212,7 +212,7 @@ abstract class AbstractExerciseEditFragment: Fragment() {
         private fun removeSet() {
             val index = adapterPosition
             dataSetRemove(index)
-            val snackbar = Snackbar.make(binding.root, String.empty(), Snackbar.LENGTH_LONG)
+            val snackbar = Snackbar.make(binding.root, "DEL: ${exercise.exercise.name}", Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo) {
                     dataSetInsert(index, set)
                 }

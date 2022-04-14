@@ -4,9 +4,21 @@ data class Reminder(
     val value: Long
 )
 {
-    val text get() = toText(value)
+    val text get() = toString()
 
-    override fun toString(): String = text
+    override fun toString(): String {
+        return when (value) {
+            0L -> {
+                "None"
+            }
+            else -> {
+                val s = value % 60
+                val m = (value / 60) % 60
+                val h = (value / (60 * 60)) % 24
+                String.format("%02d:%02d:%02d %s", h, m, s, "before")
+            }
+        }
+    }
 
     companion object {
         const val ZERO = 0L
@@ -23,18 +35,7 @@ data class Reminder(
             ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT
         )
 
-        private fun toText(value: Long): String {
-            return when (value) {
-                0L -> {
-                    "None"
-                }
-                else -> {
-                    val s = value % 60
-                    val m = (value / 60) % 60
-                    val h = (value / (60 * 60)) % 24
-                    String.format("%02d:%02d:%02d %s", h, m, s, "before")
-                }
-            }
-        }
+        val DEFAULT_REMINDERS: Array<Reminder> =
+            Array(CONSTANTS.size) { i -> Reminder(CONSTANTS[i]) }
     }
 }

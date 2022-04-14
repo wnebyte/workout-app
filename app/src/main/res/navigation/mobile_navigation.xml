@@ -104,7 +104,7 @@
             <action
                 android:id="@+id/action_nav_workout_list_to_nav_workout_view_pager"
                 app:destination="@id/nav_workout_view_pager" />
-            <deepLink app:uri="https://properbackstack.com/level1"/>
+            <deepLink app:uri="https://properbackstack.com/level1" />
         </fragment>
 
         <fragment
@@ -124,8 +124,7 @@
                 app:destination="@id/nav_exercise_create" />
             <action
                 android:id="@+id/action_nav_workout_details_to_nav_exercise_details"
-                app:destination="@+id/nav_exercise_details"
-                />
+                app:destination="@+id/nav_exercise_details" />
         </fragment>
 
         <fragment
@@ -155,30 +154,32 @@
                 app:destination="@id/nav_exercise_create" />
             <action
                 android:id="@+id/action_nav_workout_create_to_nav_exercise_details"
-                app:destination="@+id/nav_exercise_details"
-                />
+                app:destination="@+id/nav_exercise_details" />
         </fragment>
 
         <fragment
             android:id="@+id/nav_workout_view_pager"
-            android:name="com.github.wnebyte.workoutapp.ui.workout.ViewPagerFragment"
+            android:name="com.github.wnebyte.workoutapp.ui.workout.HostFragment"
             android:label="@string/nav_workout_view_pager"
             tools:layout="@layout/fragment_view_pager">
             <argument
                 android:name="workoutId"
                 app:argType="java.util.UUID"
-                app:nullable="false" />
+                app:nullable="false"
+                />
             <argument
                 android:name="pendingIntent"
                 app:argType="boolean"
                 android:defaultValue="false"
                 />
+            <!--
             <action
                 android:id="@+id/action_nav_view_pager_to_nav_workout_details"
                 app:destination="@+id/nav_workout_details" />
             <action
                 android:id="@+id/action_nav_view_pager_to_nav_workout_details_final"
                 app:destination="@+id/nav_workout_details_final" />
+            -->
             <deepLink app:uri="https://properbackstack.com/level2/{workoutId}/{pendingIntent}" />
         </fragment>
 
@@ -190,7 +191,13 @@
             <argument
                 android:name="workoutId"
                 app:argType="java.util.UUID"
-                app:nullable="false" />
+                app:nullable="false"
+                />
+            <argument
+                android:name="pendingIntent"
+                app:argType="boolean"
+                android:defaultValue="false"
+                />
         </fragment>
 
         <fragment
@@ -201,7 +208,13 @@
             <argument
                 android:name="workoutId"
                 app:argType="java.util.UUID"
-                app:nullable="false" />
+                app:nullable="false"
+                />
+            <argument
+                android:name="pendingIntent"
+                app:argType="boolean"
+                android:defaultValue="false"
+                />
         </fragment>
 
     </navigation>

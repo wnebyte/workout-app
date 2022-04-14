@@ -27,4 +27,11 @@
 
     <color name="red">#FF0000</color>
     <color name="red_660">#660000</color>
+
+    <!-- New Theme Colors -->
+    <color name="my_primary">#1561A0</color>
+    <color name="my_secondary">#065082</color>
+    <color name="my_tertiary">#22B573</color>
+    <color name="my_quaternary">#E6E6E6</color>
+    <color name="my_dark">#4D4D4D</color>
 </resources>

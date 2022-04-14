@@ -1,5 +1,8 @@
 package com.github.wnebyte.workoutapp.ui.workoutdetails
 
+import java.util.*
+import java.lang.Exception
+import java.lang.IllegalStateException
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
@@ -19,24 +22,21 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.ExerciseCardActionableBinding
 import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutDetailsBinding
 import com.github.wnebyte.workoutapp.databinding.SetItemBinding
+import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.empty
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.showDropdown
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toPaddedString
-import com.github.wnebyte.workoutapp.model.ExerciseWithSets
-import com.github.wnebyte.workoutapp.model.Reminder
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.toDate
 import com.github.wnebyte.workoutapp.model.Set
+import com.github.wnebyte.workoutapp.model.Reminder
+import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
-import com.github.wnebyte.workoutapp.ui.AdapterUtil
-import com.github.wnebyte.workoutapp.util.DateUtil
-import com.google.android.material.snackbar.Snackbar
-import java.lang.Exception
-import java.lang.IllegalStateException
-import java.util.*
 
 private const val TAG = "WorkoutDetailsFragment"
 
@@ -55,15 +55,15 @@ class WorkoutDetailsFragment: Fragment() {
 
     private val adapter = ExerciseAdapter()
 
-    private val dropdownItems: List<Reminder> = Reminder.CONSTANTS.map { Reminder(it) }
+    private val dropdownItems: List<Reminder> = Reminder.DEFAULT_REMINDERS.toList()
+
+    private val removedItems: MutableList<ExerciseWithSets> = mutableListOf()
 
     private val binding get() = _binding!!
 
     private var _binding: FragmentWorkoutDetailsBinding? = null
 
     private var callbacks: Callbacks? = null
-
-    private val removedItems: MutableList<ExerciseWithSets> = mutableListOf()
 
     private lateinit var workout: WorkoutWithExercises
 
@@ -90,7 +90,7 @@ class WorkoutDetailsFragment: Fragment() {
         val picker = TimePickerDialog(context, { _, hourOfDay, minute ->
             vm.date?.let {
                 vm.date += " ${hourOfDay.toPaddedString()}:${minute.toPaddedString()}"
-                binding.date.setText(vm.date, TextView.BufferType.NORMAL)
+                binding.body.date.setText(vm.date, TextView.BufferType.NORMAL)
             }
         }, hour, minutes, true)
         picker.show()
@@ -141,15 +141,15 @@ class WorkoutDetailsFragment: Fragment() {
     ): View {
         _binding = FragmentWorkoutDetailsBinding
             .inflate(layoutInflater, container, false)
-        binding.recyclerView.adapter = adapter
+        binding.body.recyclerView.adapter = adapter
         dropdownAdapter =
             ArrayAdapter(requireContext(), R.layout.reminder_list_item, dropdownItems)
-        binding.dropdown.setAdapter(dropdownAdapter)
-        binding.dropdown.setOnClickListener {
+        binding.body.dropdown.setAdapter(dropdownAdapter)
+        binding.body.dropdown.setOnClickListener {
             (it as AutoCompleteTextView)
                 .showDropdown(dropdownAdapter)
         }
-        binding.date.setOnClickListener(datePicker)
+        binding.body.date.setOnClickListener(datePicker)
         return binding.root
     }
 
@@ -166,19 +166,19 @@ class WorkoutDetailsFragment: Fragment() {
             }
         )
         // update local workout name whenever ui changes
-        binding.name.doOnTextChanged { text, _, _, _ ->
+        binding.body.name.doOnTextChanged { text, _, _, _ ->
             if (!TextUtils.isEmpty(text)) {
                 workout.workout.name = text.toString()
             }
         }
         // update local workout date whenever ui changes
-        binding.date.doOnTextChanged { text, _, _, _ ->
+        binding.body.date.doOnTextChanged { text, _, _, _ ->
             if (!TextUtils.isEmpty(text)) {
-                workout.workout.date = DateUtil.fromString(text.toString())
+                workout.workout.date = text.toString().toDate()
             }
         }
         // update local workout reminder whenever ui changes
-        binding.dropdown.onItemClickListener =
+        binding.body.dropdown.onItemClickListener =
             AdapterView.OnItemClickListener { parent, _, position, _ ->
             val item = parent.getItemAtPosition(position) as Reminder
             workout.workout.reminder = item.value
@@ -195,13 +195,13 @@ class WorkoutDetailsFragment: Fragment() {
     override fun onDetach() {
         super.onDetach()
         callbacks = null
+        datePicker = null
+        timePicker = null
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        datePicker = null
-        timePicker = null
     }
 
     /**
@@ -209,17 +209,17 @@ class WorkoutDetailsFragment: Fragment() {
      */
     private fun updateUI() {
         // bind workout name to ui
-        binding.name
+        binding.body.name
             .setText(workout.workout.name, TextView.BufferType.EDITABLE)
         // bind workout date to ui
         workout.workout.date?.let {
             val date = it.format()
-            binding.date
+            binding.body.date
                 .setText(date, TextView.BufferType.NORMAL)
         }
         // bind workout reminder to ui
         workout.workout.reminder?.let {
-            binding.dropdown
+            binding.body.dropdown
                 .setText(Reminder(it).text,false)
         }
         // bind exercises to ui

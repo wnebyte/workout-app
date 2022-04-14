@@ -95,6 +95,7 @@ class StopwatchFragment : VisibleFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        vm.isRunning = args.pendingIntent
         updateUI()
         addClickListeners()
     }

@@ -16,13 +16,13 @@
         >
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/fragment_item_vertical_spacing"
             android:hint="@string/exercise_name"
             android:textColorHint="@color/black"
             app:startIconDrawable="@drawable/ic_baseline_favorite_24"
+            style="@style/FilledBox"
             >
 
             <com.google.android.material.textfield.TextInputEditText
@@ -30,6 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
+                style="@style/TextInputEditText"
                 />
 
         </com.google.android.material.textfield.TextInputLayout>
