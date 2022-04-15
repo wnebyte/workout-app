@@ -23,8 +23,8 @@
         />
 
     <item
-        android:id="@+id/show_by"
-        android:title="Show by"
+        android:id="@+id/range"
+        android:title="Range"
         android:icon="@drawable/ic_baseline_filter_list_24"
         app:showAsAction="ifRoom"
         >

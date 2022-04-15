@@ -26,7 +26,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/fragment_item_vertical_spacing"
                 android:hint="@string/exercise_name"
-                android:textColorHint="@color/black"
                 app:startIconDrawable="@drawable/ic_baseline_favorite_24"
                 style="@style/FilledBox"
                 >

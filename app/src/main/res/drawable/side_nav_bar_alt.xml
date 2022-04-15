@@ -6,5 +6,6 @@
         android:centerColor="@color/my_primary"
         android:endColor="@color/my_secondary"
         android:startColor="@color/my_tertiary"
-        android:type="linear" />
+        android:type="linear"
+        />
 </shape>

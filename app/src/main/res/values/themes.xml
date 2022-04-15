@@ -49,16 +49,27 @@
 
     <style name="FilledBox"
         parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
-    </style>
-
-    <style name="TextInputEditText">
-        <!--
-        <item name="android:textColor">@color/black</item>
-        -->
+        <item name="startIconTint">@color/my_primary</item>
+        <item name="hintTextColor">@color/my_secondary</item>
+        <item name="android:textColorHint">@color/my_dark</item>
     </style>
 
     <style name="FilledDropdownBox"
         parent="Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu">
+        <item name="endIconTint">@color/my_primary</item>
+        <item name="startIconTint">@color/my_primary</item>
+        <item name="hintTextColor">@color/my_secondary</item>
+        <item name="android:textColorHint">@color/my_dark</item>
+    </style>
+
+    <style name="OutlinedBox"
+        parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="startIconTint">@color/my_primary</item>
+        <item name="hintTextColor">@color/my_secondary</item>
+        <item name="android:textColorHint">@color/my_dark</item>
+    </style>
+
+    <style name="TextInputEditText">
     </style>
 
     <style name="StopwatchText">

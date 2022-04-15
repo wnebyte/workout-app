@@ -58,14 +58,13 @@
         tools:ignore="HardcodedText"
         />
 
-
     <TextView
         android:id="@+id/percentage_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:text="+12%"
-        android:textColor="@color/gray"
+        android:textColor="?android:attr/textColorSecondary"
         app:layout_constraintBottom_toBottomOf="@id/img"
         app:layout_constraintEnd_toEndOf="parent"
         style="@style/TextAppearance.AppCompat.Body2"

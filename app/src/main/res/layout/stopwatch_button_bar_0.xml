@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/start_button"
         android:layout_width="wrap_content"
@@ -14,7 +15,8 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         android:text="@string/button_start"
-        android:backgroundTint="@color/purple_500"
+        android:backgroundTint="@color/my_secondary"
         style="@style/StopwatchButton"
         />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
