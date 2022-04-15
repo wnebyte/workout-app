@@ -1,11 +1,16 @@
 package com.github.wnebyte.workoutapp.ui.workout.session
 
+import java.util.*
+import java.lang.IllegalStateException
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.*
 import android.widget.TextView
 import androidx.core.animation.doOnEnd
@@ -17,17 +22,15 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.*
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
-import com.github.wnebyte.workoutapp.model.ExerciseWithSets
-import com.github.wnebyte.workoutapp.model.Set
-import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
-import java.lang.IllegalStateException
-import java.util.*
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
+import com.github.wnebyte.workoutapp.model.Set
+import com.github.wnebyte.workoutapp.model.ExerciseWithSets
+import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 
 private const val TAG = "SessionFragment"
 
-class SessionFragment: Fragment() {
+class SessionFragment : Fragment() {
 
     interface Callbacks {
         fun onEditWorkout(workoutId: UUID, currentFragment: Class<out Fragment>)
@@ -38,13 +41,13 @@ class SessionFragment: Fragment() {
 
     private val args: SessionFragmentArgs by navArgs()
 
+    private val adapter = ExerciseAdapter()
+
     private val binding get() = _binding!!
 
-    private var _binding: FragmentWorkoutSessionBinding? = null
+    private var _binding: FragmentWorkoutSessionTestBinding? = null
 
     private var callbacks: Callbacks? = null
-
-    private val adapter = ExerciseAdapter()
 
     private lateinit var workout: WorkoutWithExercises
 
@@ -65,35 +68,12 @@ class SessionFragment: Fragment() {
         setHasOptionsMenu(false)
     }
 
-    /*
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.fragment_workout_session, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.workout_details -> {
-                if (workout.workout.completed) {
-                    callbacks?.onEditCompletedWorkout(args.workoutId, this::class.java)
-                } else {
-                    callbacks?.onEditWorkout(args.workoutId, this::class.java)
-                }
-                true
-            }
-            else -> {
-                super.onOptionsItemSelected(item)
-            }
-        }
-    }
-     */
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentWorkoutSessionBinding
+        _binding = FragmentWorkoutSessionTestBinding
             .inflate(layoutInflater, container, false)
         binding.recyclerView.adapter = adapter
         return binding.root
@@ -105,8 +85,8 @@ class SessionFragment: Fragment() {
             viewLifecycleOwner,
             { workout ->
                 workout?.let {
-                    Log.i(TAG, "got workout: ${workout.workout.id}")
-                    this.workout = workout
+                    Log.i(TAG, "got workout: ${it.workout.id}")
+                    this.workout = it
                     updateUI()
                 }
             }
@@ -131,13 +111,51 @@ class SessionFragment: Fragment() {
 
     private fun updateUI() {
         // bind workout name to ui
-        binding.nameEt
+        binding.name
             .setText(workout.workout.name, TextView.BufferType.NORMAL)
         // bind workout date to ui
-        binding.dateEt
+        binding.date
             .setText(workout.workout.date?.format(), TextView.BufferType.NORMAL)
         // bind exercises to the ui
         adapter.submitList(workout.exercises)
+    }
+
+    private fun dipToPx(dip: Float): Float {
+        val r: Resources = resources
+        val px = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dip,
+            r.displayMetrics
+        )
+        return px
+    }
+
+    private fun animIn() {
+        val view = binding.fab
+        val start = resources.getDimensionPixelSize(R.dimen.fab_anim_x_start)
+        val end = resources.displayMetrics.widthPixels
+        val offset = dipToPx(16f)
+        val translate = (start + end - offset)
+        view.visibility = View.VISIBLE
+        ObjectAnimator.ofFloat(view, "translationX", translate).apply {
+            duration = 1000
+            start()
+        }
+    }
+
+    private fun animOut() {
+        val view = binding.fab
+        val start = resources.getDimensionPixelSize(R.dimen.fab_anim_x_start)
+        val end = resources.displayMetrics.widthPixels
+        val offset = dipToPx(16f)
+        val translate = (start + end - offset)
+        ObjectAnimator.ofFloat(view, "translationX", -translate).apply {
+            duration = 1000
+            doOnEnd {
+                view.visibility = View.GONE
+            }
+            start()
+        }
     }
 
     private inner class ExerciseHolder(private val binding: ExerciseCardBinding) :
@@ -233,7 +251,7 @@ class SessionFragment: Fragment() {
         }
     }
 
-    private inner class ExerciseAdapter: ListAdapter<ExerciseWithSets, ExerciseHolder>
+    private inner class ExerciseAdapter : ListAdapter<ExerciseWithSets, ExerciseHolder>
         (AdapterUtil.DIFF_UTIL_EXERCISE_WITH_SETS_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseHolder {
@@ -248,26 +266,27 @@ class SessionFragment: Fragment() {
         }
     }
 
-    private inner class SetHolder(private val binding: SetItemBinding)
-        : RecyclerView.ViewHolder(binding.root) {
-            private lateinit var set: Set
+    private inner class SetHolder(private val binding: SetItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        private lateinit var set: Set
 
-            fun bind(set: Set) {
-                this.set = set
-                "${set.weights} x ${set.reps}".also { binding.tv.text = it }
-                if (set.completed) {
-                    binding.tv.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-                } else {
-                    binding.tv.paintFlags = 0
-                }
+        fun bind(set: Set) {
+            this.set = set
+            "${set.weights} x ${set.reps}".also { binding.tv.text = it }
+            if (set.completed) {
+                binding.tv.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            } else {
+                binding.tv.paintFlags = 0
             }
         }
+    }
 
-    private inner class SetAdapter: ListAdapter<Set, SetHolder>
+    private inner class SetAdapter : ListAdapter<Set, SetHolder>
         (AdapterUtil.DIFF_UTIL_SET_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SetHolder {
-            val view = SetItemBinding.inflate(layoutInflater, parent, false)
+            val view = SetItemBinding
+                .inflate(layoutInflater, parent, false)
             return SetHolder(view)
         }
 
@@ -279,8 +298,7 @@ class SessionFragment: Fragment() {
     }
 
     companion object {
-
-        fun newInstance(bundle: Bundle) : SessionFragment {
+        fun newInstance(bundle: Bundle): SessionFragment {
             val fragment = SessionFragment()
             fragment.arguments = bundle
             return fragment
