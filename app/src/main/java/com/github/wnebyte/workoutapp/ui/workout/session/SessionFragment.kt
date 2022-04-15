@@ -45,7 +45,7 @@ class SessionFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private var _binding: FragmentWorkoutSessionTestBinding? = null
+    private var _binding: FragmentWorkoutSessionBinding? = null
 
     private var callbacks: Callbacks? = null
 
@@ -73,7 +73,7 @@ class SessionFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentWorkoutSessionTestBinding
+        _binding = FragmentWorkoutSessionBinding
             .inflate(layoutInflater, container, false)
         binding.recyclerView.adapter = adapter
         return binding.root
@@ -131,7 +131,7 @@ class SessionFragment : Fragment() {
     }
 
     private fun animIn() {
-        val view = binding.fab
+        val view = binding.name // stand-in
         val start = resources.getDimensionPixelSize(R.dimen.fab_anim_x_start)
         val end = resources.displayMetrics.widthPixels
         val offset = dipToPx(16f)
@@ -144,7 +144,7 @@ class SessionFragment : Fragment() {
     }
 
     private fun animOut() {
-        val view = binding.fab
+        val view = binding.name // stand-in
         val start = resources.getDimensionPixelSize(R.dimen.fab_anim_x_start)
         val end = resources.displayMetrics.widthPixels
         val offset = dipToPx(16f)
