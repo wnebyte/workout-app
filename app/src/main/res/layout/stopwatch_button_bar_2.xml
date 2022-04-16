@@ -7,10 +7,10 @@
     >
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/continue_button"
+        android:id="@+id/resume_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/button_continue"
+        android:text="@string/button_resume"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:backgroundTint="@color/my_secondary"

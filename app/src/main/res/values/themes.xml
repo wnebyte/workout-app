@@ -33,9 +33,14 @@
     </style>
 
     <style name="Theme.WorkoutApp.New" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!--
         <item name="colorPrimary">@color/primaryDark</item>
         <item name="colorPrimaryVariant">@color/primary</item>
         <item name="colorOnPrimary">@color/my_quaternary</item>
+        -->
+        <item name="colorPrimary">@color/my_secondary</item> <!-- actionBar -->
+        <item name="colorPrimaryVariant">@color/my_primary</item> <!-- statusBar -->
+        <item name="colorOnPrimary">@color/my_dark</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/my_primary</item>
         <item name="colorSecondaryVariant">@color/my_secondary</item>

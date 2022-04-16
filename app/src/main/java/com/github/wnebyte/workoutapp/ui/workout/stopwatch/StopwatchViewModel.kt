@@ -1,11 +1,11 @@
 package com.github.wnebyte.workoutapp.ui.workout.stopwatch
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.SavedStateHandle
 
 private const val TAG = "StopwatchViewModel"
 private const val VALUE_KEY = "Value"
-private const val INDEX_KEY = "DisplayedChildIndex"
+private const val INDEX_KEY = "Index"
 private const val IS_RUNNING_KEY = "IsRunning"
 
 class StopwatchViewModel(private val state: SavedStateHandle) : ViewModel() {
@@ -41,7 +41,7 @@ class StopwatchViewModel(private val state: SavedStateHandle) : ViewModel() {
     }
 
     private fun initializeIsRunning(): Boolean {
-        val isRunning = false
+        val isRunning = true
         state.set<Boolean>(IS_RUNNING_KEY, isRunning)
         return isRunning
     }

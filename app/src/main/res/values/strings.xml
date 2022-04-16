@@ -44,7 +44,7 @@
     <string name="button_stop">Stop</string>
     <string name="button_lap">Lap</string>
     <string name="button_reset">Reset</string>
-    <string name="button_continue">Continue</string>
+    <string name="button_resume">Resume</string>
     <string name="button_bar_back">Back</string>
     <string name="undo">UNDO</string>
     <string name="image_check_mark">Check mark</string>

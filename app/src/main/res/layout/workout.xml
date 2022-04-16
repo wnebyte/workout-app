@@ -52,7 +52,6 @@
             android:layout_marginEnd="8dp"
             android:background="@null"
             app:srcCompat="@drawable/ic_edit_24"
-            app:tint="@color/my_primary"
             tools:ignore="ContentDescription"
             />
 
@@ -75,7 +74,6 @@
             android:layout_height="wrap_content"
             android:background="@null"
             app:srcCompat="@drawable/ic_baseline_fitness_center_24"
-            app:tint="@color/my_secondary"
             tools:ignore="ContentDescription"
             />
 

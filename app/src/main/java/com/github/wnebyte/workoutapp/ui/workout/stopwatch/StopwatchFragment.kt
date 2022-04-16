@@ -13,9 +13,9 @@ import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.navArgs
 import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutStopwatchBinding
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.toChar
 import com.github.wnebyte.workoutapp.ui.workout.ForegroundService
 import com.github.wnebyte.workoutapp.ui.workout.VisibleFragment
+import com.github.wnebyte.workoutapp.util.Extensions.Companion.toChar
 import com.github.wnebyte.workoutapp.util.Stopwatch
 
 private const val TAG = "StopwatchFragment"
@@ -95,7 +95,7 @@ class StopwatchFragment : VisibleFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vm.isRunning = args.pendingIntent
+       // vm.isRunning = args.pendingIntent
         updateUI()
         addClickListeners()
     }
@@ -157,8 +157,8 @@ class StopwatchFragment : VisibleFragment() {
                 }
             }
             2 -> {
-                // continue button is clicked
-                binding.buttonBar2.continueButton.setOnClickListener {
+                // resume button is clicked
+                binding.buttonBar2.resumeButton.setOnClickListener {
                     requireContext()
                         .startService(
                             ForegroundService.newIntent(
@@ -174,9 +174,11 @@ class StopwatchFragment : VisibleFragment() {
                 }
                 // reset button is clicked
                 binding.buttonBar2.resetButton.setOnClickListener {
-                    vm.value = 0L
-                    vm.index = 0
+                    val index = 0
                     vm.isRunning = false
+                    vm.value = 0L
+                    vm.index = index
+                    binding.vf.displayedChild = index
                     updateUI()
                 }
             }
@@ -189,7 +191,6 @@ class StopwatchFragment : VisibleFragment() {
     }
 
     companion object {
-
         fun newInstance(bundle: Bundle) : StopwatchFragment {
             val fragment = StopwatchFragment()
             fragment.arguments = bundle
