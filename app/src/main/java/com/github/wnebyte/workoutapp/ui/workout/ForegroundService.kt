@@ -1,5 +1,6 @@
 package com.github.wnebyte.workoutapp.ui.workout
 
+import java.util.*
 import android.app.Notification
 import android.app.Service
 import android.content.Context
@@ -8,18 +9,15 @@ import android.os.*
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.MainActivity
 import com.github.wnebyte.workoutapp.NOTIFICATION_CHANNEL_ID
-import com.github.wnebyte.workoutapp.R
+import com.github.wnebyte.workoutapp.util.ContextHelper
 import com.github.wnebyte.workoutapp.util.Stopwatch
-import java.util.*
 
 private const val TAG = "ForegroundService"
-
 private const val NOTIFICATION_ID = 1
-
 private const val WORKOUT_ID_EXTRA = "WorkoutId"
-
 private const val START_VALUE_EXTRA = "StartValue"
 
 class ForegroundService : Service() {
@@ -67,11 +65,13 @@ class ForegroundService : Service() {
         requestCode: Int,
         notification: Notification
     ) {
-        val intent = Intent(ACTION_SHOW_NOTIFICATION).apply {
+        val intent = Intent(ContextHelper
+            .prependPackageName(applicationContext, ACTION_SHOW_NOTIFICATION)).apply {
             putExtra(REQUEST_CODE, requestCode)
             putExtra(NOTIFICATION, notification)
         }
-        this.sendOrderedBroadcast(intent, PERM_PRIVATE)
+        this.sendOrderedBroadcast(intent, ContextHelper
+            .prependPackageName(applicationContext, PERM_PRIVATE))
     }
 
     private fun getNotification(
@@ -102,9 +102,8 @@ class ForegroundService : Service() {
     companion object {
         const val SERVICE_MESSAGE = "message"
         const val SERVICE_RESULT = "result"
-
-        const val ACTION_SHOW_NOTIFICATION = "com.github.wnebyte.workoutapp.SHOW_NOTIFICATION"
-        const val PERM_PRIVATE = "com.github.wnebyte.workoutapp.PRIVATE"
+        const val ACTION_SHOW_NOTIFICATION = ".SHOW_NOTIFICATION"
+        const val PERM_PRIVATE = ".permission.PRIVATE"
         const val REQUEST_CODE = "REQUEST_CODE"
         const val NOTIFICATION = "NOTIFICATION"
 

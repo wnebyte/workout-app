@@ -26,7 +26,8 @@ class HostFragment : ViewPagerHostFragment() {
             StopwatchFragment
                 .newInstance(args)
         )
-        setAdapter()
+        viewPager.adapter = adapter
+        tabLayout.visibility = View.GONE
         if (this.args.pendingIntent) {
             viewPager.currentItem = 1
         }

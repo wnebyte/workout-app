@@ -1,13 +1,11 @@
 package com.github.wnebyte.workoutapp.ui.workout.session
 
+import java.util.*
 import androidx.lifecycle.*
 import com.github.wnebyte.workoutapp.database.Repository
 import com.github.wnebyte.workoutapp.model.*
-import com.github.wnebyte.workoutapp.model.Set
-import java.util.*
 
 private const val TAG = "WorkoutViewModel"
-
 private const val WORKOUT_ID_LIVE_DATA_KEY = "WorkoutIdLiveData"
 
 class SessionViewModel(private val state: SavedStateHandle) : ViewModel() {
@@ -16,7 +14,7 @@ class SessionViewModel(private val state: SavedStateHandle) : ViewModel() {
 
     private val workoutIdLiveData = state.getLiveData<UUID>(WORKOUT_ID_LIVE_DATA_KEY)
 
-    var workoutLiveData: LiveData<WorkoutWithExercises?> = (
+    val workoutLiveData: LiveData<WorkoutWithExercises?> = (
             Transformations.switchMap(workoutIdLiveData) { workoutId ->
                 repository.getWorkoutWithExercises(workoutId)
             })

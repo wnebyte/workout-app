@@ -24,8 +24,6 @@
     <include
         android:id="@+id/back"
         layout="@layout/check_mark"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:visibility="gone"
         />
 

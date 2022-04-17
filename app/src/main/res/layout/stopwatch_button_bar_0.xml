@@ -15,7 +15,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         android:text="@string/button_start"
-        android:backgroundTint="@color/my_secondary"
+        android:backgroundTint="@color/my_primary"
         style="@style/StopwatchButton"
         />
 

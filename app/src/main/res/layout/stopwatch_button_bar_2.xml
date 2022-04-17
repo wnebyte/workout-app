@@ -13,7 +13,7 @@
         android:text="@string/button_resume"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:backgroundTint="@color/my_secondary"
+        android:backgroundTint="@color/my_primary"
         style="@style/StopwatchButton"
         />
 

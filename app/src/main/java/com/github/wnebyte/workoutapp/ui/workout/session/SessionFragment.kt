@@ -2,9 +2,6 @@ package com.github.wnebyte.workoutapp.ui.workout.session
 
 import java.util.*
 import java.lang.IllegalStateException
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Paint
@@ -12,8 +9,13 @@ import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import android.animation.*
 import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
@@ -33,6 +35,7 @@ private const val TAG = "SessionFragment"
 class SessionFragment : Fragment() {
 
     interface Callbacks {
+        fun onFinished()
         fun onEditWorkout(workoutId: UUID, currentFragment: Class<out Fragment>)
         fun onEditCompletedWorkout(workoutId: UUID, currentFragment: Class<out Fragment>)
     }
@@ -45,7 +48,7 @@ class SessionFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private var _binding: FragmentWorkoutSessionBinding? = null
+    private var _binding: FragmentWorkoutSessionTestBinding? = null
 
     private var callbacks: Callbacks? = null
 
@@ -73,9 +76,23 @@ class SessionFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentWorkoutSessionBinding
+        _binding = FragmentWorkoutSessionTestBinding
             .inflate(layoutInflater, container, false)
         binding.recyclerView.adapter = adapter
+        binding.fab.setOnClickListener {
+            val size = binding.recyclerView.size
+            val animationObjects = mutableListOf<AnimationObject>()
+
+            for (i in size - 1 downTo 0) {
+                val holder = binding.recyclerView.findViewHolderForAdapterPosition(i) as ExerciseHolder
+                val body = holder.itemView.findViewById<LinearLayout>(R.id.body)
+                val back = holder.itemView.findViewById<ImageView>(R.id.back)
+                val animationObject = AnimationObject(back, body)
+                animationObjects.add(animationObject)
+            }
+
+            flip(animationObjects)
+        }
         return binding.root
     }
 
@@ -118,6 +135,16 @@ class SessionFragment : Fragment() {
             .setText(workout.workout.date?.format(), TextView.BufferType.NORMAL)
         // bind exercises to the ui
         adapter.submitList(workout.exercises)
+        // update fab pos
+        if (workout.exercises.all { e -> e.exercise.completed }) {
+            if (binding.fab.x < 0) {
+                animIn()
+            }
+        } else {
+            if (binding.fab.x > 0) {
+                animOut()
+            }
+        }
     }
 
     private fun dipToPx(dip: Float): Float {
@@ -131,7 +158,7 @@ class SessionFragment : Fragment() {
     }
 
     private fun animIn() {
-        val view = binding.name // stand-in
+        val view = binding.fab
         val start = resources.getDimensionPixelSize(R.dimen.fab_anim_x_start)
         val end = resources.displayMetrics.widthPixels
         val offset = dipToPx(16f)
@@ -144,18 +171,60 @@ class SessionFragment : Fragment() {
     }
 
     private fun animOut() {
-        val view = binding.name // stand-in
+        val view = binding.fab
         val start = resources.getDimensionPixelSize(R.dimen.fab_anim_x_start)
         val end = resources.displayMetrics.widthPixels
         val offset = dipToPx(16f)
         val translate = (start + end - offset)
         ObjectAnimator.ofFloat(view, "translationX", -translate).apply {
-            duration = 1000
+            duration = 1250
             doOnEnd {
                 view.visibility = View.GONE
             }
             start()
         }
+    }
+
+    private fun flip(animationObjects: List<AnimationObject>) {
+        val animatorSet = AnimatorSet()
+        val animations = mutableListOf<Animator>()
+
+        for (i in animationObjects.indices) {
+            val animationObject = animationObjects[i]
+            val animation = AnimatorSet()
+            val visibleView = animationObject.visibleView
+            val invisibleView = animationObject.invisibleView
+            val scale = requireContext().resources.displayMetrics.density
+            val cameraDistance = 8000 * scale
+            visibleView.cameraDistance = cameraDistance
+            invisibleView.cameraDistance = cameraDistance
+            val flipOutAnimatorSet = AnimatorInflater.loadAnimator(
+                context,
+                R.animator.flip_out
+            ) as AnimatorSet
+            flipOutAnimatorSet.setTarget(invisibleView)
+            flipOutAnimatorSet.doOnEnd {
+                invisibleView.visibility = View.INVISIBLE
+            }
+            val flipInAnimatorSet = AnimatorInflater.loadAnimator(
+                context,
+                R.animator.flip_in
+            ) as AnimatorSet
+            flipInAnimatorSet.setTarget(visibleView)
+            flipInAnimatorSet.doOnStart {
+                visibleView.visibility = View.VISIBLE
+            }
+            animation.startDelay = i * 250L
+            animation.playTogether(flipOutAnimatorSet, flipInAnimatorSet)
+            animations.add(animation)
+        }
+
+        animatorSet.playTogether(animations)
+        animatorSet.doOnEnd {
+            workout.workout.completed = true
+            callbacks?.onFinished()
+        }
+        animatorSet.start()
     }
 
     private inner class ExerciseHolder(private val binding: ExerciseCardBinding) :
@@ -186,7 +255,8 @@ class SessionFragment : Fragment() {
                 if (exercise.sets.all { s -> s.completed }) {
                     exercise.exercise.completed = true
                     if (workout.exercises.all { e -> e.exercise.completed }) {
-                        workout.workout.completed = true
+                       // workout.workout.completed = true
+                        animIn()
                     }
                 }
 
@@ -200,56 +270,13 @@ class SessionFragment : Fragment() {
                 exercise.exercise.completed = false
                 workout.workout.completed = false
                 adapter.notifyDataSetChanged()
-                return true
+                animOut()
             }
-            return false
-        }
-
-        private fun flip(v: View) {
-            val scale = requireContext().resources.displayMetrics.density
-            val cameraDistance = 8000 * scale
-            v.cameraDistance = cameraDistance
-            val flipOutAnimatorSet = AnimatorInflater.loadAnimator(
-                context,
-                R.animator.flip_out
-            ) as AnimatorSet
-            flipOutAnimatorSet.setTarget(v)
-            val flipInAnimatorSet = AnimatorInflater.loadAnimator(
-                context,
-                R.animator.flip_in
-            ) as AnimatorSet
-            flipInAnimatorSet.setTarget(v)
-            flipOutAnimatorSet.start()
-            flipInAnimatorSet.start()
-        }
-
-        private fun flipCard(visibleView: View, invisibleView: View) {
-            try {
-                visibleView.visibility = View.VISIBLE
-                val scale = requireContext().resources.displayMetrics.density
-                val cameraDistance = 8000 * scale
-                visibleView.cameraDistance = cameraDistance
-                invisibleView.cameraDistance = cameraDistance
-                val flipOutAnimatorSet = AnimatorInflater.loadAnimator(
-                    context,
-                    R.animator.flip_out
-                ) as AnimatorSet
-                flipOutAnimatorSet.setTarget(invisibleView)
-                val flipInAnimatorSet = AnimatorInflater.loadAnimator(
-                    context,
-                    R.animator.flip_in
-                ) as AnimatorSet
-                flipInAnimatorSet.setTarget(visibleView)
-                flipOutAnimatorSet.start()
-                flipInAnimatorSet.start()
-                flipInAnimatorSet.doOnEnd {
-                    invisibleView.visibility = View.GONE
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, e.message.toString())
-            }
+            return true
         }
     }
+
+    private inner class AnimationObject(val visibleView: View, val invisibleView: View)
 
     private inner class ExerciseAdapter : ListAdapter<ExerciseWithSets, ExerciseHolder>
         (AdapterUtil.DIFF_UTIL_EXERCISE_WITH_SETS_CALLBACK) {

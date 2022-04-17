@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.util.Log
 import androidx.fragment.app.Fragment
+import com.github.wnebyte.workoutapp.util.ContextHelper
 
 private const val TAG = "VisibleFragment"
 
@@ -21,11 +22,12 @@ abstract class VisibleFragment: Fragment() {
 
     protected fun registerReceiver() {
         Log.i(TAG, "receiver registered")
-        val filter = IntentFilter(ForegroundService.ACTION_SHOW_NOTIFICATION)
+        val filter = IntentFilter(ContextHelper
+            .prependPackageName(requireContext(), ForegroundService.ACTION_SHOW_NOTIFICATION))
         requireContext().registerReceiver(
             onShowNotification,
             filter,
-            ForegroundService.PERM_PRIVATE,
+            ContextHelper.prependPackageName(requireContext(), ForegroundService.PERM_PRIVATE),
             null
         )
     }

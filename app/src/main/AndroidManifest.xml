@@ -4,10 +4,10 @@
     package="com.github.wnebyte.workoutapp">
 
     <!-- defines a custom permission -->
-    <permission android:name="com.github.wnebyte.workoutapp.PRIVATE"
+    <permission android:name="${applicationId}.permission.PRIVATE"
         android:protectionLevel="signature" />
     <!-- declares that the application uses the below permissions -->
-    <uses-permission android:name="com.github.wnebyte.workoutapp.PRIVATE" />
+    <uses-permission android:name="${applicationId}.permission.PRIVATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
@@ -45,10 +45,10 @@
         </activity>
         <receiver
             android:name=".ui.workout.NotificationReceiver"
-            android:permission="com.github.wnebyte.workoutapp.PRIVATE"
+            android:permission="${applicationId}.permission.PRIVATE"
             android:exported="false">
             <intent-filter android:priority="-999">
-                <action android:name="com.github.wnebyte.workoutapp.SHOW_NOTIFICATION"/>
+                <action android:name="${applicationId}.SHOW_NOTIFICATION"/>
             </intent-filter>
         </receiver>
         <service android:name=".ui.workout.ForegroundService"

@@ -9,5 +9,5 @@
     <dimen name="fragment_padding">5dp</dimen>
     <dimen name="fragment_item_vertical_spacing">10dp</dimen>
     <dimen name="item_box_corner_radius">10dp</dimen>
-    <dimen name="fab_anim_x_start">-175px</dimen>
+    <dimen name="fab_anim_x_start">-61dp</dimen>
 </resources>

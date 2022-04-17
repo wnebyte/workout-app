@@ -37,6 +37,7 @@
     <string name="nav_workout_view_pager">Workout Session</string>
     <string name="nav_workout_session">Workout Session</string>
     <string name="nav_workout_stopwatch">Stopwatch</string>
+    <string name="nav_settings">Settings</string>
     <string name="button_bar_cancel">Cancel</string>
     <string name="button_bar_accept">Save</string>
     <string name="button_bar_finish">Finish</string>

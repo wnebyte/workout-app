@@ -5,65 +5,40 @@
     >
 
     <group android:checkableBehavior="single">
-
-        <item
-            android:id="@+id/nav_home"
-            android:title="Home"
-            android:icon="@drawable/ic_baseline_home_24"
-            tools:ignore="HardcodedText"
-            />
-
-        <item android:title="Progress"
-            tools:ignore="HardcodedText">
+        <item android:title="General" tools:ignore="hardcodedText">
             <menu>
                 <group android:checkableBehavior="single">
                     <item
-                        android:id="@+id/nav_progress"
-                        android:title="Progress"
-                        android:icon="@drawable/ic_baseline_history_24"
-                        tools:ignore="HardcodedText"
+                        android:id="@+id/nav_home"
+                        android:title="@string/nav_home"
+                        android:icon="@drawable/ic_baseline_home_24"
+                        />
+                    <item
+                        android:id="@+id/nav_settings"
+                        android:title="@string/nav_settings"
+                        android:icon="@drawable/ic_baseline_settings_24"
                         />
                 </group>
             </menu>
         </item>
-
-        <item android:title="Workouts"
-            tools:ignore="HardcodedText">
+        <item android:title="Workout" tools:ignore="hardcodedText">
             <menu>
                 <group android:checkableBehavior="single">
                     <item
                         android:id="@+id/workout_navigation"
-                        android:title="Workouts"
+                        android:title="@string/nav_workout_list"
                         android:icon="@drawable/ic_baseline_fitness_center_24"
                         />
-                    <!--
-                    <item
-                        android:id="@+id/nav_workout_create"
-                        android:title="New Workout"
-                        android:icon="@drawable/ic_baseline_add_box_24"
-                        />
-                    -->
-                </group>
-            </menu>
-        </item>
-        <item android:title="Exercises"
-            tools:ignore="HardcodedText">
-            <menu>
-                <group android:checkableBehavior="single"
-                    android:id="@+id/group_exercise"
-                    >
                     <item
                         android:id="@+id/nav_exercise_list"
-                        android:title="Exercises"
+                        android:title="@string/nav_exercise_list"
                         android:icon="@drawable/ic_baseline_favorite_24"
                         />
-                    <!--
                     <item
-                        android:id="@+id/nav_exercise_create"
-                        android:title="New Exercise"
-                        android:icon="@drawable/ic_baseline_add_box_24"
+                        android:id="@+id/nav_progress"
+                        android:title="@string/nav_progress"
+                        android:icon="@drawable/ic_baseline_history_24"
                         />
-                     -->
                 </group>
             </menu>
         </item>

@@ -31,12 +31,11 @@ abstract class ViewPagerHostFragment : Fragment() {
         return view
     }
 
-    // Todo: move this to onCreateView()?
-    /**
-     * Should be called by subclasses somewhere after onCreateView().
-     */
     protected fun setAdapter() {
         viewPager.adapter = adapter
+    }
+
+    protected fun attachTabLayoutMediator() {
         TabLayoutMediator(tabLayout, viewPager) { _, _ -> }
             .attach()
     }

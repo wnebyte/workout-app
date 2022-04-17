@@ -6,7 +6,7 @@ import android.app.NotificationManager
 import android.os.Build
 import com.github.wnebyte.workoutapp.database.Repository
 
-const val NOTIFICATION_CHANNEL_ID = "countDownTimerChannel"
+const val NOTIFICATION_CHANNEL_ID = "StopwatchChannel"
 
 class WorkoutApplication : Application() {
 
