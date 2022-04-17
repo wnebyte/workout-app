@@ -29,6 +29,7 @@ import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
 import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
+import com.github.wnebyte.workoutapp.ui.workout.ForegroundService
 
 private const val TAG = "SessionFragment"
 
@@ -222,6 +223,13 @@ class SessionFragment : Fragment() {
         animatorSet.playTogether(animations)
         animatorSet.doOnEnd {
             workout.workout.completed = true
+            context?.stopService(
+                ForegroundService.newIntent(
+                    requireContext(),
+                    null,
+                    null
+                )
+            )
             callbacks?.onFinished()
         }
         animatorSet.start()

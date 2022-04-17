@@ -87,6 +87,7 @@ class ForegroundService : Service() {
             .setOnlyAlertOnce(true)
             .setAutoCancel(true)
             .setSilent(true)
+            .setOngoing(true)
             .setTimeoutAfter(1500)
             .build()
     }
