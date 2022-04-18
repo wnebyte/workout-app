@@ -87,8 +87,10 @@ class SessionFragment : Fragment() {
             val animation = flip(l)
             animation.doOnEnd {
                 context?.let {
-                    ForegroundService.newIntent(
-                        it, null, null
+                    it.stopService(
+                        ForegroundService.newIntent(
+                            it, null, null
+                        )
                     )
                 }
                 workout.workout.completed = true
