@@ -16,10 +16,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutListBinding
 import com.github.wnebyte.workoutapp.databinding.WorkoutCardBinding
-import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.empty
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
+import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
 
 private const val TAG = "WorkoutListFragment"
 
@@ -172,7 +171,7 @@ class WorkoutListFragment : Fragment() {
 
         private fun deleteWorkout() {
             vm.deleteWorkout(workout)
-            val snackbar = Snackbar.make(binding.root, "DEL: ${workout.workout.name}", Snackbar.LENGTH_LONG)
+            val snackbar = Snackbar.make(binding.root, R.string.delete_action, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo) {
                     vm.saveWorkout(workout)
                 }

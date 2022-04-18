@@ -33,5 +33,11 @@
     <color name="my_secondary">#065082</color>
     <color name="my_tertiary">#22B573</color>
     <color name="my_quaternary">#E6E6E6</color>
+    <color name="my_quinary">#F8C09D</color>
+    <color name="my_senary">#F8C09D</color>
+    <color name="my_septenary">#F8C09D</color>
+    <color name="my_octonary">#F8C09D</color>
+    <color name="my_nonary">#F8C09D</color>
+    <color name="my_denary">#F8C09D</color>
     <color name="my_dark">#4D4D4D</color>
 </resources>

@@ -15,16 +15,17 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator
+import jp.wasabeef.recyclerview.animators.SlideInRightAnimator
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.FragmentProgressBinding
+import com.github.wnebyte.workoutapp.databinding.ProgressItemCardAltBinding
 import com.github.wnebyte.workoutapp.databinding.ProgressItemCardBinding
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toSign
-import com.github.wnebyte.workoutapp.model.ProgressItem
 import com.github.wnebyte.workoutapp.util.TemporalRange
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import com.github.wnebyte.workoutapp.ui.OnSwipeListener
-import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator
-import jp.wasabeef.recyclerview.animators.SlideInRightAnimator
+import com.github.wnebyte.workoutapp.model.ProgressItem
 
 private const val TAG = "ProgressFragment"
 
@@ -40,11 +41,11 @@ class ProgressFragment : Fragment(), OnSwipeListener {
 
     private val binding get() = _binding!!
 
+    private val gestureDetector get() = _gestureDetector!!
+
     private var _binding: FragmentProgressBinding? = null
 
     private var _gestureDetector: GestureDetectorCompat? = null
-
-    private val gestureDetector get() = _gestureDetector!!
 
     private var callbacks: Callbacks? = null
 
@@ -277,6 +278,35 @@ class ProgressFragment : Fragment(), OnSwipeListener {
         }
 
         override fun onBindViewHolder(holder: ProgressItemHolder, position: Int) {
+            val item = getItem(position)
+            return holder.bind(item)
+        }
+    }
+    
+    private inner class ProgressItemAltHolder(private val binding: ProgressItemCardAltBinding):
+        RecyclerView.ViewHolder(binding.root),
+        View.OnClickListener {
+        private lateinit var progressItem: ProgressItem
+
+        fun bind(progressItem: ProgressItem) {
+            this.progressItem = progressItem
+        }
+
+        override fun onClick(v: View?) {
+            TODO("Not yet implemented")
+        }
+    }
+
+    private inner class ProgressItemAltAdapter : ListAdapter<ProgressItem, ProgressItemAltHolder>
+        (AdapterUtil.DIFF_UTIL_PROGRESS_ITEM_CALLBACK) {
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProgressItemAltHolder {
+            val view = ProgressItemCardAltBinding
+                .inflate(layoutInflater, parent, false)
+            return ProgressItemAltHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: ProgressItemAltHolder, position: Int) {
             val item = getItem(position)
             return holder.bind(item)
         }

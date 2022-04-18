@@ -17,11 +17,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.*
-import com.github.wnebyte.workoutapp.model.ExerciseWithSets
-import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
 import com.github.wnebyte.workoutapp.ui.OnSwipeListener
+import com.github.wnebyte.workoutapp.model.Set
+import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 
 private const val TAG = "ExerciseListFragment"
 
@@ -34,9 +35,9 @@ class ExerciseListFragment : Fragment() {
 
     private val vm: ExerciseListViewModel by viewModels()
 
-    private val binding get() = _binding!!
-
     private val adapter = ExerciseAdapter()
+
+    private val binding get() = _binding!!
 
     private val removedItems: MutableList<ExerciseWithSets> = mutableListOf()
 
@@ -127,8 +128,8 @@ class ExerciseListFragment : Fragment() {
 
         private fun deleteExercise() {
             vm.deleteExercise(exercise)
-            val snackbar = Snackbar.make(binding.root, "", Snackbar.LENGTH_LONG)
-                .setAction("UNDO") {
+            val snackbar = Snackbar.make(binding.root, R.string.delete_action, Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo) {
                     vm.saveExercise(exercise)
                 }
             snackbar.show()

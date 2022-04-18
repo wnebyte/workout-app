@@ -1,14 +1,12 @@
 package com.github.wnebyte.workoutapp.ui
 
 import java.lang.Exception
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import android.widget.TextView
-import androidx.core.view.GestureDetectorCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,10 +17,9 @@ import jp.wasabeef.recyclerview.animators.FadeInRightAnimator
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.FragmentExerciseEditBinding
 import com.github.wnebyte.workoutapp.databinding.SetBinding
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.empty
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toEmptyString
-import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.Set
+import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 
 abstract class AbstractExerciseEditFragment: Fragment() {
 
@@ -166,20 +163,12 @@ abstract class AbstractExerciseEditFragment: Fragment() {
         adapter.notifyItemInserted(index)
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     protected inner class SetHolder(private val binding: SetBinding):
-        RecyclerView.ViewHolder(binding.root),
-        OnSwipeListener,
-        View.OnTouchListener {
+        RecyclerView.ViewHolder(binding.root) {
         private lateinit var set: Set
-        private val gestureDetector = GestureDetectorCompat(requireContext(), this)
 
         init {
-            binding.weights.setOnTouchListener(this)
-            binding.reps.setOnTouchListener(this)
-            binding.repsLayout.setEndIconOnClickListener {
-                removeSet()
-            }
+            binding.repsLayout.setEndIconOnClickListener { removeSet() }
             binding.weights.doOnTextChanged { text, _, _, _ ->
                 if (!TextUtils.isEmpty(text)) {
                     set.weights = text.toString().toDouble()
@@ -212,20 +201,11 @@ abstract class AbstractExerciseEditFragment: Fragment() {
         private fun removeSet() {
             val index = adapterPosition
             dataSetRemove(index)
-            val snackbar = Snackbar.make(binding.root, "DEL: ${exercise.exercise.name}", Snackbar.LENGTH_LONG)
+            val snackbar = Snackbar.make(binding.root, R.string.delete_action, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo) {
                     dataSetInsert(index, set)
                 }
             snackbar.show()
-        }
-
-        override fun onSwipeRight() {
-
-        }
-
-        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-            gestureDetector.onTouchEvent(event)
-            return false
         }
     }
 

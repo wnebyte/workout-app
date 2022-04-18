@@ -292,7 +292,7 @@ class WorkoutCreateFragment: Fragment() {
         private fun removeExercise() {
             val index = adapterPosition
             dataSetRemove(index)
-            val snackbar = Snackbar.make(binding.root, "DEL: ${workout.workout.name}", Snackbar.LENGTH_LONG)
+            val snackbar = Snackbar.make(binding.root, R.string.delete_action, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo) {
                     dataSetInsert(index, exercise)
                 }

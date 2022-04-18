@@ -1,5 +1,7 @@
 package com.github.wnebyte.workoutapp.ui.exerciseimport
 
+import java.lang.Exception
+import java.lang.IllegalStateException
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -14,11 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.databinding.*
-import com.github.wnebyte.workoutapp.model.ExerciseWithSets
-import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
-import java.lang.Exception
-import java.lang.IllegalStateException
+import com.github.wnebyte.workoutapp.model.Set
+import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 
 private const val TAG = "ExerciseImportFragment"
 
@@ -99,7 +99,7 @@ class ExerciseImportFragment: Fragment() {
         _binding = null
     }
 
-    private inner class ExerciseHolder(private val binding: ExerciseCardBinding)
+    private inner class ExerciseHolder(private val binding: ExerciseCardClickableBinding)
         : RecyclerView.ViewHolder(binding.root), View.OnLongClickListener {
         private lateinit var exercise: ExerciseWithSets
         private val adapter = SetAdapter()
@@ -139,7 +139,7 @@ class ExerciseImportFragment: Fragment() {
         (AdapterUtil.DIFF_UTIL_EXERCISE_WITH_SETS_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseHolder {
-            val view = ExerciseCardBinding
+            val view = ExerciseCardClickableBinding
                 .inflate(layoutInflater, parent, false)
             return ExerciseHolder(view)
         }

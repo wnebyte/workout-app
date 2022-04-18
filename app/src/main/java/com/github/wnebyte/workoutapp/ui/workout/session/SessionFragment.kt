@@ -1,6 +1,5 @@
 package com.github.wnebyte.workoutapp.ui.workout.session
 
-import java.util.*
 import java.lang.IllegalStateException
 import android.content.Context
 import android.content.res.Resources
@@ -9,8 +8,6 @@ import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.animation.*
 import androidx.core.animation.doOnEnd
@@ -25,11 +22,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.wnebyte.workoutapp.R
 import com.github.wnebyte.workoutapp.databinding.*
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
+import com.github.wnebyte.workoutapp.ui.workout.ForegroundService
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
 import com.github.wnebyte.workoutapp.model.Set
 import com.github.wnebyte.workoutapp.model.ExerciseWithSets
 import com.github.wnebyte.workoutapp.model.WorkoutWithExercises
-import com.github.wnebyte.workoutapp.ui.workout.ForegroundService
 
 private const val TAG = "SessionFragment"
 
@@ -37,8 +34,6 @@ class SessionFragment : Fragment() {
 
     interface Callbacks {
         fun onFinished()
-        fun onEditWorkout(workoutId: UUID, currentFragment: Class<out Fragment>)
-        fun onEditCompletedWorkout(workoutId: UUID, currentFragment: Class<out Fragment>)
     }
 
     private val vm: SessionViewModel by viewModels()
@@ -68,8 +63,7 @@ class SessionFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        workout = WorkoutWithExercises.newInstance()
-        setHasOptionsMenu(false)
+        workout = WorkoutWithExercises.newInstance() // will be re-initialized
     }
 
     override fun onCreateView(
@@ -82,18 +76,27 @@ class SessionFragment : Fragment() {
         binding.recyclerView.adapter = adapter
         binding.fab.setOnClickListener {
             val size = binding.recyclerView.size
-            val animationObjects = mutableListOf<AnimationObject>()
-
+            val l = mutableListOf<Pair<View, View>>()
             for (i in size - 1 downTo 0) {
                 val holder = binding.recyclerView.findViewHolderForAdapterPosition(i) as ExerciseHolder
-                val body = holder.itemView.findViewById<LinearLayout>(R.id.body)
-                val back = holder.itemView.findViewById<ImageView>(R.id.back)
-                val animationObject = AnimationObject(back, body)
-                animationObjects.add(animationObject)
+                val body = holder.itemView.findViewById<View>(R.id.body)
+                val back = holder.itemView.findViewById<View>(R.id.back)
+                val pair = Pair(back, body)
+                l.add(pair)
             }
-
-            flip(animationObjects)
+            val animation = flip(l)
+            animation.doOnEnd {
+                context?.let {
+                    ForegroundService.newIntent(
+                        it, null, null
+                    )
+                }
+                workout.workout.completed = true
+                callbacks?.onFinished()
+            }
+            animation.start()
         }
+
         return binding.root
     }
 
@@ -186,15 +189,15 @@ class SessionFragment : Fragment() {
         }
     }
 
-    private fun flip(animationObjects: List<AnimationObject>) {
+    private fun flip(l: List<Pair<View, View>>): AnimatorSet {
         val animatorSet = AnimatorSet()
         val animations = mutableListOf<Animator>()
 
-        for (i in animationObjects.indices) {
-            val animationObject = animationObjects[i]
+        for (i in l.indices) {
+            val pair = l[i]
             val animation = AnimatorSet()
-            val visibleView = animationObject.visibleView
-            val invisibleView = animationObject.invisibleView
+            val visibleView = pair.first
+            val invisibleView = pair.second
             val scale = requireContext().resources.displayMetrics.density
             val cameraDistance = 8000 * scale
             visibleView.cameraDistance = cameraDistance
@@ -221,21 +224,10 @@ class SessionFragment : Fragment() {
         }
 
         animatorSet.playTogether(animations)
-        animatorSet.doOnEnd {
-            workout.workout.completed = true
-            context?.stopService(
-                ForegroundService.newIntent(
-                    requireContext(),
-                    null,
-                    null
-                )
-            )
-            callbacks?.onFinished()
-        }
-        animatorSet.start()
+        return animatorSet
     }
 
-    private inner class ExerciseHolder(private val binding: ExerciseCardBinding) :
+    private inner class ExerciseHolder(private val binding: ExerciseCardClickableBinding) :
         RecyclerView.ViewHolder(binding.root),
         View.OnClickListener,
         View.OnLongClickListener {
@@ -252,6 +244,7 @@ class SessionFragment : Fragment() {
         fun bind(exercise: ExerciseWithSets) {
             this.exercise = exercise
             binding.body.title.text = exercise.exercise.name
+            binding.root.isChecked = exercise.exercise.completed
             adapter.submitList(exercise.sets)
         }
 
@@ -262,8 +255,8 @@ class SessionFragment : Fragment() {
                 adapter.notifyDataSetChanged()
                 if (exercise.sets.all { s -> s.completed }) {
                     exercise.exercise.completed = true
+                    this@SessionFragment.adapter.notifyDataSetChanged()
                     if (workout.exercises.all { e -> e.exercise.completed }) {
-                       // workout.workout.completed = true
                         animIn()
                     }
                 }
@@ -278,19 +271,48 @@ class SessionFragment : Fragment() {
                 exercise.exercise.completed = false
                 workout.workout.completed = false
                 adapter.notifyDataSetChanged()
+                this@SessionFragment.adapter.notifyDataSetChanged()
                 animOut()
             }
             return true
         }
-    }
 
-    private inner class AnimationObject(val visibleView: View, val invisibleView: View)
+        private inner class SetHolder(private val binding: SetItemBinding) :
+            RecyclerView.ViewHolder(binding.root) {
+            private lateinit var set: Set
+
+            fun bind(set: Set) {
+                this.set = set
+                "${set.weights} x ${set.reps}".also { binding.tv.text = it }
+                if (!exercise.exercise.completed && set.completed) {
+                    binding.tv.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                } else {
+                    binding.tv.paintFlags = 0
+                }
+            }
+        }
+
+        private inner class SetAdapter : ListAdapter<Set, SetHolder>
+            (AdapterUtil.DIFF_UTIL_SET_CALLBACK) {
+
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SetHolder {
+                val view = SetItemBinding
+                    .inflate(layoutInflater, parent, false)
+                return SetHolder(view)
+            }
+
+            override fun onBindViewHolder(holder: SetHolder, position: Int) {
+                val set = getItem(position)
+                return holder.bind(set)
+            }
+        }
+    }
 
     private inner class ExerciseAdapter : ListAdapter<ExerciseWithSets, ExerciseHolder>
         (AdapterUtil.DIFF_UTIL_EXERCISE_WITH_SETS_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseHolder {
-            val view = ExerciseCardBinding
+            val view = ExerciseCardClickableBinding
                 .inflate(layoutInflater, parent, false)
             return ExerciseHolder(view)
         }
@@ -301,39 +323,8 @@ class SessionFragment : Fragment() {
         }
     }
 
-    private inner class SetHolder(private val binding: SetItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        private lateinit var set: Set
-
-        fun bind(set: Set) {
-            this.set = set
-            "${set.weights} x ${set.reps}".also { binding.tv.text = it }
-            if (set.completed) {
-                binding.tv.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-            } else {
-                binding.tv.paintFlags = 0
-            }
-        }
-    }
-
-    private inner class SetAdapter : ListAdapter<Set, SetHolder>
-        (AdapterUtil.DIFF_UTIL_SET_CALLBACK) {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SetHolder {
-            val view = SetItemBinding
-                .inflate(layoutInflater, parent, false)
-            return SetHolder(view)
-        }
-
-        override fun onBindViewHolder(holder: SetHolder, position: Int) {
-            val set = getItem(position)
-            return holder.bind(set)
-        }
-
-    }
-
     companion object {
-        fun newInstance(bundle: Bundle): SessionFragment {
+        fun newInstance(bundle: Bundle, ): SessionFragment {
             val fragment = SessionFragment()
             fragment.arguments = bundle
             return fragment

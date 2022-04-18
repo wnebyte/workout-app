@@ -13,11 +13,6 @@
                         android:title="@string/nav_home"
                         android:icon="@drawable/ic_baseline_home_24"
                         />
-                    <item
-                        android:id="@+id/nav_settings"
-                        android:title="@string/nav_settings"
-                        android:icon="@drawable/ic_baseline_settings_24"
-                        />
                 </group>
             </menu>
         </item>
@@ -37,10 +32,23 @@
                     <item
                         android:id="@+id/nav_progress"
                         android:title="@string/nav_progress"
-                        android:icon="@drawable/ic_baseline_history_24"
+                        android:icon="@drawable/ic_baseline_bar_chart_24"
                         />
                 </group>
             </menu>
         </item>
+        <!--
+        <item android:title="Misc" tools:ignore="hardcodedText">
+            <menu>
+                <group android:checkableBehavior="single">
+                    <item
+                        android:id="@+id/nav_settings"
+                        android:title="@string/nav_settings"
+                        android:icon="@drawable/ic_baseline_settings_24"
+                        />
+                </group>
+            </menu>
+        </item>
+        -->
     </group>
 </menu>

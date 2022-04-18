@@ -1,6 +1,5 @@
 package com.github.wnebyte.workoutapp.ui.workoutdetailsfinal
 
-import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -103,14 +102,13 @@ class WorkoutDetailsFinalFragment : Fragment() {
         init {
             binding.body.recyclerView.layoutManager = LinearLayoutManager(context)
             binding.body.recyclerView.adapter = adapter
-            binding.root.isClickable = false
-            binding.root.isLongClickable = false
-            binding.root.isFocusable = false
+            binding.root.isEnabled = false
         }
 
         fun bind(exercise: ExerciseWithSets) {
             this.exercise = exercise
             binding.body.title.text = exercise.exercise.name
+            binding.root.isChecked = exercise.exercise.completed
             adapter.submitList(exercise.sets)
         }
     }
@@ -137,9 +135,11 @@ class WorkoutDetailsFinalFragment : Fragment() {
         fun bind(set: Set) {
             this.set = set
             "${set.weights} x ${set.reps}".also { binding.tv.text = it }
+            /*
             if (set.completed) {
                 binding.tv.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             }
+             */
         }
     }
 

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/action_bar"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_horizontal"
+    >
+
+    <Button
+        android:id="@+id/details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DETAILS"
+        android:src="@drawable/ic_edit_24"
+        style="?attr/borderlessButtonStyle"
+        android:textColor="@color/my_primary"
+        tools:ignore="HardcodedText"
+        />
+
+</LinearLayout>

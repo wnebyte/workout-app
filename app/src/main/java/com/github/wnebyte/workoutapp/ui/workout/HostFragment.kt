@@ -10,7 +10,7 @@ import com.github.wnebyte.workoutapp.ui.ViewPagerHostFragment
 import com.github.wnebyte.workoutapp.ui.workout.session.SessionFragment
 import com.github.wnebyte.workoutapp.ui.workout.stopwatch.StopwatchFragment
 
-class HostFragment : ViewPagerHostFragment() {
+class HostFragment : ViewPagerHostFragment(){
 
     override lateinit var adapter: ViewPagerFragmentAdapter
 

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/exercise_card_content_description_media"
+        android:cropToPadding="true"
+        android:scaleType="center"
+        android:src="@drawable/ic_man_lifting_barbell"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        >
+
+        <!-- Title, secondary and supporting text-->
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/exercise_card_title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/weights"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:textColor="?android:attr/textColorSecondary"
+            android:text="55 kg"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            tools:ignore="HardcodedText"
+            />
+
+        <TextView
+            android:id="@+id/reps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:textColor="?android:attr/textColorSecondary"
+            android:text="7x"
+            app:layout_constraintTop_toBottomOf="@+id/weights"
+            tools:ignore="HardcodedText"
+            />
+
+        <TextView
+            android:id="@+id/attendance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:textColor="?android:attr/textColorSecondary"
+            android:text="4x"
+            app:layout_constraintTop_toBottomOf="@+id/reps"
+            tools:ignore="HardcodedText"
+            />
+
+        <TextView
+            android:id="@+id/weights_percentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+12%"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBaseline_toBaselineOf="@id/weights"
+            tools:ignore="HardcodedText"
+            />
+
+        <TextView
+            android:id="@+id/reps_percentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+12%"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBaseline_toBaselineOf="@id/reps"
+            tools:ignore="HardcodedText"
+            />
+
+        <TextView
+            android:id="@+id/attendance_percentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+12%"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBaseline_toBaselineOf="@id/attendance"
+            tools:ignore="HardcodedText"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

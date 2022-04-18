@@ -28,7 +28,6 @@ import com.github.wnebyte.workoutapp.databinding.ExerciseCardActionableBinding
 import com.github.wnebyte.workoutapp.databinding.FragmentWorkoutDetailsBinding
 import com.github.wnebyte.workoutapp.databinding.SetItemBinding
 import com.github.wnebyte.workoutapp.ui.AdapterUtil
-import com.github.wnebyte.workoutapp.util.Extensions.Companion.empty
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.format
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.showDropdown
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.toPaddedString
@@ -275,6 +274,7 @@ class WorkoutDetailsFragment: Fragment() {
         fun bind(exercise: ExerciseWithSets) {
             this.exercise = exercise
             binding.body.title.text = exercise.exercise.name
+            binding.root.isChecked = exercise.exercise.completed
             adapter.submitList(exercise.sets)
         }
 
@@ -285,11 +285,44 @@ class WorkoutDetailsFragment: Fragment() {
         private fun removeExercise() {
             val index = adapterPosition
             dataSetRemove(index)
-            val snackbar = Snackbar.make(binding.root, String.empty(), Snackbar.LENGTH_LONG)
+            val snackbar = Snackbar.make(binding.root, R.string.delete_action, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo) {
                     dataSetInsert(index, exercise)
                 }
             snackbar.show()
+        }
+
+        private inner class SetHolder(private val binding: SetItemBinding) :
+            RecyclerView.ViewHolder(binding.root) {
+            private lateinit var set: Set
+
+            /**
+             * Binds the specified [set] to the ViewHolder.
+             * @param set to be bound.
+             */
+            fun bind(set: Set) {
+                this.set = set
+                "${set.weights} x ${set.reps}".also { binding.tv.text = it }
+                if (!exercise.exercise.completed && set.completed) {
+                    binding.tv.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                } else {
+                    binding.tv.paintFlags = 0
+                }
+            }
+        }
+
+        private inner class SetAdapter : ListAdapter<Set, SetHolder>
+            (AdapterUtil.DIFF_UTIL_SET_CALLBACK) {
+
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SetHolder {
+                val view = SetItemBinding.inflate(layoutInflater, parent, false)
+                return SetHolder(view)
+            }
+
+            override fun onBindViewHolder(holder: SetHolder, position: Int) {
+                val set = getItem(position)
+                return holder.bind(set)
+            }
         }
     }
 
@@ -305,37 +338,6 @@ class WorkoutDetailsFragment: Fragment() {
         override fun onBindViewHolder(holder: ExerciseHolder, position: Int) {
             val exercise = getItem(position)
             return holder.bind(exercise)
-        }
-    }
-
-    private inner class SetHolder(private val binding: SetItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        private lateinit var set: Set
-
-        /**
-         * Binds the specified [set] to the ViewHolder.
-         * @param set to be bound.
-         */
-        fun bind(set: Set) {
-            this.set = set
-            "${set.weights} x ${set.reps}".also { binding.tv.text = it }
-            if (set.completed) {
-                binding.tv.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-            }
-        }
-    }
-
-    private inner class SetAdapter : ListAdapter<Set, SetHolder>
-        (AdapterUtil.DIFF_UTIL_SET_CALLBACK) {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SetHolder {
-            val view = SetItemBinding.inflate(layoutInflater, parent, false)
-            return SetHolder(view)
-        }
-
-        override fun onBindViewHolder(holder: SetHolder, position: Int) {
-            val set = getItem(position)
-            return holder.bind(set)
         }
     }
 }
