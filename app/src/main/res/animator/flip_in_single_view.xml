@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <objectAnimator
+        android:duration="0"
+        android:propertyName="rotationY"
+        android:valueFrom="-180"
+        android:valueTo="-90"
+        />
+
+    <!-- at -90 degrees -->
+    <objectAnimator
+        android:duration="0"
+        android:propertyName="alpha"
+        android:startOffset="0"
+        android:valueFrom="0.0"
+        android:valueTo="1.0"
+        />
+
+    <objectAnimator
+        android:duration="750"
+        android:propertyName="rotationY"
+        android:repeatMode="reverse"
+        android:startOffset="0"
+        android:valueFrom="-90"
+        android:valueTo="0"
+        />
+</set>

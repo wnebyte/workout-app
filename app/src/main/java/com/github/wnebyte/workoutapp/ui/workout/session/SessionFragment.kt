@@ -84,7 +84,7 @@ class SessionFragment : Fragment() {
                 val pair = Pair(back, body)
                 l.add(pair)
             }
-            val animation = flip(l)
+            val animation = getFlipAnimation(l)
             animation.doOnEnd {
                 context?.let {
                     it.stopService(
@@ -191,7 +191,7 @@ class SessionFragment : Fragment() {
         }
     }
 
-    private fun flip(l: List<Pair<View, View>>): AnimatorSet {
+    private fun getFlipAnimation(l: List<Pair<View, View>>): AnimatorSet {
         val animatorSet = AnimatorSet()
         val animations = mutableListOf<Animator>()
 
@@ -229,6 +229,40 @@ class SessionFragment : Fragment() {
         return animatorSet
     }
 
+    private fun flip(view: View): AnimatorSet {
+        val animation = AnimatorSet()
+        val scale = requireContext().resources.displayMetrics.density
+        val cameraDistance = 8000 * scale
+        view.cameraDistance = cameraDistance
+        val flipOutAnimatorSet = AnimatorInflater.loadAnimator(
+            context,
+            R.animator.flip_out
+        ) as AnimatorSet
+        flipOutAnimatorSet.setTarget(view)
+        val flipInAnimatorSet = AnimatorInflater.loadAnimator(
+            context,
+            R.animator.flip_in
+        ) as AnimatorSet
+        flipInAnimatorSet.setTarget(view)
+        flipInAnimatorSet.startDelay = 750L
+        animation.playTogether(flipOutAnimatorSet, flipInAnimatorSet)
+        return animation
+    }
+
+    private fun getAnimation(resId: Int, v: View): AnimatorSet {
+        context?.let {
+            val scale = it.resources.displayMetrics.density
+            val cameraDistance = 8000 * scale
+            v.cameraDistance = cameraDistance
+        }
+        val animation = AnimatorInflater.loadAnimator(
+            context,
+            resId
+        ) as AnimatorSet
+        animation.setTarget(v)
+        return animation
+    }
+
     private inner class ExerciseHolder(private val binding: ExerciseCardClickableBinding) :
         RecyclerView.ViewHolder(binding.root),
         View.OnClickListener,
@@ -256,13 +290,23 @@ class SessionFragment : Fragment() {
                 set.completed = true
                 adapter.notifyDataSetChanged()
                 if (exercise.sets.all { s -> s.completed }) {
-                    exercise.exercise.completed = true
-                    this@SessionFragment.adapter.notifyDataSetChanged()
-                    if (workout.exercises.all { e -> e.exercise.completed }) {
-                        animIn()
+                    val view = binding.body.root
+                    val flipOut = getAnimation(R.animator.flip_out_single_view, view)
+                    val flipIn = getAnimation(R.animator.flip_in_single_view, view)
+                    flipIn.doOnStart {
+                        exercise.exercise.completed = true
+                        adapter.notifyDataSetChanged()
+                        if (workout.exercises.all { e -> e.exercise.completed }) {
+                            animIn()
+                        }
                     }
+                    val animation = AnimatorSet()
+                    animation.doOnEnd {
+                        this@SessionFragment.adapter.notifyDataSetChanged()
+                    }
+                    animation.playSequentially(flipOut, flipIn)
+                    animation.start()
                 }
-
             }
         }
 
@@ -270,11 +314,14 @@ class SessionFragment : Fragment() {
             val set = exercise.sets.findLast { s -> s.completed }
             set?.let {
                 it.completed = false
+                adapter.notifyDataSetChanged()
+                val completed = exercise.exercise.completed
                 exercise.exercise.completed = false
                 workout.workout.completed = false
-                adapter.notifyDataSetChanged()
-                this@SessionFragment.adapter.notifyDataSetChanged()
-                animOut()
+                if (completed) {
+                    this@SessionFragment.adapter.notifyDataSetChanged()
+                    animOut()
+                }
             }
             return true
         }
@@ -326,7 +373,7 @@ class SessionFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(bundle: Bundle, ): SessionFragment {
+        fun newInstance(bundle: Bundle): SessionFragment {
             val fragment = SessionFragment()
             fragment.arguments = bundle
             return fragment
