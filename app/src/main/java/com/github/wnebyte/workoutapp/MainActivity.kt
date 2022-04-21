@@ -36,7 +36,7 @@ import com.github.wnebyte.workoutapp.ui.workoutlist.WorkoutListFragmentDirection
 
 private const val TAG = "MainActivity"
 
-class MainActivity: AppCompatActivity(),
+open class MainActivity: AppCompatActivity(),
     ExerciseListFragment.Callbacks,
     ExerciseImportFragment.Callbacks,
     AbstractExerciseEditFragment.Callbacks,
@@ -222,10 +222,9 @@ class MainActivity: AppCompatActivity(),
     }
 
     companion object {
-        // Todo: should route the user to their dest via WorkoutListFragment.
         fun newPendingWorkoutIntent(context: Context, workoutId: UUID): PendingIntent =
             NavDeepLinkBuilder(context)
-                .setComponentName(MainActivity::class.java)
+               // .setComponentName(MainActivity::class.java)
                 .setGraph(R.navigation.mobile_navigation)
                 .setDestination(R.id.nav_workout_view_pager)
                 .setArguments(Bundle().apply {
@@ -234,113 +233,4 @@ class MainActivity: AppCompatActivity(),
                 })
                 .createPendingIntent()
     }
-
-    /*
-    private fun delete() {
-        val mainHandler = Handler(Looper.getMainLooper())
-        val handlerThread = HandlerThread("HandlerThread").apply {
-            start()
-        }
-
-        val backgroundHandler = Handler(handlerThread.looper) {
-            val repo = Repository.get()
-            repo.deleteAllSets()
-            repo.deleteAllExercises()
-            repo.deleteAllWorkouts()
-
-            mainHandler.post {
-
-            }
-        }
-
-        backgroundHandler.sendEmptyMessage(1)
-    }
-
-    private fun observe() {
-        val mainHandler = Handler(Looper.getMainLooper())
-        val handlerThread = HandlerThread("HandlerThread").apply {
-            start()
-        }
-
-        val backgroundHandler = Handler(handlerThread.looper) {
-            val repo = Repository.get()
-            val all: LiveData<List<WorkoutWithExercises>> = repo.getWorkoutsWithExercises()
-
-            mainHandler.post {
-                all.observe(
-                    this,
-                    Observer { workouts ->
-                        workouts?.let {
-                            Log.i(TAG, workouts.joinToString("\n"))
-                        }
-                    }
-                )
-            }
-        }
-
-        backgroundHandler.sendEmptyMessage(1)
-    }
-
-    private fun insert() {
-        val mainHandler = Handler(Looper.getMainLooper())
-        val handlerThread = HandlerThread("HandlerThread").apply {
-            start()
-        }
-
-        val backgroundHandler = Handler(handlerThread.looper) {
-            val all: LiveData<List<WorkoutWithExercises>> = save()
-
-            mainHandler.post {
-                all.observe(
-                    this,
-                    Observer { workouts ->
-                        workouts?.let {
-                            Log.i(TAG, "$workouts")
-                        }
-                    }
-                )
-            }
-        }
-
-        backgroundHandler.sendEmptyMessage(1)
-    }
-
-    private fun save() : LiveData<List<WorkoutWithExercises>> {
-        val workout = Workout(name = "My Workout", template = true)
-
-        val exercise1 = Exercise(name = "Bench Press", timer = 180, template = true,  workout = workout.id)
-
-        val set1 = Set(reps = 5, weights = 77.5, exercise = exercise1.id)
-        val set2 = Set(reps = 5, weights = 80.0, exercise = exercise1.id)
-        val set3 = Set(reps = 5, weights = 82.5, exercise = exercise1.id)
-        val set4 = Set(reps = 5, weights = 85.0, exercise = exercise1.id)
-        val set5 = Set(reps = 5, weights = 87.5, exercise = exercise1.id)
-
-        val exercise2 = Exercise(name = "Barbell Row", timer = 180, template = true, workout = workout.id)
-
-        val set6 = Set(reps = 7, weights = 55.0, exercise = exercise2.id)
-        val set7 = Set(reps = 7, weights = 55.0, exercise = exercise2.id)
-        val set8 = Set(reps = 7, weights = 55.0, exercise = exercise2.id)
-        val set9 = Set(reps = 7, weights = 55.0, exercise = exercise2.id)
-        val set10 = Set(reps = 7, weights = 55.0, exercise = exercise2.id)
-
-        val exercise3 = Exercise(name = "Squat", timer = 150, template = true)
-
-        val set11 = Set(reps = 8, weights = 80.0, exercise = exercise3.id)
-        val set12 = Set(reps = 8, weights = 82.5, exercise = exercise3.id)
-        val set13 = Set(reps = 8, weights = 85.0, exercise = exercise3.id)
-        val set14 = Set(reps = 8, weights = 87.5, exercise = exercise3.id)
-        val set15 = Set(reps = 8, weights = 88.0, exercise = exercise3.id)
-
-        val repo = Repository.get()
-        repo.saveWorkout(workout)
-        repo.saveExercise(exercise1, exercise2)
-        repo.saveSet(set1, set2, set3, set4, set5, set6, set7, set8, set9, set10)
-
-        repo.saveExercise(exercise3)
-        repo.saveSet(set11, set12, set13, set14, set15)
-
-        return repo.getWorkoutsWithExercises()
-    }
-     */
 }

@@ -6,9 +6,16 @@
     <!-- defines a custom permission -->
     <permission android:name="${applicationId}.permission.PRIVATE"
         android:protectionLevel="signature" />
+    <!--
+    <permission android:name="com.github.wnebyte.workoutapp.free.permission.READ_PROVIDER"
+        android:protectionLevel="signature" />
+    -->
     <!-- declares that the application uses the below permissions -->
     <uses-permission android:name="${applicationId}.permission.PRIVATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!--
+    <uses-permission android:name="com.github.wnebyte.workoutapp.free.permission.READ_PROVIDER" />
+    -->
 
     <application
         android:name=".WorkoutApplication"
@@ -19,30 +26,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WorkoutApp.New"
         android:fullBackupContent="@xml/backup_rules">
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name">
-            <nav-graph android:value="@navigation/mobile_navigation"/>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data
-                    android:host="properbackstack.com"
-                    android:pathPrefix="/level1"
-                    android:scheme="https"
-                    />
-                <data
-                    android:host="properbackstack.com"
-                    android:pathPrefix="/level1/level2"
-                    android:scheme="https"
-                    />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <receiver
             android:name=".ui.workout.NotificationReceiver"
             android:permission="${applicationId}.permission.PRIVATE"

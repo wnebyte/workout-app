@@ -10,7 +10,7 @@
         android:id="@+id/nav_home"
         android:name="com.github.wnebyte.workoutapp.ui.home.HomeFragment"
         android:label="@string/nav_home"
-        tools:layout="@layout/fragment_workout_overview">
+        tools:layout="@layout/fragment_home">
         </fragment>
 
     <fragment

@@ -1,8 +1,8 @@
 package com.github.wnebyte.workoutapp.model
 
+import java.util.*
 import androidx.room.Embedded
 import androidx.room.Relation
-import java.util.*
 
 data class ExerciseWithSets(
     @Embedded

@@ -5,6 +5,7 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import android.content.Context
+import android.database.Cursor
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.github.wnebyte.workoutapp.model.*
@@ -73,6 +74,9 @@ class Repository private constructor(context: Context) {
     fun getSets(): LiveData<List<Set>> =
         database.setDao().getAll()
 
+    fun getSetsRaw(): Cursor =
+        database.setDao().getAllRaw()
+
     fun saveExercise(exercise: Exercise) =
         executor.execute {
             database.exerciseDao().save(exercise)
@@ -123,6 +127,9 @@ class Repository private constructor(context: Context) {
 
     fun getExercises(): LiveData<List<Exercise>> =
         database.exerciseDao().getAll()
+
+    fun getExercisesRaw(): Cursor =
+        database.exerciseDao().getAllRaw()
 
     fun getTemplateExercises(): LiveData<List<Exercise>> =
         database.exerciseDao().getTemplates()
@@ -182,6 +189,9 @@ class Repository private constructor(context: Context) {
 
     fun getWorkouts(): LiveData<List<Workout>> =
         database.workoutDao().getAll()
+
+    fun getWorkoutsRaw(): Cursor =
+        database.workoutDao().getAllRaw()
 
     fun getWorkoutsOrderByDate(asc: Boolean = true): LiveData<List<Workout>> =
         database.workoutDao().getAllOrderByDate(asc)
@@ -277,6 +287,10 @@ class Repository private constructor(context: Context) {
         fun get(): Repository {
             return INSTANCE
                 ?: throw IllegalStateException("Repository must be initialized")
+        }
+
+        fun isInitialized(): Boolean {
+            return (INSTANCE != null)
         }
     }
 }

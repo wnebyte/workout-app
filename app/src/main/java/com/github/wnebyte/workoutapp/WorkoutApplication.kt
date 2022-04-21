@@ -8,7 +8,7 @@ import com.github.wnebyte.workoutapp.database.Repository
 
 const val NOTIFICATION_CHANNEL_ID = "StopwatchChannel"
 
-class WorkoutApplication : Application() {
+open class WorkoutApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()

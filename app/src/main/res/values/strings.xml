@@ -56,7 +56,7 @@
     <string name="workout_date">Date</string>
     <string name="workout_default_reminder">None</string>
     <string name="workout_reminder_suffix"> before</string>
-    <string name="notification_channel_name">CountDownTimer</string>
+    <string name="notification_channel_name">Stopwatch</string>
     <string name="notification_ticker">Ticker</string>
     <string name="notification_content_title">Content Title</string>
     <string name="notification_content_text">Content Text</string>

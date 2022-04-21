@@ -8,6 +8,7 @@ import android.text.TextUtils
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import com.github.wnebyte.workoutapp.util.Extensions.Companion.hour
+import java.lang.IllegalArgumentException
 import kotlin.math.abs
 
 class Extensions {
@@ -232,6 +233,22 @@ class Extensions {
                     0.0f
                 } else -> {
                     (this.sumByDouble { it.toDouble() } / this.size).toFloat()
+                }
+            }
+        }
+
+        fun Int.toBoolean(): Boolean {
+            return when (this) {
+                0 -> {
+                    false
+                }
+                1 -> {
+                    true
+                }
+                else -> {
+                    throw IllegalArgumentException(
+                        "Value must represent 0 or 1."
+                    )
                 }
             }
         }

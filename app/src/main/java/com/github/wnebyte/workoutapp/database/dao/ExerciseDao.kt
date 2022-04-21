@@ -1,5 +1,6 @@
 package com.github.wnebyte.workoutapp.database.dao
 
+import android.database.Cursor
 import java.util.*
 import androidx.room.*
 import androidx.lifecycle.LiveData
@@ -25,4 +26,7 @@ interface ExerciseDao : IDao<Exercise> {
 
     @Query("SELECT * FROM exercise")
     fun getAll(): LiveData<List<Exercise>>
+
+    @Query("SELECT * FROM exercise")
+    fun getAllRaw(): Cursor
 }
