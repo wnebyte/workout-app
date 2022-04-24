@@ -40,4 +40,13 @@
     <color name="my_nonary">#F8C09D</color>
     <color name="my_denary">#F8C09D</color>
     <color name="my_dark">#4D4D4D</color>
+
+    <color name="selector">
+        <selector xmlns:android="http://schemas.android.com/apk/res/android">
+            <item android:color="?attr/colorPrimary" android:state_focused="true"/>
+            <item android:alpha="0.87" android:color="?attr/colorOnSurface" android:state_hovered="true"/>
+            <item android:alpha="0.12" android:color="?attr/colorOnSurface" android:state_enabled="false"/>
+            <item android:alpha="0.38" android:color="?attr/colorOnSurface"/>
+        </selector>
+    </color>
 </resources>

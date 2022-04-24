@@ -12,13 +12,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/Theme.WorkoutApp.AppBarOverlay"
-        android:elevation="10dp"
         >
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="250dp"
+            android:contentInsetStart="0dp"
+            app:contentInsetStart="0dp"
+            android:contentInsetEnd="0dp"
+            app:contentInsetEnd="0dp"
+            android:elevation="5dp"
             android:background="@color/colorPrimary"
             app:popupTheme="@style/Theme.WorkoutApp.PopupOverlay"
             >
@@ -30,11 +34,8 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/title_layout"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="50dp"
-                    android:layout_marginEnd="8dp"
-                    android:gravity="center"
                     android:hint="Title"
                     android:textColorHint="@color/colorAccent"
                     style="@style/Widget.Design.TextInputLayout"
@@ -42,6 +43,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintWidth_percent="0.8"
                     tools:ignore="HardcodedText"
                     >
 
@@ -55,28 +57,35 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
+                <com.google.android.material.tabs.TabLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="50dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="20dp"
-                    android:hint="Description"
-                    android:textColorHint="@color/colorAccent"
-                    style="@style/Widget.Design.TextInputLayout"
+                    android:background="@color/colorPrimary"
+                    app:tabTextColor="@color/colorAccent"
+                    app:tabSelectedTextColor="@color/white"
+                    app:tabGravity="start"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    tools:ignore="HardcodedText"
                     >
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/description"
-                        android:layout_width="match_parent"
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:inputType="text"
-                        android:textSize="16sp"
-                        />
+                        android:text="DETAILS"
+                        tools:ignore="HardcodedText" />
 
-                </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="EXERCISES"
+                        tools:ignore="HardcodedText" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SESSION"
+                        tools:ignore="HardcodedText" />
+
+                </com.google.android.material.tabs.TabLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -101,7 +110,7 @@
                 android:id="@+id/date_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:hint="Date"
                 android:focusable="true"
                 android:clickable="true"
@@ -111,7 +120,7 @@
                 >
 
                 <AutoCompleteTextView
-                    android:id="@+id/a"
+                    android:id="@+id/date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="30dp"
@@ -130,7 +139,7 @@
                 android:id="@+id/dropdown_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:hint="Reminder"
                 android:focusable="true"
                 android:clickable="true"
@@ -159,7 +168,7 @@
                 android:id="@+id/weather_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:hint="Weather"
                 android:focusable="true"
                 android:clickable="true"
@@ -188,7 +197,7 @@
                 android:id="@+id/location_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginBottom="10dp"
                 android:hint="Location"
                 android:focusable="true"

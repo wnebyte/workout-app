@@ -4,9 +4,15 @@ import kotlin.math.max
 import kotlin.math.roundToInt
 import android.content.Context
 import android.content.res.TypedArray
+import android.graphics.Rect
 import android.util.AttributeSet
+import android.util.Log
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+
+private const val TAG = "AutoFitRecyclerView"
 
 class AutoFitRecyclerView(context: Context, attrs: AttributeSet? = null)
     : RecyclerView(context, attrs) {
@@ -47,16 +53,51 @@ class AutoFitRecyclerView(context: Context, attrs: AttributeSet? = null)
 
         override fun getPaddingLeft(): Int {
             val totalItemWidth = columnWidth * spanCount
-            return if (this.width <= totalItemWidth) {
+            val padding =  if (this.width <= totalItemWidth) {
                 super.getPaddingLeft()
             } else {
                 ((this.width / (1f + spanCount)) - (totalItemWidth / (1f + spanCount)))
                     .roundToInt()
             }
+            Log.i(TAG, "left-padding: $padding")
+            return padding
         }
 
         override fun getPaddingRight(): Int {
-            return paddingLeft
+            val padding = paddingLeft
+            Log.i(TAG, "right-padding: $padding")
+            return padding
+        }
+    }
+
+    private inner class GridSpacingItemDecoration(
+        val spanCount: Int, val spacing: Int, val includeEdges: Boolean
+    ) : RecyclerView.ItemDecoration() {
+
+        override fun getItemOffsets(
+            outRect: Rect,
+            view: View,
+            parent: RecyclerView,
+            state: State
+        ) {
+            val position = parent.getChildAdapterPosition(view)
+            val column = position % spanCount
+
+            if (includeEdges) {
+                outRect.left = spacing - column * spacing / spanCount
+                outRect.right = (column + 1) * spacing / spanCount
+
+                if (position < spanCount) {
+                    outRect.top = spacing
+                }
+                outRect.bottom = spacing
+            } else {
+                outRect.left = column * spacing / spanCount
+                outRect.right = spacing - (column + 1) * spacing / spanCount
+                if (position >= spanCount) {
+                    outRect.top = spacing
+                }
+            }
         }
     }
 

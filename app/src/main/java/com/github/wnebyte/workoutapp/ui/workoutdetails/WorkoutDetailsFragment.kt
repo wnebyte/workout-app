@@ -11,10 +11,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.*
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.TextView
+import android.widget.*
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -151,6 +148,7 @@ class WorkoutDetailsFragment: Fragment() {
         binding.body.date.setOnClickListener(datePicker)
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

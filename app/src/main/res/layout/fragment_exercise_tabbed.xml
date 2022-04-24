@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.WorkoutApp.AppBarOverlay"
+        >
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:contentInsetStart="0dp"
+            app:contentInsetStart="0dp"
+            android:contentInsetEnd="0dp"
+            app:contentInsetEnd="0dp"
+            android:elevation="5dp"
+            android:background="@color/colorPrimary"
+            app:popupTheme="@style/Theme.WorkoutApp.PopupOverlay"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/title_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Title"
+                    android:textColorHint="@color/colorAccent"
+                    style="@style/Widget.Design.TextInputLayout"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintWidth_percent="0.8"
+                    tools:ignore="HardcodedText"
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:textSize="30sp"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.tabs.TabLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"
+                    app:tabTextColor="@color/colorAccent"
+                    app:tabSelectedTextColor="@color/white"
+                    app:tabGravity="start"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    >
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="DETAILS"
+                        tools:ignore="HardcodedText" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="STATISTICS"
+                        tools:ignore="HardcodedText" />
+
+                </com.google.android.material.tabs.TabLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/appbar_layout"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            >
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/weights_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="Weights (kg)"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.48"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                tools:ignore="HardcodedText"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/weights"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:imeOptions="actionNext"
+                    android:text="55"
+                    tools:ignore="HardcodedText"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/reps_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4pt"
+                android:hint="@string/set_reps"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/ic_baseline_close_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.48"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/reps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:text="5"
+                    android:imeOptions="actionNext"
+                    tools:ignore="HardcodedText"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
