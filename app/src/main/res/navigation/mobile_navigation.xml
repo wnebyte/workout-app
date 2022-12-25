@@ -111,7 +111,7 @@
             android:id="@+id/nav_workout_details"
             android:name="com.github.wnebyte.workoutapp.ui.workoutdetails.WorkoutDetailsFragment"
             android:label="@string/nav_workout_details"
-            tools:layout="@layout/fragment_workout_details">
+            tools:layout="@layout/fragment_workout_details_2">
             <argument
                 android:name="workoutId"
                 app:argType="java.util.UUID"

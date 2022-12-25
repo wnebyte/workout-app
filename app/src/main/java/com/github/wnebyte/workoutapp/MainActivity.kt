@@ -1,11 +1,12 @@
 package com.github.wnebyte.workoutapp
 
+import android.annotation.SuppressLint
+import android.app.ActionBar
 import java.util.*
 import java.io.Serializable
 import android.app.PendingIntent
 import android.content.Context
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.view.Menu
 import androidx.navigation.findNavController
@@ -18,8 +19,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
-import androidx.navigation.NavHost
+import com.github.wnebyte.workoutapp.gui.workout.host.WorkoutHostFragment
 import com.google.android.material.navigation.NavigationView
 import com.github.wnebyte.workoutapp.model.ProgressItem
 import com.github.wnebyte.workoutapp.ui.AbstractExerciseEditFragment
@@ -47,39 +47,13 @@ open class MainActivity : AppCompatActivity(),
     WorkoutDetailsFragment.Callbacks,
     WorkoutCreateFragment.Callbacks,
     SessionFragment.Callbacks,
-    ProgressFragment.Callbacks {
-    lateinit var appBarConfiguration: AppBarConfiguration
+    ProgressFragment.Callbacks,
+    com.github.wnebyte.workoutapp.gui.workout.list.WorkoutListFragment.Callbacks,
+    com.github.wnebyte.workoutapp.gui.workout.host.WorkoutHostFragment.Callbacks,
+    com.github.wnebyte.workoutapp.gui.exercise.list.ExerciseListFragment.Callbacks,
+    com.github.wnebyte.workoutapp.gui.exercise.host.ExerciseHostFragment.Callbacks {
 
-    /*
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        val navView: NavigationView = findViewById(R.id.nav_view)
-        val navController = findNavController(R.id.nav_host_fragment)
-        Log.i(TAG, "navController: $navController")
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            Log.i(TAG, "navigating to dest: $destination")
-            if (destination.id == R.id.nav_workout_list && navView.checkedItem == null) {
-                val menuItem = navView.menu.findItem(R.id.workout_navigation)
-                navView.setCheckedItem(menuItem)
-            }
-        }
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.nav_home, R.id.nav_progress, R.id.nav_exercise_list, R.id.nav_workout_list
-            ),
-            drawerLayout
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
-        supportActionBar?.hide()
-    }
-     */
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,13 +61,15 @@ open class MainActivity : AppCompatActivity(),
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_progress, R.id.nav_exercise_list, R.id.nav_workout_list
+                R.id.nav_home, R.id.nav_workout_list
             ),
             drawerLayout
         )
     }
 
+    @SuppressLint("RestrictedApi")
     fun setupActionBar(toolbar: Toolbar) {
+        Log.i(TAG, "setupActionBar()")
         setSupportActionBar(toolbar)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
@@ -104,6 +80,8 @@ open class MainActivity : AppCompatActivity(),
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
+        val home = menu.findItem(android.R.id.home)
+        Log.i(TAG, "home: $home")
         return true
     }
 
@@ -134,6 +112,10 @@ open class MainActivity : AppCompatActivity(),
             WorkoutCreateFragment::class.java -> {
                 WorkoutCreateFragmentDirections
                     .actionNavWorkoutCreateToNavExerciseDetails(exerciseId)
+            }
+            com.github.wnebyte.workoutapp.gui.exercise.list.ExerciseListFragment::class.java -> {
+                com.github.wnebyte.workoutapp.gui.exercise.list.ExerciseListFragmentDirections
+                    .actionNavExerciseListToNavExerciseHost(exerciseId)
             }
             else -> {
                 throw IllegalStateException(
@@ -203,6 +185,10 @@ open class MainActivity : AppCompatActivity(),
             WorkoutListFragment::class.java -> {
                 WorkoutListFragmentDirections
                     .actionNavWorkoutListToNavWorkoutDetails(workoutId)
+            }
+            com.github.wnebyte.workoutapp.gui.workout.list.WorkoutListFragment::class.java -> {
+                com.github.wnebyte.workoutapp.gui.workout.list.WorkoutListFragmentDirections
+                    .actionNavWorkoutListToNavWorkoutHost(workoutId, false)
             }
             else -> {
                 throw IllegalStateException(

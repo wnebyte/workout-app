@@ -36,7 +36,27 @@ abstract class ViewPagerHostFragment : Fragment() {
     }
 
     protected fun attachTabLayoutMediator() {
-        TabLayoutMediator(tabLayout, viewPager) { _, _ -> }
-            .attach()
+        val conf: TabLayoutMediator.TabConfigurationStrategy =
+            TabLayoutMediator.TabConfigurationStrategy { tab, position ->
+                when (position) {
+                    0 -> {
+                        tab.text = "DETAILS"
+                    }
+                    1 -> {
+                        tab.text = "EXERCISES"
+                    }
+                }
+            }
+        TabLayoutMediator(tabLayout, viewPager,
+            TabLayoutMediator.TabConfigurationStrategy { tab, position ->
+            when (position) {
+                0 -> {
+                    tab.text = "DETAILS"
+                }
+                1 -> {
+                    tab.text = "EXERCISES"
+                }
+            }
+        }).attach()
     }
 }
